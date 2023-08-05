@@ -26,6 +26,11 @@ spring:
       default_batch_fetch_size: 100
     open-in-view: false
 
+
+logging:
+  level:
+    '[com.ppap.ppap]': DEBUG
+    '[org.hibernate.type]': TRACE
 #  redis:
 #    host: localhost
 #    port: 6379
