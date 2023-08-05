@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,7 +54,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // CSRF 해제
-        http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(CsrfConfigurer::disable);
 
         // iframe거부
         http.headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
@@ -67,13 +66,13 @@ public class SecurityConfig {
         http.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         // 폼 로그인 해제 (UsernamePasswordAuthenticationFilter 비활성화)
-        http.formLogin(AbstractHttpConfigurer::disable);
+        http.formLogin(FormLoginConfigurer::disable);
 
         // 폼 로그아웃 해제
-        http.logout(AbstractHttpConfigurer::disable);
+        http.logout(LogoutConfigurer::disable);
 
         // 로그인 인증창 비활성화
-        http.httpBasic(AbstractHttpConfigurer::disable);
+        http.httpBasic(HttpBasicConfigurer::disable);
 
         http.apply(new CustomSecurityFilterManager());
 
