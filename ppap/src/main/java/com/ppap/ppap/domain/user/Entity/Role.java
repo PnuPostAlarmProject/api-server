@@ -1,17 +1,17 @@
 package com.ppap.ppap.domain.user.Entity;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum Role {
-    ROLE_USER("ROLE_USER"),
-    ROLE_ANONYMOUS("ROLE_ANONYMOUS"),
-    ROLE_ADMIN("ROLE_ADMIN");
+    ROLE_USER("ROLE_USER", "유저"),
+    ROLE_ANONYMOUS("ROLE_ANONYMOUS", "익명"),
+    ROLE_ADMIN("ROLE_ADMIN", "관리자");
 
-    String role;
+    @Getter
+    private final String roleName;
 
-    Role(String role) {
-        this.role = role;
-    }
-
-    public String value() {
-        return role;
-    }
+    @Getter
+    private final String decription;
 }

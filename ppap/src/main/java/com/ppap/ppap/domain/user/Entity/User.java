@@ -1,5 +1,6 @@
 package com.ppap.ppap.domain.user.Entity;
 
+import com.ppap.ppap.domain.base.entity.AuditingEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,9 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "user_tb")
-public class User {
+public class User extends AuditingEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(length = 100, unique = true, nullable = false)
