@@ -1,0 +1,60 @@
+package com.ppap.ppap.domain.user.service;
+
+import com.ppap.ppap._core.exception.BaseExceptionStatus;
+import com.ppap.ppap._core.exception.Exception400;
+import com.ppap.ppap._core.exception.Exception500;
+import com.ppap.ppap._core.security.JwtProvider;
+import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.UserRepository;
+import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
+import com.ppap.ppap.domain.user.dto.RegisterMemberCommand;
+import com.ppap.ppap.domain.user.dto.RegisterMemberDto;
+import com.ppap.ppap.domain.user.dto.oauth.OauthUserInfo;
+import com.ppap.ppap.domain.user.dto.oauth.kakao.KakaoUserInfo;
+import com.ppap.ppap.domain.user.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Slf4j
+@RequiredArgsConstructor
+@Service
+@Transactional
+public class UserWriteService {
+    private final UserMapper userMapper;
+    private final UserRepository userRepository;
+
+    @Transactional
+    public LoginMemberResponseDto socialLogin(OauthUserInfo userInfo) {
+        User user = userRepository.findByEmail(userInfo.email()).orElseGet(
+                () -> userRepository.save(userMapper.userInfoToUser(userInfo)));
+
+        String accessToken = JwtProvider.create(user);
+        String refreshToken = JwtProvider.createRefreshToken(user);
+        return LoginMemberResponseDto.of(accessToken, refreshToken);
+    }
+
+    @Transactional
+    public RegisterMemberDto create(RegisterMemberCommand registerMemberCommand) {
+
+        // 이메일이 이미 존재하는지 검증
+        checkEmail(registerMemberCommand.email());
+
+        User user = userMapper.registerMemberCommandToUser(registerMemberCommand);
+        try {
+            userRepository.save(user);
+            return userMapper.userToRegisterMemberDto(user);
+        } catch(Exception e) {
+            // logging 추가
+            e.printStackTrace();
+            throw new Exception500(BaseExceptionStatus.USER_SAVE_ERROR);
+        }
+    }
+
+    // 유저가 이미 존재한다면 예외처리
+    private void checkEmail(String email){
+        if(userRepository.existsByEmail(email))
+            throw new Exception400(BaseExceptionStatus.USER_ALREADY_EXIST);
+    }
+}

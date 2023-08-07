@@ -6,6 +6,10 @@ import org.springframework.http.HttpStatus;
 public class Exception404 extends ClientException{
     public Exception404(String message) {super(message);}
 
+    public Exception404(BaseExceptionStatus exception) {
+        super(exception.getMessage());
+    }
+
     @Override
     public ApiUtils.ApiResult<?> body() {return ApiUtils.error(getMessage(), HttpStatus.BAD_REQUEST);}
 

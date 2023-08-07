@@ -6,6 +6,10 @@ import org.springframework.http.HttpStatus;
 public class Exception401 extends ClientException{
     public Exception401(String message) {super(message);}
 
+    public Exception401(BaseExceptionStatus exception) {
+        super(exception.getMessage());
+    }
+
     @Override
     public ApiUtils.ApiResult<?> body() {return ApiUtils.error(getMessage(), HttpStatus.UNAUTHORIZED);}
 

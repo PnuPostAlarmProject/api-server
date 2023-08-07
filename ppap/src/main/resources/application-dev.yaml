@@ -7,10 +7,10 @@ server:
 
 spring:
   datasource:
-    url: jdbc:h2:mem:test;MODE=MySQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ppap
+    username: root
+    password: qwer1234
 
   h2:
     console:
@@ -37,3 +37,8 @@ logging:
 
 access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
 refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde
+
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    secret: ${KAKAO_SECRET}

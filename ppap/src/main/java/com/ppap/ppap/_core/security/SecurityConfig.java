@@ -24,7 +24,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtExceptionFilter jwtExceptionFilter;
@@ -74,6 +73,7 @@ public class SecurityConfig {
         // 로그인 인증창 비활성화
         http.httpBasic(HttpBasicConfigurer::disable);
 
+        // 새로 만든 필터 등록
         http.apply(new CustomSecurityFilterManager());
 
         // 인증 실패 처리
@@ -94,7 +94,9 @@ public class SecurityConfig {
 
         // 인증, 권한 필터 설정
         http.authorizeHttpRequests((authorizeHttpRequests) ->
-                authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/logout")).authenticated()
+                authorizeHttpRequests
+                        .requestMatchers(new AntPathRequestMatcher("/auth/kakao/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/auth/**")).authenticated()
                         .anyRequest().permitAll()
         );
 
