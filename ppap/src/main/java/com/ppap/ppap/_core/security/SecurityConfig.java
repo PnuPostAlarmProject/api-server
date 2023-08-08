@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +24,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtExceptionFilter jwtExceptionFilter;
@@ -55,7 +53,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // CSRF 해제
-        http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(CsrfConfigurer::disable);
 
         // iframe거부
         http.headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
@@ -67,14 +65,15 @@ public class SecurityConfig {
         http.sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         // 폼 로그인 해제 (UsernamePasswordAuthenticationFilter 비활성화)
-        http.formLogin(AbstractHttpConfigurer::disable);
+        http.formLogin(FormLoginConfigurer::disable);
 
         // 폼 로그아웃 해제
-        http.logout(AbstractHttpConfigurer::disable);
+        http.logout(LogoutConfigurer::disable);
 
         // 로그인 인증창 비활성화
-        http.httpBasic(AbstractHttpConfigurer::disable);
+        http.httpBasic(HttpBasicConfigurer::disable);
 
+        // 새로 만든 필터 등록
         http.apply(new CustomSecurityFilterManager());
 
         // 인증 실패 처리
@@ -95,7 +94,10 @@ public class SecurityConfig {
 
         // 인증, 권한 필터 설정
         http.authorizeHttpRequests((authorizeHttpRequests) ->
-                authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/logout")).authenticated()
+                authorizeHttpRequests
+                        .requestMatchers(new AntPathRequestMatcher("/auth/kakao/**"),
+                                new AntPathRequestMatcher("/auth/reissue")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/auth/**")).authenticated()
                         .anyRequest().permitAll()
         );
 

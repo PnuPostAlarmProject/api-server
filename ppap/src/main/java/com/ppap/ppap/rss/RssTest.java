@@ -50,19 +50,18 @@ public class RssTest {
     public static LocalDateTime parseDateTime(String dateString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         int dotIndex = dateString.lastIndexOf(".");
-        int nanoSeconds = 0;
+        int milliSeconds = 0;
 
         if (dotIndex != -1 && dotIndex + 1 < dateString.length()) {
             try {
-                nanoSeconds = Integer.parseInt(dateString.substring(dotIndex + 1));
+                milliSeconds = Integer.parseInt(dateString.substring(dotIndex + 1));
             } catch (NumberFormatException e) {
-                // Ignore and keep nanoSeconds as 0.
+                // Ignore and keep milliSeconds as 0.
             }
         }
 
         try {
-            LocalDateTime dateTime = LocalDateTime.parse(dateString.substring(0, dotIndex + 1) + String.format("%03d", nanoSeconds), formatter);
-            return dateTime;
+            return LocalDateTime.parse(dateString.substring(0, dotIndex + 1) + String.format("%03d", milliSeconds), formatter);
         } catch (Exception e) {
             return null;
         }

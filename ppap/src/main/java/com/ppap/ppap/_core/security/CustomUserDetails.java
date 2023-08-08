@@ -20,7 +20,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().value()));
+        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleName()));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.getId() != null;
     }
 }
 

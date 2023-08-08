@@ -4,18 +4,22 @@ import com.ppap.ppap._core.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import java.util.List;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<?> dtoValidationException(Exception e) {
-        return new ResponseEntity<>(ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> dtoValidationException(MethodArgumentNotValidException e) {
+        List<ObjectError> errors = e.getBindingResult().getAllErrors();
+        return new ResponseEntity<>(ApiUtils.error(errors.get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
@@ -38,6 +42,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<?> unknownServerError(Exception e) {
         // logging 추가
+        e.printStackTrace();
         return new ResponseEntity<>(
                 ApiUtils.error("서버에서 알 수 없는 에러가 발생했습니다." + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR),
                 HttpStatus.INTERNAL_SERVER_ERROR
