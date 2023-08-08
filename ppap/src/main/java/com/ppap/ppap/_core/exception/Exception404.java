@@ -11,8 +11,8 @@ public class Exception404 extends ClientException{
     }
 
     @Override
-    public ApiUtils.ApiResult<?> body() {return ApiUtils.error(getMessage(), HttpStatus.BAD_REQUEST);}
+    public ApiUtils.ApiResult<?> body() {return ApiUtils.error(getMessage(), HttpStatus.NOT_FOUND);}
 
     @Override
-    public HttpStatus status() { return HttpStatus.BAD_REQUEST;}
+    public HttpStatus status() { return HttpStatus.NOT_FOUND;}
 }

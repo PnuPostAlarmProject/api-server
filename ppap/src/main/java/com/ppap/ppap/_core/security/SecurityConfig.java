@@ -95,7 +95,8 @@ public class SecurityConfig {
         // 인증, 권한 필터 설정
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers(new AntPathRequestMatcher("/auth/kakao/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/auth/kakao/**"),
+                                new AntPathRequestMatcher("/auth/reissue")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/auth/**")).authenticated()
                         .anyRequest().permitAll()
         );

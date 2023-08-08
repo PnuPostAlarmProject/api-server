@@ -4,6 +4,7 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception500;
 import com.ppap.ppap._core.security.JwtProvider;
+import com.ppap.ppap.domain.redis.service.RefreshTokenService;
 import com.ppap.ppap.domain.user.Entity.User;
 import com.ppap.ppap.domain.user.UserRepository;
 import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserWriteService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public LoginMemberResponseDto socialLogin(OauthUserInfo userInfo) {
@@ -32,6 +34,8 @@ public class UserWriteService {
 
         String accessToken = JwtProvider.create(user);
         String refreshToken = JwtProvider.createRefreshToken(user);
+
+        refreshTokenService.save(refreshToken, accessToken, user);
         return LoginMemberResponseDto.of(accessToken, refreshToken);
     }
 

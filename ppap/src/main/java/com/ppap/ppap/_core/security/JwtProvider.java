@@ -14,10 +14,9 @@ import java.util.Date;
 @Component
 public class JwtProvider {
     public static final Long EXP = 1000L * 60 * 30; // 30분
-    public static final Long REFRESH_EXP = 1000L * 3600 * 24 * 7; // 1주일
-    //    public static final Long EXP = 1000L; // 1초
+    public static final Long REFRESH_EXP = 1000L * 3600 * 24 * 365 * 10; // 10년
+
     public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String REFRESH_TOKEN_PREFIX = "Refresh ";
     public static final String HEADER = "Authorization";
 
     public static String ACCESS_SECRET;
@@ -49,7 +48,7 @@ public class JwtProvider {
                 .withClaim("id", user.getId())
                 .withClaim("role", user.getRole().getRoleName())
                 .sign(Algorithm.HMAC512(REFRESH_SECRET));
-        return REFRESH_TOKEN_PREFIX + jwt;
+        return jwt;
     }
 
     public static DecodedJWT verify(String jwt) throws SignatureVerificationException, TokenExpiredException {
@@ -59,7 +58,6 @@ public class JwtProvider {
     }
 
     public static DecodedJWT verifyRefreshToken(String jwt) throws SignatureVerificationException, TokenExpiredException {
-        jwt = jwt.replace(REFRESH_TOKEN_PREFIX, "");
         return JWT.require(Algorithm.HMAC512(REFRESH_SECRET))
                 .build().verify(jwt);
     }
