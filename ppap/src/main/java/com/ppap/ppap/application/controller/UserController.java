@@ -32,7 +32,7 @@ public class UserController {
 
     @PostMapping("/kakao/login")
     public ResponseEntity<?> kakaoLogin(HttpServletRequest request) {
-        String token = request.getHeader("kakao");
+        String token = request.getHeader("Kakao");
         if(token == null) {
             throw new Exception400(BaseExceptionStatus.KAKAO_TOKEN_MISSING);
         }
