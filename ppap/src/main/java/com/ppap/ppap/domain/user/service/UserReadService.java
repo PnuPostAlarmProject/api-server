@@ -30,9 +30,10 @@ public class UserReadService {
     public ReissueDto.ReissueResponseDto reissue(ReissueDto.ReissueRequestDto requestDto) {
         String refreshToken = requestDto.refreshToken();
 
+        User user = getUserByRefreshToken(refreshToken);
+
         checkRefreshTokenInRedis(refreshToken);
 
-        User user = getUserByRefreshToken(refreshToken);
         String newAccessToken = JwtProvider.create(user);
         String newRefreshToken = JwtProvider.createRefreshToken(user);
         refreshTokenService.deleteById(refreshToken);
