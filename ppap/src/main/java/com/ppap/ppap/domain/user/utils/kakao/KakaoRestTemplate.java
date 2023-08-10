@@ -4,8 +4,10 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception500;
 import com.ppap.ppap.domain.user.dto.oauth.kakao.KakaoUserInfo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,8 +18,9 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class KakaoRestTemplate {
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     private final HttpHeaders httpHeaders = new HttpHeaders();
     private final String KAKAO_URL = "https://kapi.kakao.com/v2/user/me?property_keys=[\"kakao_account.email\"]";
 
@@ -40,10 +43,12 @@ public class KakaoRestTemplate {
             );
             return responseEntity.getBody();
         } catch (HttpClientErrorException e) {
-            e.printStackTrace();
             if(e.getStatusCode().value() == 401)
                 throw new Exception400(BaseExceptionStatus.KAKAO_TOKEN_INVALID);
 
+            log.error(e.getMessage());
+            throw new Exception500(BaseExceptionStatus.KAKAO_API_CONNECTION_ERROR);
+        } catch (Exception e) {
             log.error(e.getMessage());
             throw new Exception500(BaseExceptionStatus.KAKAO_API_CONNECTION_ERROR);
         }

@@ -1,8 +1,10 @@
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
-    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id "com.epages.restdocs-api-spec" version "0.18.2"
+    id "org.hidetake.swagger.generator" version "2.19.2"
 }
 
 group = 'com.ppap'
@@ -22,42 +24,71 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
-}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation group: 'com.auth0', name: 'java-jwt', version: '4.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.2'
-
-    // 레디스는 아직 안 넣을 것
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // https://mvnrepository.com/artifact/org.jdom/jdom
-    implementation 'org.jdom:jdom:2.0.2'
+    //Springboot 2.x 버전은 아래를 사용한다.
+//    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+
+    //Springboot 3.x 버전은 아래를 사용한다.
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // test
+    runtimeOnly 'com.h2database:h2'
+
+    // third party
+    implementation 'org.jdom:jdom:2.0.2' // RSS를 받기 위한 jdom 라이브러리
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.3.0'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2'
+
 }
 
-tasks.named('test') {
-    outputs.dir snippetsDir
+test {
+    systemProperty 'file.encoding', 'UTF-8'
     useJUnitPlatform()
 }
 
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    dependsOn test
+//
+openapi3 {
+    server = "http://localhost:8080" // list로 넣을 수 있어 각종 환경의 URL을 넣을 수 있음!
+    title = "PPAP API docs"
+    description = "PPAP API서버 명세페이지입니다."
+    version = "0.0.1"
+    format = "yaml" // or json
+    outputDirectory = 'build/resources/main/static/docs'
+}
+
+tasks.withType(GenerateSwaggerUI) {
+    dependsOn 'openapi3'
+
+    // local 확인
+    delete file('src/main/resources/static/docs/')
+    copy {
+        from "build/resources/main/static/docs"
+        into "src/main/resources/static/docs"
+    }
+}
+
+bootJar {
+    dependsOn 'openapi3'
+}
+
+jar {
+    enabled = false
 }

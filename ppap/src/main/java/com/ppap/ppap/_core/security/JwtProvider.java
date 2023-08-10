@@ -13,8 +13,8 @@ import java.util.Date;
 
 @Component
 public class JwtProvider {
-    public static final Long EXP = 1000L * 60 * 30; // 30분
-    public static final Long REFRESH_EXP = 1000L * 3600 * 24 * 365 * 10; // 10년
+    public static Long EXP = 1000L * 60 * 30; // 30분
+    public static Long REFRESH_EXP = 1000L * 3600 * 24 * 365 * 10; // 10년
 
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER = "Authorization";
