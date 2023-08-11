@@ -97,7 +97,8 @@ public class SecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/auth/kakao/**"),
                                 new AntPathRequestMatcher("/auth/reissue")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/auth/**")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/auth/**"),
+                                new AntPathRequestMatcher("/subscribe/**")).authenticated()
                         .anyRequest().permitAll()
         );
 

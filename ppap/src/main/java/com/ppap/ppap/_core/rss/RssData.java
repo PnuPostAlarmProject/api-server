@@ -1,4 +1,4 @@
-package com.ppap.ppap.rss;
+package com.ppap.ppap._core.rss;
 
 import lombok.Builder;
 
