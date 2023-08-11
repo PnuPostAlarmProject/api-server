@@ -30,7 +30,10 @@ public enum BaseExceptionStatus {
     RSS_NOTICE_LINK_MISMATCH("RSS와 공지사항 링크 학과가 일치하지 않습니다.", 400),
 
     // subscribe
-    SUBSCRIBE_ALREADY_EXIST("이미 존재하는 구독입니다.", 400);
+    SUBSCRIBE_ALREADY_EXIST("이미 존재하는 구독입니다.", 400),
+    SUBSCRIBE_FORBIDDEN("허가되지 않은 접근입니다.", 403),
+    SUBSCRIBE_NOT_FOUND("존재하지 않는 구독입니다.", 404);
+
 
     @Getter
     private final String message;

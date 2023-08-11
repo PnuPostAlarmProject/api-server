@@ -29,15 +29,19 @@ import java.util.List;
 @Component
 public class RssReader {
     private final RestTemplate restTemplate;
-    private final SAXBuilder saxBuilder = new SAXBuilder();
+    private final SAXBuilder saxBuilder;
 
-    public String getValidRssLink(String url) {
-        validPnuAndRssLink(url);
+    public String makeHttpsAndRemoveQueryString(String url) {
+        System.out.println(saxBuilder);
+        return url.replace("http://","https://")
+                .split("\\?")[0];
+    }
 
-        String removeQueryStringUrl = url.split("\\?")[0];
+    public void validRssLink(String makeHttpsAndRemoveQueryString) {
+        validPnuAndRssLink(makeHttpsAndRemoveQueryString);
 
         try {
-            Document document = saxBuilder.build(removeQueryStringUrl + "?row=1");
+            Document document = saxBuilder.build(makeHttpsAndRemoveQueryString + "?row=1");
         } catch (JDOMException | MalformedURLException e) {
             throw new Exception400(BaseExceptionStatus.RSS_LINK_INVALID);
         } catch(SocketException | SocketTimeoutException e){
@@ -46,15 +50,13 @@ public class RssReader {
             log.error("error :", e);
             throw new Exception500(BaseExceptionStatus.RSS_LINK_UNKNOWN_ERROR);
         }
-
-        return removeQueryStringUrl;
     }
 
     public List<RssData> getRssData(String url) {
         validPnuAndRssLink(url);
 
         List<RssData> rssDataList = new ArrayList<>();
-        String removeQueryStringUrl = url.split("\\?")[0];
+        String removeQueryStringUrl = makeHttpsAndRemoveQueryString(url);
 
         try {
             Document document = saxBuilder.build(url);
