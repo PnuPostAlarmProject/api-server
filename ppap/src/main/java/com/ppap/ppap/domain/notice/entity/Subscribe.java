@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Table(name = "subscribe_tb", uniqueConstraints = {
         @UniqueConstraint(name = "uk_subscribe_user_notice",columnNames = {"user_id", "notice_id"})
 })
+@DynamicUpdate
 public class Subscribe extends AuditingEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,22 +43,35 @@ public class Subscribe extends AuditingEntity {
     @Column(length = 255)
     private String noticeLink;
 
+    private Boolean isActive;
+
     @Builder
-    public Subscribe(Long id, String title, User user, Notice notice, String noticeLink) {
+    public Subscribe(Long id, String title, User user, Notice notice, String noticeLink, Boolean isActive) {
         this.id = id;
         this.title = title;
         this.user = user;
         this.notice = notice;
         this.noticeLink = noticeLink;
+        this.isActive = isActive;
     }
 
-    public static Subscribe of(User user, Notice notice, String title, String noticeLink) {
+    public static Subscribe of(User user, Notice notice, String title, String noticeLink, Boolean isActive) {
         return Subscribe.builder()
                 .user(user)
                 .notice(notice)
                 .title(title)
                 .noticeLink(noticeLink)
+                .isActive(isActive)
                 .build();
+    }
+
+    public void changeNoticeLinkAndTitle(String noticeLink, String title) {
+        this.noticeLink = noticeLink;
+        this.title = title;
+    }
+
+    public void changeActive(){
+        this.isActive = !this.isActive;
     }
 
     @Override
