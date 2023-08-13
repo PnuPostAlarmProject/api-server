@@ -1,0 +1,90 @@
+<rss version="2.0">
+<script/>
+<channel>
+<title>RSS 게시판 2.0</title>
+<link>/WCMSNAS1/wizard7/JWIZARD_7.0.0_pnu.war/sites/cse/</link>
+<description>
+<![CDATA[ This is RSS Board. ]]>
+</description>
+<language>ko</language>
+<item>
+<title>2023학년도 2학기 국가장학금 2차 신청 안내</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1207929/artclView.do</link>
+<pubDate>2023-08-11 17:57:36.12</pubDate>
+<author>정예랑</author>
+<category>장학</category>
+<description/>
+</item>
+<item>
+<title>[AI대학원] 2024학년도 특차 신입생 모집(온라인 입학설명회 9/1(금) 오후 4시)</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1207863/artclView.do</link>
+<pubDate>2023-08-11 17:37:13.523</pubDate>
+<author>인공지능융합연구센터</author>
+<description/>
+</item>
+<item>
+<title>[수업]플랫폼기반프로그래밍 추가 개설 안내</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1207745/artclView.do</link>
+<pubDate>2023-08-11 11:09:20.807</pubDate>
+<author>황유경</author>
+<category>수업</category>
+<description/>
+</item>
+<item>
+<title>[장학] 등록금재원 근로봉사장학생 선발 일정 안내(웹: 8/10 9시~8/18 18시까지)</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1207730/artclView.do</link>
+<pubDate>2023-08-11 10:38:56.567</pubDate>
+<author>정예랑</author>
+<category>장학</category>
+<description/>
+</item>
+<item>
+<title>제6호 태풍 카눈 북상에 따른 근무시간 조정 알림</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1207082/artclView.do</link>
+<pubDate>2023-08-09 18:18:26.08</pubDate>
+<author>황유경</author>
+<category>일반</category>
+<description/>
+</item>
+<item>
+<title>[취업전략과] 23학년도 여름방학 면접 프로그램 참가자 모집 홍보</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1206958/artclView.do</link>
+<pubDate>2023-08-09 10:30:19.383</pubDate>
+<author>정예랑</author>
+<category>일반</category>
+<description/>
+</item>
+<item>
+<title>[LINC 3.0]「2023년 PNU 창업동아리 Ⅲ.Rookie-Track」모집 홍보</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1206946/artclView.do</link>
+<pubDate>2023-08-09 09:49:03.43</pubDate>
+<author>정예랑</author>
+<category>일반</category>
+<description/>
+</item>
+<item>
+<title>[장학] 2023-2학기 등록금재원 근로봉사 장학생 중 소수학생(다문화.탈북) 우선 선발에 따른 신청 안내(8/8~10)</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1206940/artclView.do</link>
+<pubDate>2023-08-09 09:40:49.353</pubDate>
+<author>정예랑</author>
+<category>장학</category>
+<description/>
+</item>
+<item>
+<title>[수업]2023학년도 2학기 수강신청 전산 오류 해결 안내</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1206460/artclView.do</link>
+<pubDate>2023-08-08 09:12:27.047</pubDate>
+<author>황유경</author>
+<category>수업</category>
+<description/>
+</item>
+<item>
+<title>[수업]2023학년도 2학기 수강정정 대비 영어 기초학력 진단평가 실시 안내</title>
+<link>http://his.pusan.ac.kr/bbs/cse/2605/1206357/artclView.do</link>
+<pubDate>2023-08-07 19:01:32.797</pubDate>
+<author>황유경</author>
+<category>수업</category>
+<description/>
+</item>
+</channel>
+</rss>
