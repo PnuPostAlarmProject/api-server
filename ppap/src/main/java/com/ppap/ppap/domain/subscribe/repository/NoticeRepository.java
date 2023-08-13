@@ -1,6 +1,6 @@
-package com.ppap.ppap.domain.notice.repository;
+package com.ppap.ppap.domain.subscribe.repository;
 
-import com.ppap.ppap.domain.notice.entity.Notice;
+import com.ppap.ppap.domain.subscribe.entity.Notice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

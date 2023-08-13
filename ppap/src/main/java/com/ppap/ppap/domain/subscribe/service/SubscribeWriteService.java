@@ -1,23 +1,21 @@
-package com.ppap.ppap.domain.notice.service;
+package com.ppap.ppap.domain.subscribe.service;
 
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception403;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap._core.rss.RssReader;
-import com.ppap.ppap.domain.notice.dto.SubscribeCreateRequestDto;
-import com.ppap.ppap.domain.notice.dto.SubscribeUpdateRequestDto;
-import com.ppap.ppap.domain.notice.dto.SubscribeUpdateResponseDto;
-import com.ppap.ppap.domain.notice.entity.Notice;
-import com.ppap.ppap.domain.notice.entity.Subscribe;
-import com.ppap.ppap.domain.notice.repository.SubscribeRepository;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeCreateRequestDto;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateResponseDto;
+import com.ppap.ppap.domain.subscribe.entity.Notice;
+import com.ppap.ppap.domain.subscribe.entity.Subscribe;
+import com.ppap.ppap.domain.subscribe.repository.SubscribeRepository;
 import com.ppap.ppap.domain.user.Entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 
 @Slf4j
@@ -42,11 +40,11 @@ public class SubscribeWriteService {
                     return noticeWriteService.save(makeHttpsAndRemoveQueryString);
                 });
 
-        String validNoticeLink = getValidNoticeLink(requestDto.noticeLink(), notice.getRssLink());
-
         if(subscribeRepository.existsByUserAndNotice(user, notice)){
             throw new Exception400(BaseExceptionStatus.SUBSCRIBE_ALREADY_EXIST);
         }
+
+        String validNoticeLink = getValidNoticeLink(requestDto.noticeLink(), notice.getRssLink());
 
         subscribeRepository.save(Subscribe.of(user, notice, requestDto.title(), validNoticeLink, true));
     }
@@ -93,7 +91,7 @@ public class SubscribeWriteService {
                 .replace("https://", "")
                 .split("/")[0];
 
-        // 공지사항 학과 사이트 ex) cse.pusn.ac.kr
+        // 공지사항 학과 사이트 ex) cse.pusan.ac.kr
         String noticeDepartment = noticeLink.replace("http://", "")
                 .replace("https://", "")
                 .split("/")[0];

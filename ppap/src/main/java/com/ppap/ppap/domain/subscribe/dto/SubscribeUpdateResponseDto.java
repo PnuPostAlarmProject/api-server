@@ -1,7 +1,6 @@
-package com.ppap.ppap.domain.notice.dto;
+package com.ppap.ppap.domain.subscribe.dto;
 
-import com.ppap.ppap.domain.notice.entity.Notice;
-import com.ppap.ppap.domain.notice.entity.Subscribe;
+import com.ppap.ppap.domain.subscribe.entity.Subscribe;
 
 public record SubscribeUpdateResponseDto(
         Long subscribeId,

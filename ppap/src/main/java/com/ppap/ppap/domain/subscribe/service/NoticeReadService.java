@@ -1,7 +1,7 @@
-package com.ppap.ppap.domain.notice.service;
+package com.ppap.ppap.domain.subscribe.service;
 
-import com.ppap.ppap.domain.notice.entity.Notice;
-import com.ppap.ppap.domain.notice.repository.NoticeRepository;
+import com.ppap.ppap.domain.subscribe.entity.Notice;
+import com.ppap.ppap.domain.subscribe.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

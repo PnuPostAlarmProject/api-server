@@ -1,4 +1,4 @@
-package com.ppap.ppap.domain.notice.entity;
+package com.ppap.ppap.domain.subscribe.entity;
 
 import com.ppap.ppap.domain.base.entity.AuditingEntity;
 import jakarta.persistence.*;

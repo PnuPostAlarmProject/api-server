@@ -1,7 +1,6 @@
-package com.ppap.ppap.domain.notice.dto;
+package com.ppap.ppap.domain.subscribe.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public record SubscribeUpdateRequestDto(
         @NotBlank String title,
