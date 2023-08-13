@@ -28,11 +28,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class RssReader {
-    private final RestTemplate restTemplate;
+
     private final SAXBuilder saxBuilder;
 
     public String makeHttpsAndRemoveQueryString(String url) {
-        System.out.println(saxBuilder);
         return url.replace("http://","https://")
                 .split("\\?")[0];
     }
