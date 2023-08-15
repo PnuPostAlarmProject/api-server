@@ -36,6 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+### openapi3
+openapi3.yaml
 
 ### environments ###
 .env
