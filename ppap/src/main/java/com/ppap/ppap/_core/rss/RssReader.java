@@ -11,7 +11,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Service
 public class RssReader {
 
     private final SAXBuilder saxBuilder;

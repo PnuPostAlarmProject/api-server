@@ -45,7 +45,6 @@ oauth:
   kakao:
     client-id: ${KAKAO_CLIENT_ID}
     secret: ${KAKAO_SECRET}
-    redirect: http://localhost:8080/dev/kakao/login/redirect
 
 
 springdoc:

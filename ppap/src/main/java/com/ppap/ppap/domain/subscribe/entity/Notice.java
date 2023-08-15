@@ -25,7 +25,6 @@ public class Notice extends AuditingEntity {
     @Column(length = 255, nullable = false)
     String rssLink;
 
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Column(name="last_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     LocalDateTime lastNoticeTime;

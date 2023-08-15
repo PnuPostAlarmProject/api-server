@@ -6,4 +6,7 @@ public record SubscribeUpdateRequestDto(
         @NotBlank String title,
         String noticeLink
 ) {
+    public SubscribeUpdateRequestDto(String title){
+        this(title, null);
+    }
 }

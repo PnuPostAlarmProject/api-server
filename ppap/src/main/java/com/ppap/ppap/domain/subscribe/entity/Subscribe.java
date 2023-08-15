@@ -43,6 +43,7 @@ public class Subscribe extends AuditingEntity {
     @Column(length = 255)
     private String noticeLink;
 
+    @Column(nullable = false)
     private Boolean isActive;
 
     @Builder

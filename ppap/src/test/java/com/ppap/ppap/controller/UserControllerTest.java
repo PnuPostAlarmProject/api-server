@@ -20,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.*;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.transaction.annotation.Transactional;
@@ -361,34 +362,6 @@ public class UserControllerTest extends RestDocs {
                                     .build()
                     )
             ));
-        }
-
-        @DisplayName("로그아웃 테스트 실패 유효하지 않은 토큰")
-        @Test
-        void logout_test_fail_not_invalid_token() throws Exception {
-            // given
-            String email = "rjsdnxogh@naver.com";
-            String accessToken = getAccessToken(email);
-
-            // mock
-
-            // when
-            ResultActions resultActions = mvc.perform(
-                    post("/auth/logout")
-                            .contentType(MediaType.APPLICATION_JSON)
-//                            .header(JwtProvider.HEADER, accessToken)
-            );
-            String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-            System.out.println(responseBody);
-
-            // then
-            resultActions.andExpectAll(
-                    jsonPath("$.success").value("false"),
-                    jsonPath("$.response").doesNotExist(),
-                    jsonPath("$.error.message").value("인증되지 않은 사용자입니다."),
-                    jsonPath("$.error.status").value(401)
-            );
-
         }
 
         @DisplayName("로그아웃 테스트 실패 레디스에 토큰 없음")

@@ -7,5 +7,7 @@ public record SubscribeCreateRequestDto(
         @NotBlank String rssLink,
         String noticeLink
 ) {
-
+    public SubscribeCreateRequestDto(String title, String rssLink) {
+        this(title, rssLink, null);
+    }
 }

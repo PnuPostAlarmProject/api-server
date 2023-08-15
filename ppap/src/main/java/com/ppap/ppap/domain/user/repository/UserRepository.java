@@ -1,4 +1,4 @@
-package com.ppap.ppap.domain.user;
+package com.ppap.ppap.domain.user.repository;
 
 import com.ppap.ppap.domain.user.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
