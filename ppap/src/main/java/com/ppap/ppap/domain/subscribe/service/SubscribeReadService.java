@@ -1,8 +1,8 @@
-package com.ppap.ppap.domain.notice.service;
+package com.ppap.ppap.domain.subscribe.service;
 
-import com.ppap.ppap.domain.notice.dto.SubscribeGetResponseDto;
-import com.ppap.ppap.domain.notice.entity.Subscribe;
-import com.ppap.ppap.domain.notice.repository.SubscribeRepository;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeGetResponseDto;
+import com.ppap.ppap.domain.subscribe.entity.Subscribe;
+import com.ppap.ppap.domain.subscribe.repository.SubscribeRepository;
 import com.ppap.ppap.domain.user.Entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

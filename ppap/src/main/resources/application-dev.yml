@@ -26,14 +26,17 @@ spring:
       default_batch_fetch_size: 100
     open-in-view: false
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 logging:
   level:
     '[com.ppap.ppap]': DEBUG
     '[org.hibernate.type]': TRACE
-#  redis:
-#    host: localhost
-#    port: 6379
+
+
 
 access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
 refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde
@@ -42,6 +45,7 @@ oauth:
   kakao:
     client-id: ${KAKAO_CLIENT_ID}
     secret: ${KAKAO_SECRET}
+    redirect: http://localhost:8080/dev/kakao/login/redirect
 
 
 springdoc:

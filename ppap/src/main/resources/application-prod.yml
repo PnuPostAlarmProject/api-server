@@ -1,0 +1,55 @@
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ppap
+    username: root
+    password: qwer1234
+
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+      default_batch_fetch_size: 100
+    open-in-view: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+logging:
+  level:
+    '[com.ppap.ppap]': DEBUG
+    '[org.hibernate.type]': TRACE
+
+
+
+access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
+refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde
+
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    secret: ${KAKAO_SECRET}
+
+
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    url: /docs/openapi3.yaml
+    path: /docs/api-docs # api doc path

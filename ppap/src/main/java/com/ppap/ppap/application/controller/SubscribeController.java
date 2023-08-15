@@ -2,12 +2,12 @@ package com.ppap.ppap.application.controller;
 
 import com.ppap.ppap._core.security.CustomUserDetails;
 import com.ppap.ppap._core.utils.ApiUtils;
-import com.ppap.ppap.domain.notice.dto.SubscribeCreateRequestDto;
-import com.ppap.ppap.domain.notice.dto.SubscribeGetResponseDto;
-import com.ppap.ppap.domain.notice.dto.SubscribeUpdateRequestDto;
-import com.ppap.ppap.domain.notice.dto.SubscribeUpdateResponseDto;
-import com.ppap.ppap.domain.notice.service.SubscribeReadService;
-import com.ppap.ppap.domain.notice.service.SubscribeWriteService;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeCreateRequestDto;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeGetResponseDto;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateResponseDto;
+import com.ppap.ppap.domain.subscribe.service.SubscribeReadService;
+import com.ppap.ppap.domain.subscribe.service.SubscribeWriteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

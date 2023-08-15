@@ -1,26 +1,21 @@
 package com.ppap.ppap.service.user;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
-import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap._core.security.JwtProvider;
-import com.ppap.ppap.domain.redis.repository.RefreshTokenRepository;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
 import com.ppap.ppap.domain.user.Entity.User;
 import com.ppap.ppap.domain.user.Entity.constant.Role;
-import com.ppap.ppap.domain.user.UserRepository;
+import com.ppap.ppap.domain.user.repository.UserRepository;
 import com.ppap.ppap.domain.user.dto.ReissueDto;
 import com.ppap.ppap.domain.user.service.UserReadService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;

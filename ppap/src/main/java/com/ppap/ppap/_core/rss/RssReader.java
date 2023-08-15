@@ -11,7 +11,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -26,13 +26,12 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Service
 public class RssReader {
-    private final RestTemplate restTemplate;
+
     private final SAXBuilder saxBuilder;
 
     public String makeHttpsAndRemoveQueryString(String url) {
-        System.out.println(saxBuilder);
         return url.replace("http://","https://")
                 .split("\\?")[0];
     }

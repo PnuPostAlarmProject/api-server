@@ -11,7 +11,7 @@ import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
 import com.ppap.ppap.domain.user.Entity.User;
 import com.ppap.ppap.domain.user.Entity.constant.Role;
-import com.ppap.ppap.domain.user.UserRepository;
+import com.ppap.ppap.domain.user.repository.UserRepository;
 import com.ppap.ppap.domain.user.dto.ReissueDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

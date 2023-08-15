@@ -1,4 +1,4 @@
-package com.ppap.ppap.domain.notice.entity;
+package com.ppap.ppap.domain.subscribe.entity;
 
 import com.ppap.ppap.domain.base.entity.AuditingEntity;
 import jakarta.persistence.*;
@@ -24,7 +24,6 @@ public class Notice extends AuditingEntity {
 
     @Column(length = 255, nullable = false)
     String rssLink;
-
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Column(name="last_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
