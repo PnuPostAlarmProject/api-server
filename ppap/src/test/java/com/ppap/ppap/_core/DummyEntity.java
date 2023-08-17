@@ -2,9 +2,9 @@ package com.ppap.ppap._core;
 
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
-import com.ppap.ppap.domain.user.Entity.User;
-import com.ppap.ppap.domain.user.Entity.constant.Provider;
-import com.ppap.ppap.domain.user.Entity.constant.Role;
+import com.ppap.ppap.domain.user.entity.User;
+import com.ppap.ppap.domain.user.entity.constant.Provider;
+import com.ppap.ppap.domain.user.entity.constant.Role;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

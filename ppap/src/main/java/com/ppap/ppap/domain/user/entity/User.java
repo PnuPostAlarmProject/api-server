@@ -1,9 +1,8 @@
-package com.ppap.ppap.domain.user.Entity;
+package com.ppap.ppap.domain.user.entity;
 
 import com.ppap.ppap.domain.base.entity.AuditingEntity;
-import com.ppap.ppap.domain.user.Entity.constant.Provider;
-import com.ppap.ppap.domain.user.Entity.constant.Role;
-import com.ppap.ppap.domain.user.dto.oauth.OauthUserInfo;
+import com.ppap.ppap.domain.user.entity.constant.Provider;
+import com.ppap.ppap.domain.user.entity.constant.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

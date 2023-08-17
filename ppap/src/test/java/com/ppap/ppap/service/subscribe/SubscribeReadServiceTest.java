@@ -6,7 +6,7 @@ import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
 import com.ppap.ppap.domain.subscribe.repository.SubscribeRepository;
 import com.ppap.ppap.domain.subscribe.service.SubscribeReadService;
-import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

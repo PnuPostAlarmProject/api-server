@@ -1,6 +1,6 @@
 package com.ppap.ppap.domain.user.repository;
 
-import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

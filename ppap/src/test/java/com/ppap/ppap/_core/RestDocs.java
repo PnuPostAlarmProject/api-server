@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap._core.security.JwtProvider;
-import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -2,7 +2,7 @@ package com.ppap.ppap.service.user;
 
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
-import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.repository.UserRepository;
 import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
 import com.ppap.ppap.domain.user.dto.oauth.kakao.KakaoUserInfo;

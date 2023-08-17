@@ -1,6 +1,6 @@
 package com.ppap.ppap.domain.user.dto.oauth.kakao;
 
-import com.ppap.ppap.domain.user.Entity.constant.Provider;
+import com.ppap.ppap.domain.user.entity.constant.Provider;
 import com.ppap.ppap.domain.user.dto.oauth.OauthUserInfo;
 
 import java.time.LocalDateTime;

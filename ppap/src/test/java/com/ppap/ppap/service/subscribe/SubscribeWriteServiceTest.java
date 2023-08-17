@@ -16,7 +16,7 @@ import com.ppap.ppap.domain.subscribe.repository.SubscribeRepository;
 import com.ppap.ppap.domain.subscribe.service.NoticeReadService;
 import com.ppap.ppap.domain.subscribe.service.NoticeWriteService;
 import com.ppap.ppap.domain.subscribe.service.SubscribeWriteService;
-import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.entity.User;
 import org.jdom2.input.SAXBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 

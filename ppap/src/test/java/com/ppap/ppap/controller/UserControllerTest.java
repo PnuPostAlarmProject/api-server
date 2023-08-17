@@ -1,7 +1,6 @@
 package com.ppap.ppap.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.ppap.ppap._core.RestDocs;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
@@ -9,8 +8,7 @@ import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap._core.utils.ApiUtils;
 import com.ppap.ppap.domain.redis.entity.RefreshToken;
 import com.ppap.ppap.domain.redis.repository.RefreshTokenRepository;
-import com.ppap.ppap.domain.redis.service.RefreshTokenService;
-import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
 import com.ppap.ppap.domain.user.dto.ReissueDto;
 import com.ppap.ppap.domain.user.dto.oauth.kakao.KakaoUserInfo;
@@ -20,20 +18,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.*;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;

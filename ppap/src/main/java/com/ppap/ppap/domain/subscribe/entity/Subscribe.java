@@ -1,7 +1,7 @@
 package com.ppap.ppap.domain.subscribe.entity;
 
 import com.ppap.ppap.domain.base.entity.AuditingEntity;
-import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
