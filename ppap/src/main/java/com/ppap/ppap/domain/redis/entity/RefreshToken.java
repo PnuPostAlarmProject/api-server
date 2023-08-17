@@ -1,7 +1,6 @@
 package com.ppap.ppap.domain.redis.entity;
 
-import com.ppap.ppap._core.security.JwtProvider;
-import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;

@@ -1,4 +1,4 @@
-package com.ppap.ppap.domain.user.Entity.constant;
+package com.ppap.ppap.domain.user.entity.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

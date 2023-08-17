@@ -1,12 +1,10 @@
 package com.ppap.ppap.domain.user.mapper;
 
-import com.ppap.ppap.domain.user.Entity.constant.Provider;
-import com.ppap.ppap.domain.user.Entity.constant.Role;
-import com.ppap.ppap.domain.user.Entity.User;
+import com.ppap.ppap.domain.user.entity.constant.Role;
+import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.dto.RegisterMemberCommand;
 import com.ppap.ppap.domain.user.dto.RegisterMemberDto;
 import com.ppap.ppap.domain.user.dto.oauth.OauthUserInfo;
-import com.ppap.ppap.domain.user.dto.oauth.kakao.KakaoUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
