@@ -5,11 +5,12 @@ import com.ppap.ppap.domain.subscribe.entity.Subscribe;
 import com.ppap.ppap.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
+public interface SubscribeJpaRepository extends JpaRepository<Subscribe, Long> {
 
     boolean existsByUserAndNotice(User user, Notice notice);
 
@@ -18,5 +19,9 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     @Query(value = "select s from Subscribe s " +
             "join fetch s.notice n " +
             "where s.id = :subscribeId")
-    Optional<Subscribe> findByIdFetchJoinNotice(Long subscribeId);
+    Optional<Subscribe> findByIdFetchJoinNotice(@Param("subscribeId") Long subscribeId);
+
+    @Query(value = "select s from Subscribe s " +
+            "where s.notice.id = :noticeId and s.isActive = true")
+    List<Subscribe> findByNoticeId(@Param("noticeId") Long noticeId);
 }

@@ -32,7 +32,10 @@ public enum BaseExceptionStatus {
     // subscribe
     SUBSCRIBE_ALREADY_EXIST("이미 존재하는 구독입니다.", 400),
     SUBSCRIBE_FORBIDDEN("허가되지 않은 접근입니다.", 403),
-    SUBSCRIBE_NOT_FOUND("존재하지 않는 구독입니다.", 404);
+    SUBSCRIBE_NOT_FOUND("존재하지 않는 구독입니다.", 404),
+
+    // content
+    CONTENT_SAVE_ERROR("공지사항 내용을 저장하는 중 에러가 발생했습니다.", 500);
 
 
     @Getter

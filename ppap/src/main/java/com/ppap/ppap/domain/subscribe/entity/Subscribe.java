@@ -3,10 +3,7 @@ package com.ppap.ppap.domain.subscribe.entity;
 import com.ppap.ppap.domain.base.entity.AuditingEntity;
 import com.ppap.ppap.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -14,6 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"user", "notice"})
 @Entity
 @Getter
 @Table(name = "subscribe_tb", uniqueConstraints = {
@@ -80,11 +78,11 @@ public class Subscribe extends AuditingEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Subscribe subscribe = (Subscribe) o;
-        return Objects.equals(getId(), subscribe.getId()) && Objects.equals(getTitle(), subscribe.getTitle()) && Objects.equals(getUser(), subscribe.getUser()) && Objects.equals(getNotice(), subscribe.getNotice()) && Objects.equals(getNoticeLink(), subscribe.getNoticeLink());
+        return Objects.equals(getId(), subscribe.getId()) && Objects.equals(getTitle(), subscribe.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTitle(), getUser(), getNotice(), getNoticeLink());
+        return Objects.hash(getId(), getTitle());
     }
 }

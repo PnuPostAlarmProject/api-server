@@ -5,6 +5,7 @@ import org.jdom2.input.sax.SAXBuilderEngine;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
@@ -22,6 +23,8 @@ public class HttpConnectionConfig {
     }
 
     // XML을 핵심으로 처리하기 위한 Bean
+    // 싱글톤으로 만들면 멤버 변수에서 경합조건이 발생해 아래와 같이 Scope를 지정해줘야한다.
+    @Scope("prototype")
     @Bean
     public SAXBuilder saxBuilder() {
         return new SAXBuilder();

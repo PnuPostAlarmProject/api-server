@@ -6,7 +6,7 @@ import com.ppap.ppap._core.exception.Exception500;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
 import com.ppap.ppap.domain.user.entity.User;
-import com.ppap.ppap.domain.user.repository.UserRepository;
+import com.ppap.ppap.domain.user.repository.UserJpaRepository;
 import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
 import com.ppap.ppap.domain.user.dto.RegisterMemberCommand;
 import com.ppap.ppap.domain.user.dto.RegisterMemberDto;
@@ -23,13 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserWriteService {
     private final UserMapper userMapper;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public LoginMemberResponseDto socialLogin(OauthUserInfo userInfo) {
-        User user = userRepository.findByEmail(userInfo.email()).orElseGet(
-                () -> userRepository.save(userMapper.userInfoToUser(userInfo)));
+        User user = userJpaRepository.findByEmail(userInfo.email()).orElseGet(
+                () -> userJpaRepository.save(userMapper.userInfoToUser(userInfo)));
 
         String accessToken = JwtProvider.create(user);
         String refreshToken = JwtProvider.createRefreshToken(user);
@@ -46,7 +46,7 @@ public class UserWriteService {
 
         User user = userMapper.registerMemberCommandToUser(registerMemberCommand);
         try {
-            userRepository.save(user);
+            userJpaRepository.save(user);
             return userMapper.userToRegisterMemberDto(user);
         } catch(Exception e) {
             // logging 추가
@@ -57,7 +57,7 @@ public class UserWriteService {
 
     // 유저가 이미 존재한다면 예외처리
     private void checkEmail(String email){
-        if(userRepository.existsByEmail(email))
+        if(userJpaRepository.existsByEmail(email))
             throw new Exception400(BaseExceptionStatus.USER_ALREADY_EXIST);
     }
 }

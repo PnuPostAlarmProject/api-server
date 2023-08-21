@@ -6,7 +6,7 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.user.entity.User;
-import com.ppap.ppap.domain.user.repository.UserRepository;
+import com.ppap.ppap.domain.user.repository.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class RestDocs {
     protected final String snippt = "{class-name}/{method-name}";
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     protected ObjectMapper om;
@@ -82,7 +82,7 @@ public class RestDocs {
     }
 
     protected User getUser(String email) {
-        return userRepository.findByEmail(email).orElseThrow(
+        return userJpaRepository.findByEmail(email).orElseThrow(
                 () -> new Exception404(BaseExceptionStatus.USER_NOT_FOUND));
     }
 }

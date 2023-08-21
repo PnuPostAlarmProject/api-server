@@ -2,15 +2,15 @@ package com.ppap.ppap.domain.user.entity;
 
 import com.ppap.ppap.domain.base.entity.AuditingEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = "user")
 @Entity
 @Table(name = "device_tb")
 public class Device extends AuditingEntity {
@@ -19,6 +19,7 @@ public class Device extends AuditingEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
