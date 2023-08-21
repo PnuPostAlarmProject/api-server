@@ -3,7 +3,7 @@ package com.ppap.ppap.service.user;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
 import com.ppap.ppap.domain.user.entity.User;
-import com.ppap.ppap.domain.user.repository.UserRepository;
+import com.ppap.ppap.domain.user.repository.UserJpaRepository;
 import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
 import com.ppap.ppap.domain.user.dto.oauth.kakao.KakaoUserInfo;
 import com.ppap.ppap.domain.user.mapper.UserMapper;
@@ -32,7 +32,7 @@ public class UserWriteServiceTest {
     @InjectMocks
     private UserWriteService userWriteService;
     @Mock
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
     @Mock
     private RefreshTokenService refreshTokenService;
     @Spy
@@ -58,9 +58,9 @@ public class UserWriteServiceTest {
             User user = userMapper.userInfoToUser(kakaoUserInfo);
 
             // mock
-            given(userRepository.findByEmail(email)).willReturn(Optional.empty());
+            given(userJpaRepository.findByEmail(email)).willReturn(Optional.empty());
 
-            given(userRepository.save(user)).willReturn(user);
+            given(userJpaRepository.save(user)).willReturn(user);
             willDoNothing().given(refreshTokenService).save(any(), any(), any());
 
             // when
@@ -80,7 +80,7 @@ public class UserWriteServiceTest {
             User user = userMapper.userInfoToUser(kakaoUserInfo);
 
             // mock
-            given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
+            given(userJpaRepository.findByEmail(email)).willReturn(Optional.of(user));
             willDoNothing().given(refreshTokenService).save(any(), any(), any());
 
             // when

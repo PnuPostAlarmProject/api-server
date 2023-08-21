@@ -8,9 +8,10 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ppap
+    url: jdbc:mysql://localhost:3306/ppap?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: qwer1234
+    logging: sql
 
   h2:
     console:
@@ -31,10 +32,15 @@ spring:
       host: localhost
       port: 6379
 
+  quartz:
+    job-store-type: jdbc
+    jdbc.initialize-schema: always
+
 logging:
   level:
     '[com.ppap.ppap]': DEBUG
     '[org.hibernate.type]': TRACE
+    '[org.springframework.jdbc]': DEBUG
 
 
 
@@ -46,7 +52,6 @@ oauth:
     client-id: ${KAKAO_CLIENT_ID}
     secret: ${KAKAO_SECRET}
     redirect: http://localhost:8080/dev/kakao/login/redirect
-
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8

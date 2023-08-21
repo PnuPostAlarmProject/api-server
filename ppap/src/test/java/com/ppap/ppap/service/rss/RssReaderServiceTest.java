@@ -4,6 +4,7 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.rss.RssData;
 import com.ppap.ppap._core.rss.RssReader;
+import com.ppap.ppap.domain.subscribe.entity.Notice;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -16,7 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -29,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("RssReader 테스트")
@@ -39,7 +43,7 @@ public class RssReaderServiceTest {
     @Mock
     private RestTemplate restTemplate;
     @Mock
-    private SAXBuilder saxBuilder;
+    private ObjectProvider<SAXBuilder> saxBuilderProvider;
 
     @DisplayName("https 링크만들기 & 쿼리스트링 지우기 테스트")
     @Nested
@@ -49,6 +53,8 @@ public class RssReaderServiceTest {
         void success() {
             // given
             String httpString = "http://cse.pusan.ac.kr/bbs/cse/2615/rssList.do?row=50";
+
+            // mock
 
             // when
             String result = rssReader.makeHttpsAndRemoveQueryString(httpString);
@@ -68,12 +74,14 @@ public class RssReaderServiceTest {
             String httpString = "http://cse.pusan.ac.kr/bbs/cse/2615/rssList.do?row=50";
 
             // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             rssReader.validRssLink(httpString);
 
             // then
-            verify(saxBuilder).build(anyString());
+            verify(mockSaxBuilder).build(anyString());
         }
 
         @DisplayName("실패 부산대학교가 아닌 링크")
@@ -100,7 +108,6 @@ public class RssReaderServiceTest {
             String httpString = "https://cse.pusan.ac.kr/cse/14651/subview.do";
 
             // mock
-
             // when
             Throwable exception = assertThrows(Exception400.class, () -> rssReader.validRssLink(httpString));
 
@@ -119,50 +126,22 @@ public class RssReaderServiceTest {
         void success() throws IOException, JDOMException {
             // given
             String httpLink = "http://cse.pusan.ac.kr/bbs/cse/2615/rssList.do?row=50";
+            Notice notice = Notice.of(httpLink);
             File file = new File("src/test/java/com/ppap/ppap/_core/resources/testRss.txt");
             SAXBuilder saxTestBuilder = new SAXBuilder();
             Document document = saxTestBuilder.build(file);
 
             // mock
-            given(saxBuilder.build(httpLink)).willReturn(document);
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            Mockito.when(saxBuilderProvider.getObject()).thenReturn(mockSaxBuilder);
+            given(mockSaxBuilder.build(httpLink)).willReturn(document);
 
             // when
-            List<RssData> resultDatas = rssReader.getRssData(httpLink);
+            List<RssData> resultDatas = rssReader.getRssData(notice.getRssLink(), false);
 
             // then
             assertEquals(10, resultDatas.size());
-        }
-
-        @DisplayName("실패 부산대학교가 아닌 링크")
-        @Test
-        void fail_not_pnu_link() throws IOException, JDOMException {
-            // given
-            String httpString = "https://www.mois.go.kr/gpms/view/jsp/rss/rss.jsp?ctxCd=1012";
-
-            // mock
-
-            // when
-            Throwable exception = assertThrows(Exception400.class, () -> rssReader.getRssData(httpString));
-
-            // then
-            assertEquals(BaseExceptionStatus.RSS_LINK_NOT_PNU.getMessage(), exception.getMessage());
-
-
-        }
-
-        @DisplayName("실패 rssList.do가 아닌 링크")
-        @Test
-        void fail_not_rssList_do() throws IOException, JDOMException {
-            // given
-            String httpString = "https://cse.pusan.ac.kr/cse/14651/subview.do";
-
-            // mock
-
-            // when
-            Throwable exception = assertThrows(Exception400.class, () -> rssReader.getRssData(httpString));
-
-            // then
-            assertEquals(BaseExceptionStatus.RSS_LINK_INVALID.getMessage(), exception.getMessage());
         }
     }
 }

@@ -1,10 +1,12 @@
 package com.ppap.ppap._core.rss;
 
+import com.ppap.ppap.domain.subscribe.entity.Notice;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
 
 public record RssData(
+        Notice notice,
         String title,
         String link,
         LocalDateTime pubDate,

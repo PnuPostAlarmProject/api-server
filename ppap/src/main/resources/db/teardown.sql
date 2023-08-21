@@ -13,13 +13,13 @@ VALUES (2, 'rjsdnxogh12@kakao.com', '{bcrypt}$2a$10$8H0OT8wgtALJkig6fmypi.Y7jzI5
 
 
 INSERT INTO notice_tb (`notice_id`, `rss_link`, `last_time`, `created_at`, `last_modified_at`)
-VALUES (1, 'https://cse.pusan.ac.kr/bbs/cse/2615/rssList.do', null, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
+VALUES (1, 'https://cse.pusan.ac.kr/bbs/cse/2615/rssList.do', CURRENT_TIMESTAMP, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
 INSERT INTO notice_tb (`notice_id`, `rss_link`, `last_time`, `created_at`, `last_modified_at`)
-VALUES (2, 'https://cse.pusan.ac.kr/bbs/cse/12549/rssList.do', null, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
+VALUES (2, 'https://cse.pusan.ac.kr/bbs/cse/12549/rssList.do', CURRENT_TIMESTAMP, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
 INSERT INTO notice_tb (`notice_id`, `rss_link`, `last_time`, `created_at`, `last_modified_at`)
-VALUES (3, 'https://chemeng.pusan.ac.kr/bbs/chemeng/2870/rssList.do', null, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
+VALUES (3, 'https://chemeng.pusan.ac.kr/bbs/chemeng/2870/rssList.do', CURRENT_TIMESTAMP, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
 INSERT INTO notice_tb (`notice_id`, `rss_link`, `last_time`, `created_at`, `last_modified_at`)
-VALUES (4, 'https://french.pusan.ac.kr/bbs/french/4295/rssList.do', null, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
+VALUES (4, 'https://french.pusan.ac.kr/bbs/french/4295/rssList.do', CURRENT_TIMESTAMP, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
 
 INSERT INTO subscribe_tb (`subscribe_id`, `title`, `user_id`, `notice_id`, `notice_link`, `is_active`, `created_at`, `last_modified_at`)
 VALUES (1, '테스트1', 1, 1, NULL, TRUE, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');

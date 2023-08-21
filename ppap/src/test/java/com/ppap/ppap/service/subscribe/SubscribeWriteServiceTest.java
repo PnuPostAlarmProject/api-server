@@ -12,21 +12,19 @@ import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateResponseDto;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
-import com.ppap.ppap.domain.subscribe.repository.SubscribeRepository;
+import com.ppap.ppap.domain.subscribe.repository.SubscribeJpaRepository;
 import com.ppap.ppap.domain.subscribe.service.NoticeReadService;
 import com.ppap.ppap.domain.subscribe.service.NoticeWriteService;
 import com.ppap.ppap.domain.subscribe.service.SubscribeWriteService;
 import com.ppap.ppap.domain.user.entity.User;
 import org.jdom2.input.SAXBuilder;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
@@ -45,16 +43,20 @@ import static org.mockito.Mockito.verify;
 public class SubscribeWriteServiceTest {
     @InjectMocks
     private SubscribeWriteService subscribeWriteService;
-    @Spy
-    private RssReader rssReader = new RssReader(new SAXBuilder());
     @Mock
-    private SubscribeRepository subscribeRepository;
+    private ObjectProvider<SAXBuilder> saxBuilderProvider;
+    @Mock
+    private SubscribeJpaRepository subscribeJpaRepository;
     @Mock
     private NoticeWriteService noticeWriteService;
     @Mock
     private NoticeReadService noticeReadService;
+    @Spy
+    private RssReader rssReader = new RssReader(saxBuilderProvider);
 
     private DummyEntity dummyEntity = new DummyEntity();
+
+
 
     @DisplayName("구독 생성 테스트")
     @Nested
@@ -69,13 +71,13 @@ public class SubscribeWriteServiceTest {
 
             // mock
             given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.of(notice));
-            given(subscribeRepository.existsByUserAndNotice(any(), any())).willReturn(false);
+            given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(false);
 
             // when
             subscribeWriteService.create(requestDto, user);
 
             // then
-            verify(subscribeRepository).save(any());
+            verify(subscribeJpaRepository).save(any());
 
         }
 
@@ -92,13 +94,13 @@ public class SubscribeWriteServiceTest {
 
             // mock
             given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.of(notice));
-            given(subscribeRepository.existsByUserAndNotice(any(), any())).willReturn(false);
+            given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(false);
 
             // when
             subscribeWriteService.create(requestDto, user);
 
             // then
-            verify(subscribeRepository).save(any());
+            verify(subscribeJpaRepository).save(any());
         }
 
         @DisplayName("성공 Notice가 없는 경우")
@@ -115,14 +117,14 @@ public class SubscribeWriteServiceTest {
             // mock
             given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.empty());
             willDoNothing().given(rssReader).validRssLink(anyString());
-            given(subscribeRepository.existsByUserAndNotice(any(), any())).willReturn(false);
+            given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(false);
             given(noticeWriteService.save(requestDto.rssLink())).willReturn(notice);
 
             // when
             subscribeWriteService.create(requestDto, user);
 
             // then
-            verify(subscribeRepository).save(any());
+            verify(subscribeJpaRepository).save(any());
         }
 
         @DisplayName("실패 이미 존재하는 구독")
@@ -138,7 +140,7 @@ public class SubscribeWriteServiceTest {
 
             // mock
             given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.of(notice));
-            given(subscribeRepository.existsByUserAndNotice(any(), any())).willReturn(true);
+            given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(true);
 
             // when
             Throwable exception = Assertions.assertThrows(Exception400.class, () -> subscribeWriteService.create(requestDto, user));
@@ -160,7 +162,7 @@ public class SubscribeWriteServiceTest {
 
             // mock
             given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.of(notice));
-            given(subscribeRepository.existsByUserAndNotice(any(), any())).willReturn(false);
+            given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(false);
 
             // when
             Throwable exception = Assertions.assertThrows(Exception400.class, () -> subscribeWriteService.create(requestDto, user));
@@ -184,13 +186,13 @@ public class SubscribeWriteServiceTest {
             Subscribe subscribe = dummyEntity.getTestSubscribeList(user, dummyEntity.getTestNoticeList()).get(0);
 
             // mock
-            given(subscribeRepository.findById(subscribe.getId())).willReturn(Optional.of(subscribe));
+            given(subscribeJpaRepository.findById(subscribe.getId())).willReturn(Optional.of(subscribe));
 
             // when
             SubscribeUpdateResponseDto resultDto = subscribeWriteService.update(requestDto, subscribe.getId(), user);
 
             // then
-            verify(subscribeRepository).saveAndFlush(any());
+            verify(subscribeJpaRepository).saveAndFlush(any());
             assertEquals(requestDto.title(), resultDto.title());
             assertEquals(requestDto.noticeLink(), resultDto.noticeLink());
         }
@@ -207,13 +209,13 @@ public class SubscribeWriteServiceTest {
             Subscribe subscribe = dummyEntity.getTestSubscribeList(user, dummyEntity.getTestNoticeList()).get(0);
 
             // mock
-            given(subscribeRepository.findById(subscribe.getId())).willReturn(Optional.of(subscribe));
+            given(subscribeJpaRepository.findById(subscribe.getId())).willReturn(Optional.of(subscribe));
 
             // when
             SubscribeUpdateResponseDto resultDto = subscribeWriteService.update(requestDto, subscribe.getId(), user);
 
             // then
-            verify(subscribeRepository).saveAndFlush(any());
+            verify(subscribeJpaRepository).saveAndFlush(any());
             assertEquals(requestDto.title(), resultDto.title());
             assertEquals(requestDto.noticeLink(), resultDto.noticeLink());
         }
@@ -229,7 +231,7 @@ public class SubscribeWriteServiceTest {
             Subscribe subscribe = dummyEntity.getTestSubscribeList(user, dummyEntity.getTestNoticeList()).get(0);
 
             // mock
-            given(subscribeRepository.findById(subscribe.getId())).willReturn(Optional.empty());
+            given(subscribeJpaRepository.findById(subscribe.getId())).willReturn(Optional.empty());
 
             // when
             Throwable exception = assertThrows(Exception404.class,
@@ -253,7 +255,7 @@ public class SubscribeWriteServiceTest {
             Subscribe subscribe = dummyEntity.getTestSubscribeList(user, dummyEntity.getTestNoticeList()).get(0);
 
             // mock
-            given(subscribeRepository.findById(subscribe.getId())).willReturn(Optional.of(subscribe));
+            given(subscribeJpaRepository.findById(subscribe.getId())).willReturn(Optional.of(subscribe));
 
             // when
             Throwable exception = assertThrows(Exception403.class,
@@ -276,7 +278,7 @@ public class SubscribeWriteServiceTest {
             Subscribe subscribe = dummyEntity.getTestSubscribeList(user, dummyEntity.getTestNoticeList()).get(0);
 
             // mock
-            given(subscribeRepository.findById(subscribe.getId())).willReturn(Optional.of(subscribe));
+            given(subscribeJpaRepository.findById(subscribe.getId())).willReturn(Optional.of(subscribe));
 
             // when
             Throwable exception = assertThrows(Exception400.class,
@@ -301,13 +303,13 @@ public class SubscribeWriteServiceTest {
             Subscribe mockSubscribe = dummyEntity.getTestSubscribeList(user, dummyEntity.getTestNoticeList()).get(0);
 
             // mock
-            given(subscribeRepository.findById(mockSubscribe.getId())).willReturn(Optional.of(mockSubscribe));
+            given(subscribeJpaRepository.findById(mockSubscribe.getId())).willReturn(Optional.of(mockSubscribe));
 
             // when
             SubscribeUpdateResponseDto resultDto = subscribeWriteService.activeUpdate(mockSubscribe.getId(), user);
 
             // then
-            verify(subscribeRepository).saveAndFlush(any());
+            verify(subscribeJpaRepository).saveAndFlush(any());
             assertEquals(!resultSubscribe.getIsActive(), resultDto.isActive());
         }
 
@@ -322,7 +324,7 @@ public class SubscribeWriteServiceTest {
             Subscribe mockSubscribe = dummyEntity.getTestSubscribeList(user, dummyEntity.getTestNoticeList()).get(0);
 
             // mock
-            given(subscribeRepository.findById(mockSubscribe.getId())).willReturn(Optional.empty());
+            given(subscribeJpaRepository.findById(mockSubscribe.getId())).willReturn(Optional.empty());
 
             // when
             Throwable exception = assertThrows(Exception404.class, () -> subscribeWriteService.activeUpdate(mockSubscribe.getId(), user));
@@ -343,7 +345,7 @@ public class SubscribeWriteServiceTest {
             Subscribe mockSubscribe = dummyEntity.getTestSubscribeList(user, dummyEntity.getTestNoticeList()).get(0);
 
             // mock
-            given(subscribeRepository.findById(mockSubscribe.getId())).willReturn(Optional.of(mockSubscribe));
+            given(subscribeJpaRepository.findById(mockSubscribe.getId())).willReturn(Optional.of(mockSubscribe));
 
             // when
             Throwable exception = assertThrows(Exception403.class, () -> subscribeWriteService.activeUpdate(mockSubscribe.getId(), anotherUser));

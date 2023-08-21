@@ -12,6 +12,7 @@ import org.jdom2.input.SAXBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -24,6 +25,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SubscribeControllerTest extends RestDocs {
 
     @MockBean
-    private SAXBuilder saxBuilder;
+    private ObjectProvider<SAXBuilder> saxBuilderProvider;
 
     @DisplayName("구독 생성 테스트")
     @Transactional
@@ -52,7 +54,9 @@ public class SubscribeControllerTest extends RestDocs {
             String requestBody = om.writeValueAsString(requestDto);
 
             // mock
-            given(saxBuilder.build(any(URL.class))).willReturn(null);
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
+            given(mockSaxBuilder.build(any(URL.class))).willReturn(null);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -100,6 +104,10 @@ public class SubscribeControllerTest extends RestDocs {
             );
             String requestBody = om.writeValueAsString(requestDto);
 
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
+
             // when
             ResultActions resultActions = mvc.perform(
                     post("/subscribe")
@@ -129,6 +137,10 @@ public class SubscribeControllerTest extends RestDocs {
                     "https://cse.pusan.ac.kr/cse/14669/subview.do"
             );
             String requestBody = om.writeValueAsString(requestDto);
+
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -160,6 +172,10 @@ public class SubscribeControllerTest extends RestDocs {
             );
             String requestBody = om.writeValueAsString(requestDto);
 
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
+
             // when
             ResultActions resultActions = mvc.perform(
                     post("/subscribe")
@@ -187,6 +203,10 @@ public class SubscribeControllerTest extends RestDocs {
         void success() throws Exception {
             // given
             String accessToken = getAccessToken("rjsdnxogh@naver.com");
+
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -231,6 +251,10 @@ public class SubscribeControllerTest extends RestDocs {
             Long subscribeId = 1L;
             SubscribeUpdateRequestDto requestDto = new SubscribeUpdateRequestDto("modi_test1", "https://cse.pusan.ac.kr/cse/14651/subview.do");
             String requestBody = om.writeValueAsString(requestDto);
+
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -282,6 +306,10 @@ public class SubscribeControllerTest extends RestDocs {
             SubscribeUpdateRequestDto requestDto = new SubscribeUpdateRequestDto("modi_test1", "https://cse.pusan.ac.kr/cse/14651/subview.do");
             String requestBody = om.writeValueAsString(requestDto);
 
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
+
             // when
             ResultActions resultActions = mvc.perform(
                     post("/subscribe/{subscribe_id}", subscribeId)
@@ -311,6 +339,10 @@ public class SubscribeControllerTest extends RestDocs {
             SubscribeUpdateRequestDto requestDto = new SubscribeUpdateRequestDto("modi_test1", "https://cse.pusan.ac.kr/cse/14651/subview.do");
             String requestBody = om.writeValueAsString(requestDto);
 
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
+
             // when
             ResultActions resultActions = mvc.perform(
                     post("/subscribe/{subscribe_id}", subscribeId)
@@ -339,6 +371,10 @@ public class SubscribeControllerTest extends RestDocs {
             Long subscribeId = 1L;
             SubscribeUpdateRequestDto requestDto = new SubscribeUpdateRequestDto("modi_test1", "https://eec.pusan.ac.kr/eec/14651/subview.do");
             String requestBody = om.writeValueAsString(requestDto);
+
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -372,6 +408,10 @@ public class SubscribeControllerTest extends RestDocs {
             // given
             String accessToken = getAccessToken("rjsdnxogh@naver.com");
             Long subscribeId = 1L;
+
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -412,6 +452,10 @@ public class SubscribeControllerTest extends RestDocs {
             // given
             String accessToken = getAccessToken("rjsdnxogh@naver.com");
             Long subscribeId = 10L;
+
+            // mock
+            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(

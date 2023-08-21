@@ -4,20 +4,21 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception500;
 import com.ppap.ppap._core.exception.Exception502;
+import com.ppap.ppap.domain.subscribe.entity.Notice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import java.io.InputStream;
+import java.net.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,8 +29,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class RssReader {
-
-    private final SAXBuilder saxBuilder;
+    private final int CONNECTION_TIMEOUT = 5000;
+    private final int READ_TIMEOUT = 10000;
+    private final ObjectProvider<SAXBuilder> saxBuilderProvider;
 
     public String makeHttpsAndRemoveQueryString(String url) {
         return url.replace("http://","https://")
@@ -38,9 +40,15 @@ public class RssReader {
 
     public void validRssLink(String makeHttpsAndRemoveQueryString) {
         validPnuAndRssLink(makeHttpsAndRemoveQueryString);
-
         try {
-            Document document = saxBuilder.build(makeHttpsAndRemoveQueryString + "?row=1");
+            URL url = new URL(makeHttpsAndRemoveQueryString +"?row=1");
+            URLConnection connection = url.openConnection();
+            connection.setConnectTimeout(CONNECTION_TIMEOUT);
+            connection.setReadTimeout(READ_TIMEOUT);
+            InputStream stream = connection.getInputStream();
+
+            SAXBuilder saxBuilder = saxBuilderProvider.getObject();
+            Document document = saxBuilder.build(stream);
         } catch (JDOMException | MalformedURLException e) {
             throw new Exception400(BaseExceptionStatus.RSS_LINK_INVALID);
         } catch(SocketException | SocketTimeoutException e){
@@ -51,14 +59,18 @@ public class RssReader {
         }
     }
 
-    public List<RssData> getRssData(String url) {
-        validPnuAndRssLink(url);
-
+    // sax를 싱글톤으로 바꾸면 경합조건이 발생해서 threadSafe하지 못하게 변한다.
+    public List<RssData> getRssData(String rssLink, boolean isInit){
         List<RssData> rssDataList = new ArrayList<>();
-        String removeQueryStringUrl = makeHttpsAndRemoveQueryString(url);
-
         try {
-            Document document = saxBuilder.build(url);
+            URL url = new URL(isInit ? rssLink +"?row=30" : rssLink);
+            URLConnection connection = url.openConnection();
+            connection.setConnectTimeout(CONNECTION_TIMEOUT);
+            connection.setReadTimeout(READ_TIMEOUT);
+            InputStream stream = connection.getInputStream();
+
+            SAXBuilder saxBuilder = saxBuilderProvider.getObject();
+            Document document = saxBuilder.build(stream);
             Element root = document.getRootElement();
             Element channel = root.getChild("channel");
             List<Element> children = channel.getChildren("item");
@@ -78,6 +90,7 @@ public class RssReader {
                         .build());
             }
         } catch (JDOMException | MalformedURLException e) {
+            log.error("error :", e);
             throw new Exception400(BaseExceptionStatus.RSS_LINK_INVALID);
         } catch(SocketException | SocketTimeoutException e){
             throw new Exception502(BaseExceptionStatus.RSS_LINK_NETWORK_ERROR);

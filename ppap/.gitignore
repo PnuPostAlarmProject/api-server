@@ -40,4 +40,5 @@ out/
 openapi3.yaml
 
 ### environments ###
+ppap_fcmkey.json
 .env

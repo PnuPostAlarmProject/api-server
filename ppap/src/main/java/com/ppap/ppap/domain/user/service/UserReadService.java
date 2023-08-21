@@ -11,7 +11,7 @@ import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
 import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.entity.constant.Role;
-import com.ppap.ppap.domain.user.repository.UserRepository;
+import com.ppap.ppap.domain.user.repository.UserJpaRepository;
 import com.ppap.ppap.domain.user.dto.ReissueDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserReadService {
 
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
     private final RefreshTokenService refreshTokenService;
 
     public ReissueDto.ReissueResponseDto reissue(ReissueDto.ReissueRequestDto requestDto) {

@@ -10,7 +10,7 @@ import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateResponseDto;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
-import com.ppap.ppap.domain.subscribe.repository.SubscribeRepository;
+import com.ppap.ppap.domain.subscribe.repository.SubscribeJpaRepository;
 import com.ppap.ppap.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class SubscribeWriteService {
-    private final SubscribeRepository subscribeRepository;
+    private final SubscribeJpaRepository subscribeJpaRepository;
     private final NoticeWriteService noticeWriteService;
     private final NoticeReadService noticeReadService;
     private final RssReader rssReader;
@@ -40,18 +40,18 @@ public class SubscribeWriteService {
                     return noticeWriteService.save(makeHttpsAndRemoveQueryString);
                 });
 
-        if(subscribeRepository.existsByUserAndNotice(user, notice)){
+        if(subscribeJpaRepository.existsByUserAndNotice(user, notice)){
             throw new Exception400(BaseExceptionStatus.SUBSCRIBE_ALREADY_EXIST);
         }
 
         String validNoticeLink = getValidNoticeLink(requestDto.noticeLink(), notice.getRssLink());
 
-        subscribeRepository.save(Subscribe.of(user, notice, requestDto.title(), validNoticeLink, true));
+        subscribeJpaRepository.save(Subscribe.of(user, notice, requestDto.title(), validNoticeLink, true));
     }
 
     // isActive 업데이트는 따로 만드는게 좋을 듯 하다.
     public SubscribeUpdateResponseDto update(SubscribeUpdateRequestDto requestDto, Long subscribeId, User user) {
-        Subscribe subscribe = subscribeRepository.findById(subscribeId).orElseThrow(
+        Subscribe subscribe = subscribeJpaRepository.findById(subscribeId).orElseThrow(
                 () -> new Exception404(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND));
 
         // 현재 접속한 회원과 접근한 구독의 작성자가 같은지 체크
@@ -60,20 +60,20 @@ public class SubscribeWriteService {
         String validNoticeLink = getValidNoticeLink(requestDto.noticeLink(), subscribe.getNotice().getRssLink());
 
         subscribe.changeNoticeLinkAndTitle(validNoticeLink, requestDto.title());
-        subscribeRepository.saveAndFlush(subscribe);
+        subscribeJpaRepository.saveAndFlush(subscribe);
 
         return SubscribeUpdateResponseDto.from(subscribe);
     }
 
     public SubscribeUpdateResponseDto activeUpdate(Long subscribeId, User user) {
-        Subscribe subscribe = subscribeRepository.findById(subscribeId).orElseThrow(
+        Subscribe subscribe = subscribeJpaRepository.findById(subscribeId).orElseThrow(
                 () -> new Exception404(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND));
 
         // 현재 접속한 회원과 접근한 구독의 작성자가 같은지 체크
         validSubscribeWriter(subscribe, user);
 
         subscribe.changeActive();
-        subscribeRepository.saveAndFlush(subscribe);
+        subscribeJpaRepository.saveAndFlush(subscribe);
 
         return SubscribeUpdateResponseDto.from(subscribe);
     }

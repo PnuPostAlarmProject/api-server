@@ -6,7 +6,7 @@ import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
 import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.entity.constant.Role;
-import com.ppap.ppap.domain.user.repository.UserRepository;
+import com.ppap.ppap.domain.user.repository.UserJpaRepository;
 import com.ppap.ppap.domain.user.dto.ReissueDto;
 import com.ppap.ppap.domain.user.service.UserReadService;
 import org.junit.jupiter.api.*;
@@ -32,7 +32,7 @@ public class UserReadServiceTest {
     @InjectMocks
     private UserReadService userReadService;
     @Mock
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
     @Mock
     private RefreshTokenService refreshTokenService;
 

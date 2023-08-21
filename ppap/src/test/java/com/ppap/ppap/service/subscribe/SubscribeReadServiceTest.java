@@ -4,7 +4,7 @@ import com.ppap.ppap._core.DummyEntity;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeGetResponseDto;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
-import com.ppap.ppap.domain.subscribe.repository.SubscribeRepository;
+import com.ppap.ppap.domain.subscribe.repository.SubscribeJpaRepository;
 import com.ppap.ppap.domain.subscribe.service.SubscribeReadService;
 import com.ppap.ppap.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ public class SubscribeReadServiceTest{
     private SubscribeReadService subscribeReadService;
 
     @Mock
-    private SubscribeRepository subscribeRepository;
+    private SubscribeJpaRepository subscribeJpaRepository;
 
     private final DummyEntity dummyEntity = new DummyEntity();
 
@@ -46,7 +46,7 @@ public class SubscribeReadServiceTest{
             List<Subscribe> testSubscribeList = dummyEntity.getTestSubscribeList(user, testNoticeList);
 
             // mock
-            given(subscribeRepository.findByUserId(user.getId())).willReturn(testSubscribeList);
+            given(subscribeJpaRepository.findByUserId(user.getId())).willReturn(testSubscribeList);
 
             // when
             List<SubscribeGetResponseDto> resultDtos = subscribeReadService.getSubscribe(user);

@@ -2,20 +2,20 @@ package com.ppap.ppap.domain.subscribe.entity;
 
 import com.ppap.ppap.domain.base.entity.AuditingEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.*;
 
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"subscribeList"})
 @Getter
 @Entity
 @Table(name = "notice_tb")
+@DynamicUpdate
 public class Notice extends AuditingEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +23,12 @@ public class Notice extends AuditingEntity {
     private Long id;
 
     @Column(length = 255, nullable = false)
-    String rssLink;
+    private String rssLink;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Column(name="last_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    LocalDateTime lastNoticeTime;
+    @Column(name="last_time", nullable = false)
+    private LocalDateTime lastNoticeTime;
+
 
     @Builder
     public Notice(Long id, String rssLink, LocalDateTime lastNoticeTime) {
@@ -39,7 +40,12 @@ public class Notice extends AuditingEntity {
     public static Notice of(String rssLink) {
         return Notice.builder()
                 .rssLink(rssLink)
+                .lastNoticeTime(LocalDateTime.now().minusDays(5))
                 .build();
+    }
+
+    public void changeLastNoticeTime(LocalDateTime lastNoticeTime) {
+        this.lastNoticeTime = lastNoticeTime;
     }
 
     @Override
