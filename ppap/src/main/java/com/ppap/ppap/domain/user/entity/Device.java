@@ -38,11 +38,11 @@ public class Device extends AuditingEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Device device = (Device) o;
-        return Objects.equals(getId(), device.getId()) && Objects.equals(getUser(), device.getUser()) && Objects.equals(getFcmToken(), device.getFcmToken());
+        return Objects.equals(getId(), device.getId()) && Objects.equals(getFcmToken(), device.getFcmToken());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUser(), getFcmToken());
+        return Objects.hash(getId(), getFcmToken());
     }
 }

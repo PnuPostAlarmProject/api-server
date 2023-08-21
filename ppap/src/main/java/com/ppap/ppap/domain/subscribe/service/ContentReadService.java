@@ -15,7 +15,7 @@ public class ContentReadService {
     private final ContentJpaRepository contentJpaRepository;
 
 
-    public Set<Long> findDistinctSubscribeId() {
+    public Set<Long> findDistinctNoticeId() {
         return contentJpaRepository.findAllDistinctNoticeId();
     }
 }

@@ -54,7 +54,7 @@ public class RssSchedulerService {
 
     private void processRssData() {
         List<Notice> noticeList = noticeReadService.findAll();
-        Set<Long> noticeIdSetInContent = contentReadService.findDistinctSubscribeId();
+        Set<Long> noticeIdSetInContent = contentReadService.findDistinctNoticeId();
         Map<Notice, String> errorNotices = new HashMap<>();
 
         // 각 noticeId에 대해 읽어 공지사항별 RSS데이터 그룹을 만든다.
@@ -73,14 +73,15 @@ public class RssSchedulerService {
         Map<Long, List<Device>> userDeviceGroup = getFcmTokenGroup(subscribeSet);
         System.out.println(userDeviceGroup);
 
+
+        // 가져온 FCM 토큰들을 통해 알림 전송
+//        fcmService.sendRssNotification(filterNoticeRssGroup, subscribeSet, userDeviceGroup);
+
+        // 각 공지사항 중, 가장 최근 데이터의 발행시각을 가져온 뒤 디비에 업데이트
+        updateMaxPubDateNotice(filterNoticeRssGroup);
+
         System.out.println("===========errorNotices============");
         System.out.println(errorNotices);
-        // 가져온 FCM 토큰들을 통해 알림 전송
-
-
-//        // 각 공지사항 중, 가장 최근 데이터의 발행시각을 가져온 뒤 디비에 업데이트
-        Map<Notice, LocalDateTime> maxPubDateNotice = getMaxPubDateNotice(filterNoticeRssGroup);
-        updateMaxPubDateNotice(maxPubDateNotice);
     }
 
     /**
@@ -131,18 +132,18 @@ public class RssSchedulerService {
         }
     }
 
-    private Map<Notice, LocalDateTime> getMaxPubDateNotice(Map<Notice, List<RssData>> groupNotice) {
-        return groupNotice.entrySet().stream()
+
+    // 공지사항 최근 날짜 업데이트
+    private void updateMaxPubDateNotice(Map<Notice, List<RssData>> filterNoticeRssGroup) {
+
+        Map<Notice, LocalDateTime> maxPubDateNotice = filterNoticeRssGroup.entrySet().stream()
                 .collect(toMap( Map.Entry::getKey,
                         map -> map.getValue().stream()
                                 .map(RssData::pubDate)
                                 .max(LocalDateTime::compareTo)
                                 .orElse(map.getKey().getLastNoticeTime()))
                 );
-    }
 
-    // 공지사항 최근 날짜 업데이트
-    private void updateMaxPubDateNotice(Map<Notice, LocalDateTime> maxPubDateNotice) {
         for(Map.Entry<Notice, LocalDateTime> map: maxPubDateNotice.entrySet()) {
             Notice notice = map.getKey();
             notice.changeLastNoticeTime(map.getValue());

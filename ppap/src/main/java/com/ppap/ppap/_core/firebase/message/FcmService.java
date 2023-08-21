@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.ppap.ppap._core.rss.RssData;
+import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
 import com.ppap.ppap.domain.user.entity.Device;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.Set;
 public class FcmService {
     private final FirebaseMessaging firebaseMessaging;
 
-    public void sendRssNotification(Map<Long, List<RssData>> filterNoticeRssGroup,
+    public void sendRssNotification(Map<Notice, List<RssData>> filterNoticeRssGroup,
                                     Set<Subscribe> subscribeSet,
                                     Map<Long, List<Device>> userDeviceGroup) {
         // FCM 푸시 메세지 보내기.

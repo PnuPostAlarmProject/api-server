@@ -30,7 +30,7 @@ import java.util.List;
 @Service
 public class RssReader {
     private final int CONNECTION_TIMEOUT = 5000;
-    private final int READ_TIMEOUT = 8000;
+    private final int READ_TIMEOUT = 10000;
     private final ObjectProvider<SAXBuilder> saxBuilderProvider;
 
     public String makeHttpsAndRemoveQueryString(String url) {
