@@ -23,7 +23,7 @@ public class Device extends AuditingEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "fcm_token", nullable = false)
+    @Column(name = "fcm_token", nullable = false, unique = true)
     private String fcmToken;
 
     @Builder

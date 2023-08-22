@@ -18,9 +18,9 @@ public class DeviceWriteService {
     private final FcmTokenValidator fcmTokenValidator;
 
     public Device save(User user, String fcmToken) {
-        if (!deviceJpaRepository.existsByFcmToken(fcmToken)) {
+        return deviceJpaRepository.findByFcmToken(fcmToken).orElseGet(() -> {
             fcmTokenValidator.validateToken(fcmToken);
-            deviceJpaRepository.save(Device.of(user, fcmToken));
-        }
+            return deviceJpaRepository.save(Device.of(user, fcmToken));
+        });
     }
 }

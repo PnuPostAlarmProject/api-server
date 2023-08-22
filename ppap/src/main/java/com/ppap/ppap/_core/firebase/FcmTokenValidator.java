@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class FcmTokenValidator {
-    private final String FCM_VALIDATE_URL = "https://iid.googleapis.com/iid/info/";
     private final FirebaseMessaging firebaseMessaging;
 
     public void validateToken(String fcmToken) {
