@@ -17,6 +17,7 @@ public class FcmConfig {
 
     @Bean
     public FirebaseMessaging initializeFirebaseApp() throws IOException {
+
         ClassPathResource resource = new ClassPathResource("ppap_fcmkey.json");
 
         InputStream inputStream = resource.getInputStream();
@@ -25,7 +26,9 @@ public class FcmConfig {
                 .setCredentials(GoogleCredentials.fromStream(inputStream))
                 .build();
 
-        FirebaseApp.initializeApp(options);
+        if (FirebaseApp.getApps().isEmpty())
+            FirebaseApp.initializeApp(options);
+
         return FirebaseMessaging.getInstance();
     }
 }

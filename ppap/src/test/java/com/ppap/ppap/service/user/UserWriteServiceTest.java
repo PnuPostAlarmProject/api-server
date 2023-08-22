@@ -2,11 +2,13 @@ package com.ppap.ppap.service.user;
 
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
+import com.ppap.ppap.domain.user.dto.FcmTokenDto;
 import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.repository.UserJpaRepository;
 import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
 import com.ppap.ppap.domain.user.dto.oauth.kakao.KakaoUserInfo;
 import com.ppap.ppap.domain.user.mapper.UserMapper;
+import com.ppap.ppap.domain.user.service.DeviceWriteService;
 import com.ppap.ppap.domain.user.service.UserWriteService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +37,8 @@ public class UserWriteServiceTest {
     private UserJpaRepository userJpaRepository;
     @Mock
     private RefreshTokenService refreshTokenService;
+    @Mock
+    private DeviceWriteService deviceWriteService;
     @Spy
     private UserMapper userMapper = new UserMapper(new BCryptPasswordEncoder());
 
@@ -56,15 +60,15 @@ public class UserWriteServiceTest {
             String email = "rjsdnxogh@naver.com";
             KakaoUserInfo kakaoUserInfo = getKakaoUserInfo(email);
             User user = userMapper.userInfoToUser(kakaoUserInfo);
+            FcmTokenDto fcmTokenDto = new FcmTokenDto("testToken");
 
             // mock
             given(userJpaRepository.findByEmail(email)).willReturn(Optional.empty());
-
             given(userJpaRepository.save(user)).willReturn(user);
             willDoNothing().given(refreshTokenService).save(any(), any(), any());
 
             // when
-            LoginMemberResponseDto responseDto = userWriteService.socialLogin(kakaoUserInfo);
+            LoginMemberResponseDto responseDto = userWriteService.socialLogin(kakaoUserInfo, fcmTokenDto);
 
             // then
             Assertions.assertTrue(responseDto.accessToken().startsWith("Bearer "));
@@ -78,13 +82,14 @@ public class UserWriteServiceTest {
             String email = "rjsdnxogh@naver.com";
             KakaoUserInfo kakaoUserInfo = getKakaoUserInfo(email);
             User user = userMapper.userInfoToUser(kakaoUserInfo);
+            FcmTokenDto fcmTokenDto = new FcmTokenDto("testToken");
 
             // mock
             given(userJpaRepository.findByEmail(email)).willReturn(Optional.of(user));
             willDoNothing().given(refreshTokenService).save(any(), any(), any());
 
             // when
-            LoginMemberResponseDto responseDto = userWriteService.socialLogin(kakaoUserInfo);
+            LoginMemberResponseDto responseDto = userWriteService.socialLogin(kakaoUserInfo, fcmTokenDto);
 
             // then
             Assertions.assertTrue(responseDto.accessToken().startsWith("Bearer "));
