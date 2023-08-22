@@ -33,6 +33,13 @@ public class Device extends AuditingEntity {
         this.fcmToken = fcmToken;
     }
 
+    public static Device of(User user, String fcmToken) {
+        return Device.builder()
+                .user(user)
+                .fcmToken(fcmToken)
+                .build();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

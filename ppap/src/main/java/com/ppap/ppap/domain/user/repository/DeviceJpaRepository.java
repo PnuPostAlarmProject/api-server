@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface DeviceJpaRepository extends JpaRepository<Device, Long> {
     List<Device> findByUserIdIn(Collection<Long> userIds);
+
+    boolean existsByFcmToken(String fcmToken);
 }
