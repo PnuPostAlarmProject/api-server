@@ -5,6 +5,7 @@ import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception500;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
+import com.ppap.ppap.domain.user.dto.FcmTokenDto;
 import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.repository.UserJpaRepository;
 import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
@@ -25,11 +26,14 @@ public class UserWriteService {
     private final UserMapper userMapper;
     private final UserJpaRepository userJpaRepository;
     private final RefreshTokenService refreshTokenService;
+    private final DeviceWriteService deviceWriteService;
 
     @Transactional
-    public LoginMemberResponseDto socialLogin(OauthUserInfo userInfo) {
+    public LoginMemberResponseDto socialLogin(OauthUserInfo userInfo, FcmTokenDto fcmTokenDto) {
         User user = userJpaRepository.findByEmail(userInfo.email()).orElseGet(
                 () -> userJpaRepository.save(userMapper.userInfoToUser(userInfo)));
+
+        deviceWriteService.save(user, fcmTokenDto.fcmToken());
 
         String accessToken = JwtProvider.create(user);
         String refreshToken = JwtProvider.createRefreshToken(user);

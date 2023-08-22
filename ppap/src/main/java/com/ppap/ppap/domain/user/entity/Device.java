@@ -23,7 +23,7 @@ public class Device extends AuditingEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "fcm_token", nullable = false)
+    @Column(name = "fcm_token", nullable = false, unique = true)
     private String fcmToken;
 
     @Builder
@@ -31,6 +31,13 @@ public class Device extends AuditingEntity {
         this.id = id;
         this.user = user;
         this.fcmToken = fcmToken;
+    }
+
+    public static Device of(User user, String fcmToken) {
+        return Device.builder()
+                .user(user)
+                .fcmToken(fcmToken)
+                .build();
     }
 
     @Override

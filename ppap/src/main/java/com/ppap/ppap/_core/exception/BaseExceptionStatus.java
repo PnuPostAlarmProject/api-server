@@ -35,8 +35,11 @@ public enum BaseExceptionStatus {
     SUBSCRIBE_NOT_FOUND("존재하지 않는 구독입니다.", 404),
 
     // content
-    CONTENT_SAVE_ERROR("공지사항 내용을 저장하는 중 에러가 발생했습니다.", 500);
+    CONTENT_SAVE_ERROR("공지사항 내용을 저장하는 중 에러가 발생했습니다.", 500),
 
+    // device
+    DEVICE_FCM_TOKEN_INVALID("유효하지 않은 FCM 토큰입니다.", 400),
+    DEVICE_FCM_TOKEN_UNKNOWN_ERROR("FCM 토큰 검증 중 알 수 없는 에러가 발생했습니다.", 500);
 
     @Getter
     private final String message;

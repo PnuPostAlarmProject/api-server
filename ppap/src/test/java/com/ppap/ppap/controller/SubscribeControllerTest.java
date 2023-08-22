@@ -5,9 +5,11 @@ import com.epages.restdocs.apispec.SimpleType;
 
 import com.ppap.ppap._core.RestDocs;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
+import com.ppap.ppap._core.rss.UrlFactory;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeCreateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
+import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,11 +21,12 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.InputStream;
 import java.net.URL;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -34,8 +37,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("구독 통합 테스트")
 public class SubscribeControllerTest extends RestDocs {
 
+
     @MockBean
-    private ObjectProvider<SAXBuilder> saxBuilderProvider;
+    private SAXBuilder saxBuilder;
+    @MockBean
+    private UrlFactory urlFactory;
 
     @DisplayName("구독 생성 테스트")
     @Transactional
@@ -54,9 +60,8 @@ public class SubscribeControllerTest extends RestDocs {
             String requestBody = om.writeValueAsString(requestDto);
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
-            given(mockSaxBuilder.build(any(URL.class))).willReturn(null);
+            given(urlFactory.getInputStream(anyString(), anyInt(), anyInt())).willReturn(InputStream.nullInputStream());
+            given(saxBuilder.build(any(InputStream.class))).willReturn(new Document());
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -105,8 +110,6 @@ public class SubscribeControllerTest extends RestDocs {
             String requestBody = om.writeValueAsString(requestDto);
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -139,8 +142,6 @@ public class SubscribeControllerTest extends RestDocs {
             String requestBody = om.writeValueAsString(requestDto);
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -173,8 +174,6 @@ public class SubscribeControllerTest extends RestDocs {
             String requestBody = om.writeValueAsString(requestDto);
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -205,8 +204,6 @@ public class SubscribeControllerTest extends RestDocs {
             String accessToken = getAccessToken("rjsdnxogh@naver.com");
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -253,8 +250,6 @@ public class SubscribeControllerTest extends RestDocs {
             String requestBody = om.writeValueAsString(requestDto);
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -307,8 +302,6 @@ public class SubscribeControllerTest extends RestDocs {
             String requestBody = om.writeValueAsString(requestDto);
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -340,8 +333,6 @@ public class SubscribeControllerTest extends RestDocs {
             String requestBody = om.writeValueAsString(requestDto);
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -373,8 +364,6 @@ public class SubscribeControllerTest extends RestDocs {
             String requestBody = om.writeValueAsString(requestDto);
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -410,8 +399,6 @@ public class SubscribeControllerTest extends RestDocs {
             Long subscribeId = 1L;
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -454,8 +441,6 @@ public class SubscribeControllerTest extends RestDocs {
             Long subscribeId = 10L;
 
             // mock
-            SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
 
             // when
             ResultActions resultActions = mvc.perform(

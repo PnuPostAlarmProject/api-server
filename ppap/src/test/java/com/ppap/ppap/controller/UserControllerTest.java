@@ -2,12 +2,21 @@ package com.ppap.ppap.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.firebase.ErrorCode;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.IncomingHttpResponse;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.MessagingErrorCode;
 import com.ppap.ppap._core.RestDocs;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
+import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap._core.utils.ApiUtils;
 import com.ppap.ppap.domain.redis.entity.RefreshToken;
 import com.ppap.ppap.domain.redis.repository.RefreshTokenRepository;
+import com.ppap.ppap.domain.user.dto.FcmTokenDto;
 import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
 import com.ppap.ppap.domain.user.dto.ReissueDto;
@@ -23,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Constructor;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
@@ -53,29 +63,38 @@ public class UserControllerTest extends RestDocs {
     @MockBean
     private RefreshTokenRepository refreshTokenRepository;
 
+    @MockBean
+    private FirebaseMessaging firebaseMessaging;
+
     private final String KAKAO_URL = "https://kapi.kakao.com/v2/user/me?property_keys=[\"kakao_account.email\"]";
 
     @Nested
     @DisplayName("유저 카카오 로그인 테스트")
     class UserLogin {
-        @DisplayName("유저 카카오 로그인 테스트 성공")
+        @DisplayName("성공")
         @Transactional
         @Test
-        void user_kakao_login_test() throws Exception {
+        void success() throws Exception {
             // given
             String token = "testToken";
             String email = "rjsdnxogh@naver.com";
             KakaoUserInfo kakaoUserInfo = getKakaoUserInfo(email);
+            FcmTokenDto fcmTokenDto = new FcmTokenDto("testToken1");
+            String requestBody = om.writeValueAsString(fcmTokenDto);
             ResponseEntity<KakaoUserInfo> fakeResponse = ResponseEntity.ok(kakaoUserInfo);
-
+            Message message = Message.builder()
+                    .setToken(fcmTokenDto.fcmToken())
+                    .build();
 
             // mock
             // 정확하게 조건을 넣고 싶다면 eq()를 사용해야한다.
             given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(KakaoUserInfo.class))).willReturn(fakeResponse);
+            given(firebaseMessaging.send(message, true)).willReturn("success");
 
             // when
             ResultActions resultActions = mvc.perform(
                     post("/auth/kakao/login")
+                            .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header("Kakao", token)
             );
@@ -102,7 +121,10 @@ public class UserControllerTest extends RestDocs {
 //                                            .tag("유저")
                                             .description("카카오 로그인 API")
                                             .requestHeaders(
-                                            headerWithName("Kakao").description("카카오 Access토큰: 카카오 액세스 토큰을 넣어야 합니다.(그대로 입력시 에러발생)")
+                                                headerWithName("Kakao").description("카카오 Access토큰: 카카오 액세스 토큰을 넣어야 합니다.(그대로 입력시 에러발생)")
+                                            )
+                                            .requestFields(
+                                                fieldWithPath("fcmToken").type(JsonFieldType.STRING).description("Fcm Device 토큰")
                                             )
                                             .build()
                             )
@@ -110,10 +132,12 @@ public class UserControllerTest extends RestDocs {
             );
         }
 
-        @DisplayName("유저 카카오 로그인 테스트 실패 카카오 액세스 토큰 없음")
+        @DisplayName("실패 카카오 액세스 토큰 없음")
         @Test
-        void user_kakao_login_test_fail_kakao_access_token_missing() throws Exception {
+        void fail_kakao_access_token_missing() throws Exception {
             // given
+            FcmTokenDto fcmTokenDto = new FcmTokenDto("testToken1");
+            String requestBody = om.writeValueAsString(fcmTokenDto);
 
             // mock
             given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(KakaoUserInfo.class))).willThrow(
@@ -123,6 +147,7 @@ public class UserControllerTest extends RestDocs {
             // when
             ResultActions resultActions = mvc.perform(
                     post("/auth/kakao/login")
+                            .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON)
 
             );
@@ -140,11 +165,13 @@ public class UserControllerTest extends RestDocs {
             );
         }
 
-        @DisplayName("유저 카카오 로그인 테스트 실패 유효하지 않은 카카오 액세스 토큰 ")
+        @DisplayName("실패 유효하지 않은 카카오 액세스 토큰 ")
         @Test
-        void user_kakao_login_test_fail_invalid_kakao_access_token() throws Exception {
+        void fail_invalid_kakao_access_token() throws Exception {
             // given
             String token = "testToken";
+            FcmTokenDto fcmTokenDto = new FcmTokenDto("testToken1");
+            String requestBody = om.writeValueAsString(fcmTokenDto);
 
             // mock
             given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(KakaoUserInfo.class))).willThrow(
@@ -154,6 +181,7 @@ public class UserControllerTest extends RestDocs {
             // when
             ResultActions resultActions = mvc.perform(
                     post("/auth/kakao/login")
+                            .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header("Kakao", token)
             );
@@ -169,6 +197,47 @@ public class UserControllerTest extends RestDocs {
                     jsonPath("$.response").doesNotExist(),
                     jsonPath("$.error.message").value(BaseExceptionStatus.KAKAO_TOKEN_INVALID.getMessage()),
                     jsonPath("$.error.status").value(BaseExceptionStatus.KAKAO_TOKEN_INVALID.getStatus())
+            );
+        }
+
+        @DisplayName("실패 유효하지 않은 FCM 토큰")
+        @Test
+        void fail_invalid_fcm_device_token() throws Exception {
+            // given
+            String token = "testToken";
+            String email = "rjsdnxogh@naver.com";
+            KakaoUserInfo kakaoUserInfo = getKakaoUserInfo(email);
+            FcmTokenDto fcmTokenDto = new FcmTokenDto("testToken1");
+            String requestBody = om.writeValueAsString(fcmTokenDto);
+            ResponseEntity<KakaoUserInfo> fakeResponse = ResponseEntity.ok(kakaoUserInfo);
+
+            Constructor<FirebaseMessagingException> constructor = FirebaseMessagingException.class.getDeclaredConstructor(ErrorCode.class, String.class, Throwable.class, IncomingHttpResponse.class, MessagingErrorCode.class);
+            constructor.setAccessible(true);
+
+            // mock
+            // 정확하게 조건을 넣고 싶다면 eq()를 사용해야한다.
+            given(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(KakaoUserInfo.class))).willReturn(fakeResponse);
+            given(firebaseMessaging.send(any(), eq(true))).willThrow(constructor.newInstance(ErrorCode.UNAUTHENTICATED, "error!",null, null, null));
+
+            // when
+            ResultActions resultActions = mvc.perform(
+                    post("/auth/kakao/login")
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("Kakao", token)
+            );
+
+            String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+            ApiUtils.ApiResult<LoginMemberResponseDto> resultDto = om.readValue(responseBody, new TypeReference<ApiUtils.ApiResult<LoginMemberResponseDto>>() {
+            });
+
+
+            // then
+            resultActions.andExpectAll(
+                    jsonPath("$.success").value("false"),
+                    jsonPath("$.response").doesNotExist(),
+                    jsonPath("$.error.message").value(BaseExceptionStatus.DEVICE_FCM_TOKEN_INVALID.getMessage()),
+                    jsonPath("$.error.status").value(BaseExceptionStatus.DEVICE_FCM_TOKEN_INVALID.getStatus())
             );
         }
     }

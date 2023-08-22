@@ -22,6 +22,7 @@ import java.net.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -32,6 +33,7 @@ public class RssReader {
     private final int CONNECTION_TIMEOUT = 5000;
     private final int READ_TIMEOUT = 10000;
     private final ObjectProvider<SAXBuilder> saxBuilderProvider;
+    private final UrlFactory urlFactory;
 
     public String makeHttpsAndRemoveQueryString(String url) {
         return url.replace("http://","https://")
@@ -41,14 +43,9 @@ public class RssReader {
     public void validRssLink(String makeHttpsAndRemoveQueryString) {
         validPnuAndRssLink(makeHttpsAndRemoveQueryString);
         try {
-            URL url = new URL(makeHttpsAndRemoveQueryString +"?row=1");
-            URLConnection connection = url.openConnection();
-            connection.setConnectTimeout(CONNECTION_TIMEOUT);
-            connection.setReadTimeout(READ_TIMEOUT);
-            InputStream stream = connection.getInputStream();
-
+            InputStream inputStream = urlFactory.getInputStream(makeHttpsAndRemoveQueryString +"?row=1", CONNECTION_TIMEOUT, READ_TIMEOUT);
             SAXBuilder saxBuilder = saxBuilderProvider.getObject();
-            Document document = saxBuilder.build(stream);
+            Document document = saxBuilder.build(inputStream);
         } catch (JDOMException | MalformedURLException e) {
             throw new Exception400(BaseExceptionStatus.RSS_LINK_INVALID);
         } catch(SocketException | SocketTimeoutException e){
@@ -63,14 +60,9 @@ public class RssReader {
     public List<RssData> getRssData(String rssLink, boolean isInit){
         List<RssData> rssDataList = new ArrayList<>();
         try {
-            URL url = new URL(isInit ? rssLink +"?row=30" : rssLink);
-            URLConnection connection = url.openConnection();
-            connection.setConnectTimeout(CONNECTION_TIMEOUT);
-            connection.setReadTimeout(READ_TIMEOUT);
-            InputStream stream = connection.getInputStream();
-
+            InputStream inputStream = urlFactory.getInputStream(isInit ? rssLink +"?row=30" : rssLink, CONNECTION_TIMEOUT, READ_TIMEOUT);
             SAXBuilder saxBuilder = saxBuilderProvider.getObject();
-            Document document = saxBuilder.build(stream);
+            Document document = saxBuilder.build(inputStream);
             Element root = document.getRootElement();
             Element channel = root.getChild("channel");
             List<Element> children = channel.getChildren("item");

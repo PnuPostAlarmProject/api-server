@@ -4,6 +4,7 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.rss.RssData;
 import com.ppap.ppap._core.rss.RssReader;
+import com.ppap.ppap._core.rss.UrlFactory;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -25,17 +26,19 @@ import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@DisplayName("RssReader 테스트")
+@DisplayName("RssReader 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class RssReaderServiceTest {
     @InjectMocks
@@ -44,6 +47,8 @@ public class RssReaderServiceTest {
     private RestTemplate restTemplate;
     @Mock
     private ObjectProvider<SAXBuilder> saxBuilderProvider;
+    @Mock
+    private UrlFactory urlFactory;
 
     @DisplayName("https 링크만들기 & 쿼리스트링 지우기 테스트")
     @Nested
@@ -76,12 +81,14 @@ public class RssReaderServiceTest {
             // mock
             SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
             given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
+            given(urlFactory.getInputStream(anyString(), anyInt(), anyInt())).willReturn(InputStream.nullInputStream());
+            given(mockSaxBuilder.build(any(InputStream.class))).willReturn(new Document());
 
             // when
             rssReader.validRssLink(httpString);
 
             // then
-            verify(mockSaxBuilder).build(anyString());
+            verify(mockSaxBuilder).build(any(InputStream.class));
         }
 
         @DisplayName("실패 부산대학교가 아닌 링크")
@@ -134,8 +141,9 @@ public class RssReaderServiceTest {
             // mock
             // mock
             SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
-            Mockito.when(saxBuilderProvider.getObject()).thenReturn(mockSaxBuilder);
-            given(mockSaxBuilder.build(httpLink)).willReturn(document);
+            given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
+            given(urlFactory.getInputStream(anyString(), anyInt(), anyInt())).willReturn(InputStream.nullInputStream());
+            given(mockSaxBuilder.build(any(InputStream.class))).willReturn(document);
 
             // when
             List<RssData> resultDatas = rssReader.getRssData(notice.getRssLink(), false);

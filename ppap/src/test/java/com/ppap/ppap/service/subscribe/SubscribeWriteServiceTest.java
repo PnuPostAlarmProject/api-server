@@ -7,6 +7,7 @@ import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception403;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap._core.rss.RssReader;
+import com.ppap.ppap._core.rss.UrlFactory;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeCreateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateResponseDto;
@@ -46,13 +47,15 @@ public class SubscribeWriteServiceTest {
     @Mock
     private ObjectProvider<SAXBuilder> saxBuilderProvider;
     @Mock
+    private UrlFactory urlFactory;
+    @Mock
     private SubscribeJpaRepository subscribeJpaRepository;
     @Mock
     private NoticeWriteService noticeWriteService;
     @Mock
     private NoticeReadService noticeReadService;
     @Spy
-    private RssReader rssReader = new RssReader(saxBuilderProvider);
+    private RssReader rssReader = new RssReader(saxBuilderProvider, urlFactory);
 
     private DummyEntity dummyEntity = new DummyEntity();
 
