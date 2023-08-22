@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class KakaoRestTemplate {
     private final RestTemplate restTemplate;
-    private final HttpHeaders httpHeaders = new HttpHeaders();
     private final String KAKAO_URL = "https://kapi.kakao.com/v2/user/me?property_keys=[\"kakao_account.email\"]";
 
     @Value("${oauth.kakao.client-id}")
@@ -32,6 +31,7 @@ public class KakaoRestTemplate {
 
 
     public KakaoUserInfo getKakaoUserInfo(String token){
+        HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", "Bearer " + token);
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         try {
