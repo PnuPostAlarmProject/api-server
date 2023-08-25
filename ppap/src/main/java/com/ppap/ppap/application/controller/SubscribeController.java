@@ -56,4 +56,12 @@ public class SubscribeController {
         SubscribeUpdateResponseDto resultDto = subscribeWriteService.activeUpdate(subscribeId, userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(resultDto));
     }
+
+    @PostMapping("/delete/{subscribe_id}")
+    public ResponseEntity<?> delete(@PathVariable(name="subscribe_id") Long subscribeId,
+                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
+        // 구독 삭제 서비스 로직
+        subscribeWriteService.delete(subscribeId, userDetails.getUser());
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
 }
