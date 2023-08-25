@@ -11,7 +11,6 @@ import java.util.*;
 
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = {"subscribeList"})
 @Getter
 @Entity
 @Table(name = "notice_tb")

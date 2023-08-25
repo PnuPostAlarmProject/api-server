@@ -84,6 +84,7 @@ public class SubscribeControllerTest extends RestDocs {
                     getDocumentResponse(),
                     resource(
                             ResourceSnippetParameters.builder()
+                                    .description("구독 생성 API")
                                     .requestHeaders(
                                             headerWithName("Authorization").type(SimpleType.STRING).description("액세스 토큰")
                                     )
@@ -227,6 +228,7 @@ public class SubscribeControllerTest extends RestDocs {
                     getDocumentResponse(),
                     resource(
                             ResourceSnippetParameters.builder()
+                                    .description("구독 조회 API")
                                     .requestHeaders(
                                             headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("access Token")
                                     )
@@ -278,6 +280,7 @@ public class SubscribeControllerTest extends RestDocs {
                     getDocumentRequest(),
                     getDocumentResponse(),
                     resource(ResourceSnippetParameters.builder()
+                            .description("구독 수정 API")
                             .requestHeaders(
                                     headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("access Token")
                             )
@@ -423,6 +426,7 @@ public class SubscribeControllerTest extends RestDocs {
                     getDocumentRequest(),
                     getDocumentResponse(),
                     resource(ResourceSnippetParameters.builder()
+                            .description("구독 상태 변경 API")
                             .requestHeaders(
                                     headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("access Token")
                             )
@@ -457,6 +461,95 @@ public class SubscribeControllerTest extends RestDocs {
                     jsonPath("$.response").doesNotExist(),
                     jsonPath("$.error.message").value(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getMessage()),
                     jsonPath("$.error.status").value(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getStatus())
+            );
+        }
+    }
+
+    @DisplayName("구독 삭제 테스트")
+    @Nested
+    class SubscribeDeleteTest {
+        @DisplayName("성공")
+        @Test
+        void success() throws Exception {
+            // given
+            String accessToken = getAccessToken("rjsdnxogh@naver.com");
+            Long subscribeId = 1L;
+            // mock
+
+            // when
+            ResultActions resultActions = mvc.perform(
+                    post("/subscribe/delete/{subscribe_id}", subscribeId)
+                            .header(JwtProvider.HEADER, accessToken)
+            );
+
+            String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+//            System.out.println(responseBody);
+
+            // then
+            resultActions.andExpectAll(
+                    jsonPath("$.success").value("true"),
+                    jsonPath("$.response").doesNotExist(),
+                    jsonPath("$.error").doesNotExist()
+            );
+
+            resultActions.andDo(document(
+                    snippt,
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    resource(ResourceSnippetParameters.builder()
+                            .description("구독 삭제 API")
+                            .requestHeaders(
+                                    headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("access Token")
+                            )
+                            .pathParameters(
+                                    parameterWithName("subscribe_id").type(SimpleType.INTEGER).description("구독 ID")
+                            )
+                            .build()
+                    )
+            ));
+        }
+
+        @DisplayName("실패 존재하지 않는 구독")
+        @Test
+        void fail_subscribe_not_exist() throws Exception {
+            // given
+            String accessToken = getAccessToken("rjsdnxogh@naver.com");
+            Long subscribeId = 4L;
+
+            // when
+            ResultActions resultActions = mvc.perform(
+                    post("/subscribe/delete/{subscribe_id}", subscribeId)
+                            .header(JwtProvider.HEADER, accessToken)
+            );
+
+            // then
+            resultActions.andExpectAll(
+                    jsonPath("$.success").value("false"),
+                    jsonPath("$.response").doesNotExist(),
+                    jsonPath("$.error.message").value(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getMessage()),
+                    jsonPath("$.error.status").value(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getStatus())
+            );
+        }
+
+        @DisplayName("실패 작성자가 아닌 유저의 접근")
+        @Test
+        void fail_not_writer() throws Exception {
+            // given
+            String accessToken = getAccessToken("rjsdnxogh12@kakao.com");
+            Long subscribeId = 1L;
+
+            // when
+            ResultActions resultActions = mvc.perform(
+                    post("/subscribe/delete/{subscribe_id}", subscribeId)
+                            .header(JwtProvider.HEADER, accessToken)
+            );
+
+            // then
+            resultActions.andExpectAll(
+                    jsonPath("$.success").value("false"),
+                    jsonPath("$.response").doesNotExist(),
+                    jsonPath("$.error.message").value(BaseExceptionStatus.SUBSCRIBE_FORBIDDEN.getMessage()),
+                    jsonPath("$.error.status").value(BaseExceptionStatus.SUBSCRIBE_FORBIDDEN.getStatus())
             );
         }
     }

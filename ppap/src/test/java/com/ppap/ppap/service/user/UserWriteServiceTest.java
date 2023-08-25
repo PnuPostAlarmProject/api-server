@@ -1,5 +1,8 @@
 package com.ppap.ppap.service.user;
 
+import com.ppap.ppap._core.DummyEntity;
+import com.ppap.ppap._core.exception.BaseExceptionStatus;
+import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
 import com.ppap.ppap.domain.user.dto.FcmTokenDto;
@@ -24,6 +27,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
@@ -41,6 +46,8 @@ public class UserWriteServiceTest {
     private DeviceWriteService deviceWriteService;
     @Spy
     private UserMapper userMapper = new UserMapper(new BCryptPasswordEncoder());
+
+    private final DummyEntity dummyEntity = new DummyEntity();
 
     @BeforeEach
     public void setUp() {
@@ -96,6 +103,46 @@ public class UserWriteServiceTest {
             Assertions.assertTrue(responseDto.refreshToken().length() != 0);
         }
     }
+
+    @DisplayName("회원 탈퇴 테스트")
+    @Nested
+    class UserDelete{
+        @DisplayName("성공")
+        @Test
+        void success() {
+            // given
+            String email = "rjsdnxogh@naver.com";
+            User user = dummyEntity.getTestUser(email, 1L);
+
+            // mock
+            given(userJpaRepository.findById(user.getId())).willReturn(Optional.of(user));
+            willDoNothing().given(userJpaRepository).delete(user);
+
+            // when
+            userWriteService.delete(user);
+
+            // then
+            verify(userJpaRepository).delete(user);
+        }
+
+        @DisplayName("실패 존재하지 않는 회원")
+        @Test
+        void fail_user_not_exist() {
+            // given
+            String email = "rjsdnxogh@naver.com";
+            User user = dummyEntity.getTestUser(email, 1L);
+
+            // mock
+            given(userJpaRepository.findById(user.getId())).willReturn(Optional.empty());
+
+            // when
+            Throwable throwable = assertThrows(Exception404.class, () -> userWriteService.delete(user));
+
+            // then
+            assertEquals(BaseExceptionStatus.USER_NOT_FOUND.getMessage(), throwable.getMessage());
+        }
+    }
+
 
     private KakaoUserInfo getKakaoUserInfo(String email) {
         Random random = new Random();

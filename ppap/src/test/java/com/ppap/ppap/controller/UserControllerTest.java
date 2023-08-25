@@ -457,6 +457,7 @@ public class UserControllerTest extends RestDocs {
         }
     }
 
+
     private KakaoUserInfo getKakaoUserInfo(String email) {
         Random random = new Random();
         return new KakaoUserInfo(random.nextLong(), LocalDateTime.now(),

@@ -77,7 +77,7 @@ tasks.withType(GenerateSwaggerUI) {
     dependsOn 'openapi3'
 
     // local 확인
-    delete file('src/main/resources/static/docs/**')
+    delete file('src/main/resources/static/docs')
     copy {
         from "build/resources/main/static/docs"
         into "src/main/resources/static/docs"

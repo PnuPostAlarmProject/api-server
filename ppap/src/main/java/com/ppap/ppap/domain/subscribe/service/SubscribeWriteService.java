@@ -78,6 +78,15 @@ public class SubscribeWriteService {
         return SubscribeUpdateResponseDto.from(subscribe);
     }
 
+    public void delete(Long subscribeId, User user) {
+        Subscribe subscribe = subscribeJpaRepository.findById(subscribeId).orElseThrow(
+                () -> new Exception404(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND));
+
+        validSubscribeWriter(subscribe, user);
+
+        subscribeJpaRepository.delete(subscribe);
+    }
+
     /**
      * rss 링크와 공지사항 링크가 같은 학과인지 체크하는 메소드
      * 단, 사용자가 공지사항 링크를 입력하지 않은 경우(null)에는 유효성 검사를 실시하지 않는다.

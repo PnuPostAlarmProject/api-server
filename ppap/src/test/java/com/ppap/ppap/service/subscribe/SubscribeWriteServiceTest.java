@@ -28,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -355,6 +356,66 @@ public class SubscribeWriteServiceTest {
 
             // then
             assertEquals(BaseExceptionStatus.SUBSCRIBE_FORBIDDEN.getMessage(), exception.getMessage());
+        }
+    }
+
+    @DisplayName("구독 삭제 테스트")
+    @Nested
+    class DeleteSubscribeTest {
+
+        @DisplayName("성공")
+        @Test
+        void success() {
+            // given
+            User testUser = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            Subscribe testSubscribe = dummyEntity.getTestSubscribeList(testUser, testNoticeList).get(0);
+
+            // mock
+            given(subscribeJpaRepository.findById(testSubscribe.getId())).willReturn(Optional.of(testSubscribe));
+
+            // when
+            subscribeWriteService.delete(testSubscribe.getId(), testUser);
+
+            // then
+            verify(subscribeJpaRepository).delete(testSubscribe);
+        }
+
+        @DisplayName("실패 존재하지 않은 구독")
+        @Test
+        void fail_subscribe_not_exist() {
+            // given
+            User testUser = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            Subscribe testSubscribe = dummyEntity.getTestSubscribeList(testUser, testNoticeList).get(0);
+
+            // mock
+            given(subscribeJpaRepository.findById(testSubscribe.getId())).willReturn(Optional.empty());
+
+            // when
+            Throwable throwable = assertThrows(Exception404.class, () -> subscribeWriteService.delete(testSubscribe.getId(), testUser));
+
+            // then
+            assertEquals(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getMessage(), throwable.getMessage());
+        }
+
+        @DisplayName("실패 작성자가 아닌 유저의 접근")
+        @Test
+        void fail_request_not_writer() {
+            // given
+            User testUser = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+            User anotherUser = dummyEntity.getTestUser("rjsdnxogh55@kakao.com", 2L);
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            Subscribe testSubscribe = dummyEntity.getTestSubscribeList(testUser, testNoticeList).get(0);
+
+            // mock
+            given(subscribeJpaRepository.findById(testSubscribe.getId())).willReturn(Optional.of(testSubscribe));
+
+            // when
+            Throwable throwable = assertThrows(Exception403.class, () -> subscribeWriteService.delete(testSubscribe.getId(), anotherUser));
+
+            // then
+            assertEquals(BaseExceptionStatus.SUBSCRIBE_FORBIDDEN.getMessage(), throwable.getMessage());
         }
     }
 
