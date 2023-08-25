@@ -55,6 +55,13 @@ public class UserController {
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
+    @PostMapping("/withdrawal")
+    public ResponseEntity<?> withdrawal(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        // 회원삭제 service 로직
+        userWriteService.delete(userDetails.getUser());
+        return ResponseEntity.ok(ApiUtils.success(null));
+    }
+
     @GetMapping("/test")
     public String test(@AuthenticationPrincipal CustomUserDetails userDetails) {
         System.out.println(userDetails.getUser().getId());

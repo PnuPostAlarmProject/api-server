@@ -2,6 +2,7 @@ package com.ppap.ppap.domain.user.service;
 
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
+import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap._core.exception.Exception500;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
@@ -28,7 +29,6 @@ public class UserWriteService {
     private final RefreshTokenService refreshTokenService;
     private final DeviceWriteService deviceWriteService;
 
-    @Transactional
     public LoginMemberResponseDto socialLogin(OauthUserInfo userInfo, FcmTokenDto fcmTokenDto) {
         User user = userJpaRepository.findByEmail(userInfo.email()).orElseGet(
                 () -> userJpaRepository.save(userMapper.userInfoToUser(userInfo)));
@@ -42,7 +42,6 @@ public class UserWriteService {
         return LoginMemberResponseDto.of(accessToken, refreshToken);
     }
 
-    @Transactional
     public RegisterMemberDto create(RegisterMemberCommand registerMemberCommand) {
 
         // 이메일이 이미 존재하는지 검증
@@ -57,6 +56,13 @@ public class UserWriteService {
             e.printStackTrace();
             throw new Exception500(BaseExceptionStatus.USER_SAVE_ERROR);
         }
+    }
+
+    public void delete(User user) {
+        userJpaRepository.findById(user.getId()).ifPresentOrElse(
+                userJpaRepository::delete,
+                () -> {throw new Exception404(BaseExceptionStatus.USER_NOT_FOUND);}
+        );
     }
 
     // 유저가 이미 존재한다면 예외처리
