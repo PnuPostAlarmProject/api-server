@@ -33,9 +33,15 @@ public enum BaseExceptionStatus {
     SUBSCRIBE_ALREADY_EXIST("이미 존재하는 구독입니다.", 400),
     SUBSCRIBE_FORBIDDEN("허가되지 않은 접근입니다.", 403),
     SUBSCRIBE_NOT_FOUND("존재하지 않는 구독입니다.", 404),
+    SUBSCRIBE_EMPTY("빈 구독 목록입니다.", 404),
 
     // content
+    CONTENT_NOT_FOUND("존재하지 않는 공지사항 내용입니다.", 404),
     CONTENT_SAVE_ERROR("공지사항 내용을 저장하는 중 에러가 발생했습니다.", 500),
+
+    // scrap
+    SCRAP_FORBIDDEN("허가되지 않은 접근입니다.", 403),
+    SCRAP_NOT_FOUND("존재하지 않는 스크랩입니다.", 404),
 
     // device
     DEVICE_FCM_TOKEN_INVALID("유효하지 않은 FCM 토큰입니다.", 400),

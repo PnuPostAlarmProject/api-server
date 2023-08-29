@@ -16,7 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "content_tb", indexes = {
-        @Index(name="idx_content_notice", columnList = "notice_id")
+        @Index(name="idx_content_notice", columnList = "notice_id"),
+        @Index(name="idx_content_pubdate", columnList = "pub_date")
 }, uniqueConstraints = {
         @UniqueConstraint(name="uk_content_notice_link", columnNames = {"notice_id", "link"})
 })
@@ -37,7 +38,7 @@ public class Content {
     @Column(nullable = false)
     private String link;
 
-    @Column(nullable = false)
+    @Column(name = "pub_date", nullable = false)
     private LocalDateTime pubDate;
 
     @Column(length = 50)

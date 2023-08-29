@@ -1,7 +1,9 @@
 package com.ppap.ppap.service.subscribe;
 
 import com.ppap.ppap._core.DummyEntity;
-import com.ppap.ppap.domain.subscribe.dto.SubscribeGetResponseDto;
+import com.ppap.ppap._core.exception.BaseExceptionStatus;
+import com.ppap.ppap._core.exception.Exception404;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeGetListResponseDto;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
 import com.ppap.ppap.domain.subscribe.repository.SubscribeJpaRepository;
@@ -19,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ActiveProfiles("test")
@@ -49,7 +52,7 @@ public class SubscribeReadServiceTest{
             given(subscribeJpaRepository.findByUserId(user.getId())).willReturn(testSubscribeList);
 
             // when
-            List<SubscribeGetResponseDto> resultDtos = subscribeReadService.getSubscribe(user);
+            List<SubscribeGetListResponseDto> resultDtos = subscribeReadService.getSubscribe(user);
 
             // then
             assertEquals(testSubscribeList.size(), resultDtos.size());
@@ -61,4 +64,73 @@ public class SubscribeReadServiceTest{
         }
     }
 
+    @DisplayName("공지ID로 구독 조회 테스트")
+    @Nested
+    class FindByNoticeIdTest {
+        @DisplayName("성공")
+        @Test
+        void success() {
+            // given
+            User user = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            List<Subscribe> testSubscribeList = dummyEntity.getTestSubscribeList(user, testNoticeList).stream()
+                    .filter(subscribe -> subscribe.getNotice().getId().equals(testNoticeList.get(0).getId()))
+                    .toList();
+
+            // mock
+            given(subscribeJpaRepository.findByNoticeId(testNoticeList.get(0).getId())).willReturn(testSubscribeList);
+
+            // when
+            List<Subscribe> resultDtos = subscribeReadService.getSubscribeByNoticeId(testNoticeList.get(0).getId());
+
+            // then
+            assertEquals(1, resultDtos.size());
+            assertEquals(1L, resultDtos.get(0).getId());
+        }
+    }
+
+    @DisplayName("유저ID로 구독 조회 join 공지사항 테스트")
+    @Nested
+    class findByUserIdFetchJoinNotice {
+
+        @DisplayName("성공")
+        @Test
+        void success() {
+            // given
+            User user = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            List<Subscribe> testSubscribeList = dummyEntity.getTestSubscribeList(user, testNoticeList);
+
+            // mock
+            given(subscribeJpaRepository.findByUserIdFetchJoinNotice(user.getId())).willReturn(testSubscribeList);
+
+            // when
+            List<Subscribe> resultDtos = subscribeReadService.getSubscribeEntityJoinNotice(user);
+
+            // then
+            assertEquals(testSubscribeList.size(), resultDtos.size());
+            for(int i=0; i<testSubscribeList.size(); i++) {
+                assertEquals(i+1, resultDtos.get(i).getId());
+                assertEquals("테스트 " + (i+1), resultDtos.get(i).getTitle());
+                assertEquals(true, resultDtos.get(i).getIsActive());
+            }
+        }
+
+        @DisplayName("실패 빈 구독 목록")
+        @Test
+        void fail_subscribe_empty() {
+            // given
+            User user = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+
+            // mock
+            given(subscribeJpaRepository.findByUserIdFetchJoinNotice(user.getId())).willReturn(List.of());
+
+            // when
+            Throwable exception = assertThrows(Exception404.class, () -> subscribeReadService.getSubscribeEntityJoinNotice(user));
+
+            // then
+            assertEquals(BaseExceptionStatus.SUBSCRIBE_EMPTY.getMessage(), exception.getMessage());
+
+        }
+    }
 }
