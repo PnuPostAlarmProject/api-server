@@ -2,10 +2,7 @@ package com.ppap.ppap.application.controller;
 
 import com.ppap.ppap._core.security.CustomUserDetails;
 import com.ppap.ppap._core.utils.ApiUtils;
-import com.ppap.ppap.domain.subscribe.dto.SubscribeCreateRequestDto;
-import com.ppap.ppap.domain.subscribe.dto.SubscribeGetResponseDto;
-import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
-import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateResponseDto;
+import com.ppap.ppap.domain.subscribe.dto.*;
 import com.ppap.ppap.domain.subscribe.service.SubscribeReadService;
 import com.ppap.ppap.domain.subscribe.service.SubscribeWriteService;
 import jakarta.validation.Valid;
@@ -35,9 +32,17 @@ public class SubscribeController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> get(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<SubscribeGetResponseDto> resultDtos = subscribeReadService.getSubscribe(userDetails.getUser());
+    public ResponseEntity<?> getList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<SubscribeGetListResponseDto> resultDtos = subscribeReadService.getSubscribeList(userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(resultDtos));
+    }
+
+    @GetMapping("/{subscribe_id}")
+    public ResponseEntity<?> get(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                 @PathVariable(name = "subscribe_id") Long subscribeId) {
+
+        SubscribeGetResponseDto resultDto = subscribeReadService.getSubscribe(userDetails.getUser(), subscribeId);
+        return ResponseEntity.ok(ApiUtils.success(resultDto));
     }
 
     @PostMapping("/{subscribe_id}")

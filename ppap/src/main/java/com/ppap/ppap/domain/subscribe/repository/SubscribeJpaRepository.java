@@ -18,10 +18,15 @@ public interface SubscribeJpaRepository extends JpaRepository<Subscribe, Long> {
 
     @Query(value = "select s from Subscribe s " +
             "join fetch s.notice n " +
-            "where s.id = :subscribeId")
-    Optional<Subscribe> findByIdFetchJoinNotice(@Param("subscribeId") Long subscribeId);
+            "where s.user.id = :userId")
+    List<Subscribe> findByUserIdFetchJoinNotice(@Param("userId") Long userId);
 
     @Query(value = "select s from Subscribe s " +
             "where s.notice.id = :noticeId and s.isActive = true")
     List<Subscribe> findByNoticeId(@Param("noticeId") Long noticeId);
+
+    @Query(value = "select s from Subscribe s " +
+            "join fetch s.notice n " +
+            "where s.id = :subscribeId")
+    Optional<Subscribe> findByIdFetchJoinNotice(@Param("subscribeId") Long subscribeId);
 }

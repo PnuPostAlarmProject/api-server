@@ -86,7 +86,7 @@ public class SubscribeControllerTest extends RestDocs {
                             ResourceSnippetParameters.builder()
                                     .description("구독 생성 API")
                                     .requestHeaders(
-                                            headerWithName("Authorization").type(SimpleType.STRING).description("액세스 토큰")
+                                            headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("액세스 토큰")
                                     )
                                     .requestFields(
                                             fieldWithPath("title").type(JsonFieldType.STRING).description("구독 제목"),
