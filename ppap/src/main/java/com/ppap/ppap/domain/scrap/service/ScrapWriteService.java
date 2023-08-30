@@ -1,6 +1,7 @@
 package com.ppap.ppap.domain.scrap.service;
 
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
+import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception403;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap.domain.scrap.entity.Scrap;
@@ -25,6 +26,10 @@ public class ScrapWriteService {
 
         // content에 대한 예외는 contentReadService에서 하는 것이 좋아보임.
         Content content = contentReadService.findById(contentId);
+
+        if (scrapJpaRepository.existsByUserIdAndContentId(user.getId(), contentId)) {
+            throw new Exception400(BaseExceptionStatus.SCRAP_ALREADY_EXIST);
+        }
 
         Scrap scrap = Scrap.of(user, content);
 

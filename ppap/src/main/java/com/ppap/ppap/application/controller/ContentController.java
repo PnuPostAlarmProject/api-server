@@ -3,7 +3,7 @@ package com.ppap.ppap.application.controller;
 import com.ppap.ppap._core.security.CustomUserDetails;
 import com.ppap.ppap._core.utils.ApiUtils;
 import com.ppap.ppap.application.usecase.GetSubscribeContentUseCase;
-import com.ppap.ppap.domain.subscribe.dto.SubscribeWithContentDto;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeWithContentScrapDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,7 +29,7 @@ public class ContentController {
             @PageableDefault(size=10, page=0, direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        SubscribeWithContentDto resultDto =
+        SubscribeWithContentScrapDto resultDto =
                 getSubscribeContentUseCase.execute(subscribeId, userDetails.getUser(), pageable);
 
         return ResponseEntity.ok(ApiUtils.success(resultDto));
