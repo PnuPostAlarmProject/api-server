@@ -22,11 +22,11 @@ import java.util.List;
 public class SubscribeReadService {
     private final SubscribeJpaRepository subscribeJpaRepository;
 
-    public List<Subscribe> getSubscribeEntityJoinNotice(User user) {
-        List<Subscribe> subscribeList = subscribeJpaRepository.findByUserIdFetchJoinNotice(user.getId());
+    public List<Subscribe> getSubscribeEntityList(User user) {
+        List<Subscribe> subscribeList = subscribeJpaRepository.findByUserId(user.getId());
         if (subscribeList.isEmpty()) throw new Exception404(BaseExceptionStatus.SUBSCRIBE_EMPTY);
 
-        return subscribeJpaRepository.findByUserIdFetchJoinNotice(user.getId());
+        return subscribeList;
     }
 
     public List<SubscribeGetListResponseDto> getSubscribeList(User user) {
