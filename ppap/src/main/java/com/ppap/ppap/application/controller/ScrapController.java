@@ -3,12 +3,18 @@ package com.ppap.ppap.application.controller;
 import com.ppap.ppap._core.security.CustomUserDetails;
 import com.ppap.ppap._core.utils.ApiUtils;
 import com.ppap.ppap.application.usecase.GetScrapSubscirbeUseCase;
+import com.ppap.ppap.domain.scrap.dto.ScrapWithSubscribeDto;
 import com.ppap.ppap.domain.scrap.service.ScrapReadService;
 import com.ppap.ppap.domain.scrap.service.ScrapWriteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -39,8 +45,14 @@ public class ScrapController {
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
-//    @GetMapping("/")
-//    public ResponseEntity<?> getScrapList(@AuthenticationPrincipal CustomUserDetails userDetails) {
-//
-//    }
+    @GetMapping({"", "/{subscribe_id}"})
+    public ResponseEntity<?> getScrapList(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable(required = false, name="subscribe_id") Optional<Long> subscribeId,
+            @PageableDefault(size=10, page=0, direction = Sort.Direction.DESC) Pageable pageable) {
+
+        ScrapWithSubscribeDto responseDto = getScrapSubscirbeUseCase.execute(subscribeId, userDetails.getUser(), pageable);
+
+        return ResponseEntity.ok(ApiUtils.success(responseDto));
+    }
 }

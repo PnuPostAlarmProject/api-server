@@ -3,8 +3,8 @@ package com.ppap.ppap.domain.scrap.service;
 import com.ppap.ppap.domain.scrap.dto.ScrapFindByContentIdDto;
 import com.ppap.ppap.domain.scrap.entity.Scrap;
 import com.ppap.ppap.domain.scrap.repository.ScrapJpaRepository;
-import com.ppap.ppap.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,4 +23,7 @@ public class ScrapReadService {
                 .toList();
     }
 
+    public List<Scrap> findByUserIdAndNoticeIdFetchJoinContent(Long userId, Long noticeId, Pageable pageable) {
+        return scrapJpaRepository.findByUserIdAndNoticeIdFetchJoinContent(userId, noticeId, pageable).toList();
+    }
 }
