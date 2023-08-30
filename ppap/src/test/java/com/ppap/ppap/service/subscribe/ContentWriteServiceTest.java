@@ -44,13 +44,13 @@ public class ContentWriteServiceTest {
         void success() {
             // given
             Notice testNotice = dummyEntity.getTestNoticeList().get(0);
-            List<RssData> testRssDataList = dummyEntity.getTestRssList(testNotice);
+            List<RssData> testRssDataList = dummyEntity.getTestRssList();
 
             // mock
             willDoNothing().given(contentJpaRepository).saveAllBatch(any());
 
             // when
-            contentWriteService.contentsSave(testRssDataList);
+            contentWriteService.contentsSave(testRssDataList, testNotice);
 
             // then
             verify(contentJpaRepository, times(1)).saveAllBatch(any());
@@ -60,9 +60,10 @@ public class ContentWriteServiceTest {
         @Test
         void success_empty_list() {
             // given
+            Notice testNotice = dummyEntity.getTestNoticeList().get(0);
             // mock
             // when
-            contentWriteService.contentsSave(List.of());
+            contentWriteService.contentsSave(List.of(), testNotice);
 
             // then
             verify(contentJpaRepository, times(0)).saveAllBatch(any());
@@ -73,13 +74,13 @@ public class ContentWriteServiceTest {
         void fail_save_db_error() {
             // given
             Notice testNotice = dummyEntity.getTestNoticeList().get(0);
-            List<RssData> testRssDataList = dummyEntity.getTestRssList(testNotice);
+            List<RssData> testRssDataList = dummyEntity.getTestRssList();
 
             // mock
             willThrow(new RuntimeException("db error")).given(contentJpaRepository).saveAllBatch(any());
 
             // when
-            Throwable exception = assertThrows(Exception500.class, () -> contentWriteService.contentsSave(testRssDataList));
+            Throwable exception = assertThrows(Exception500.class, () -> contentWriteService.contentsSave(testRssDataList, testNotice));
 
             // then
             assertEquals(BaseExceptionStatus.CONTENT_SAVE_ERROR.getMessage(), exception.getMessage());

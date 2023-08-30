@@ -26,9 +26,8 @@ public class ContentController {
     @GetMapping(value = {"", "/{subscribe_id}"})
     public ResponseEntity<?> getContentData(
             @PathVariable(required = false, name="subscribe_id") Optional<Long> subscribeId,
-            @PageableDefault(size=10, page=0, direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size=10, page=0, sort = "pubDate", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-
         SubscribeWithContentScrapDto resultDto =
                 getSubscribeContentUseCase.execute(subscribeId, userDetails.getUser(), pageable);
 

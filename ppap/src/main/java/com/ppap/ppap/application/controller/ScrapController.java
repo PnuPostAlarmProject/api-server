@@ -49,7 +49,7 @@ public class ScrapController {
     public ResponseEntity<?> getScrapList(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable(required = false, name="subscribe_id") Optional<Long> subscribeId,
-            @PageableDefault(size=10, page=0, direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size=10, page=0) Pageable pageable) {
 
         ScrapWithSubscribeDto responseDto = getScrapSubscirbeUseCase.execute(subscribeId, userDetails.getUser(), pageable);
 

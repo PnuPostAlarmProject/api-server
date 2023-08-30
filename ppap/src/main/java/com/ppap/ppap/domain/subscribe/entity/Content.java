@@ -58,9 +58,9 @@ public class Content {
         this.category = category;
     }
 
-    public static Content of(RssData rssData) {
+    public static Content of(RssData rssData, Notice notice) {
         return Content.builder()
-                .notice(rssData.notice())
+                .notice(notice)
                 .title(rssData.title())
                 .link(rssData.link())
                 .pubDate(rssData.pubDate())

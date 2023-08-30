@@ -119,9 +119,9 @@ public class RssSchedulerService {
 
             // 처음 받아오는 거라면 50개를 저장, 아니라면 서버에 저장된 시간보다 뒤에 있는 값만 저장.
             if(isInit) {
-                contentWriteService.contentsSave(rssDataList);
+                contentWriteService.contentsSave(rssDataList, notice);
             } else{
-                contentWriteService.contentsSave(filterRssDataList);
+                contentWriteService.contentsSave(filterRssDataList, notice);
             }
 
             return filterRssDataList;
