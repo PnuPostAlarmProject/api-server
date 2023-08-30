@@ -3,6 +3,9 @@ SET REFERENTIAL_INTEGRITY FALSE;
 truncate table user_tb;
 truncate table notice_tb;
 truncate table subscribe_tb;
+truncate table device_tb;
+truncate table scrap_tb;
+truncate table content_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 -- 모든 제약 조건 활성화
 

@@ -15,8 +15,7 @@ public interface ContentJpaRepository extends JpaRepository<Content, Long>, Cust
     Set<Long> findAllDistinctNoticeId();
 
     @Query(value = "select c from Content c " +
-            "where c.notice.id = :noticeId " +
-            "order by c.pubDate desc ",
+            "where c.notice.id = :noticeId ",
     countQuery = "select count(c.id) from Content c " +
             "where c.notice.id = :noticeId")
     Page<Content> findByNoticeId(@Param("noticeId") Long noticeId, Pageable pageable);

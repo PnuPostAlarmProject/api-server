@@ -23,11 +23,11 @@ public class ContentWriteService {
     /**
      * 스케줄러에서 받아온 rssData를 저장하는 메소드
      */
-    public void contentsSave(List<RssData> rssDataList, Notice notice) {
+    public void contentsSave(List<RssData> rssDataList) {
         if (rssDataList.isEmpty()) return ;
 
         List<Content> content = rssDataList.stream()
-                        .map(rssData -> Content.from(rssData, notice))
+                        .map(Content::of)
                         .toList();
 
         try {

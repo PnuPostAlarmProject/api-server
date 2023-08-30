@@ -5,7 +5,6 @@ import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap.domain.subscribe.entity.Content;
 import com.ppap.ppap.domain.subscribe.repository.ContentJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -52,7 +52,7 @@ public class SubscribeReadServiceTest{
             given(subscribeJpaRepository.findByUserId(user.getId())).willReturn(testSubscribeList);
 
             // when
-            List<SubscribeGetListResponseDto> resultDtos = subscribeReadService.getSubscribe(user);
+            List<SubscribeGetListResponseDto> resultDtos = subscribeReadService.getSubscribeList(user);
 
             // then
             assertEquals(testSubscribeList.size(), resultDtos.size());
@@ -102,10 +102,10 @@ public class SubscribeReadServiceTest{
             List<Subscribe> testSubscribeList = dummyEntity.getTestSubscribeList(user, testNoticeList);
 
             // mock
-            given(subscribeJpaRepository.findByUserIdFetchJoinNotice(user.getId())).willReturn(testSubscribeList);
+            given(subscribeJpaRepository.findByUserId(user.getId())).willReturn(testSubscribeList);
 
             // when
-            List<Subscribe> resultDtos = subscribeReadService.getSubscribeEntityJoinNotice(user);
+            List<Subscribe> resultDtos = subscribeReadService.getSubscribeEntityList(user);
 
             // then
             assertEquals(testSubscribeList.size(), resultDtos.size());
@@ -123,10 +123,10 @@ public class SubscribeReadServiceTest{
             User user = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
 
             // mock
-            given(subscribeJpaRepository.findByUserIdFetchJoinNotice(user.getId())).willReturn(List.of());
+            given(subscribeJpaRepository.findByUserId(user.getId())).willReturn(List.of());
 
             // when
-            Throwable exception = assertThrows(Exception404.class, () -> subscribeReadService.getSubscribeEntityJoinNotice(user));
+            Throwable exception = assertThrows(Exception404.class, () -> subscribeReadService.getSubscribeEntityList(user));
 
             // then
             assertEquals(BaseExceptionStatus.SUBSCRIBE_EMPTY.getMessage(), exception.getMessage());
