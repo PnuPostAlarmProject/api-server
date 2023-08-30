@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-public record SubscribeWithContentDto(
+public record SubscribeWithContentScrapDto(
         List<SubscribeDto> subscribes,
         Long curSubscribeId,
         List<ContentScrapDto>  contents
         ) {
     @Builder
-    public SubscribeWithContentDto {}
+    public SubscribeWithContentScrapDto {}
 
     public record SubscribeDto(
             Long subscribeId,
@@ -52,16 +52,16 @@ public record SubscribeWithContentDto(
         }
     }
 
-    public static SubscribeWithContentDto of(List<Subscribe> subscribeList,
-                                             Long curSubscribeId,
-                                             List<Content> contentList,
-                                             Set<Long> scrapContentIdSet) {
+    public static SubscribeWithContentScrapDto of(List<Subscribe> subscribeList,
+                                                  Long curSubscribeId,
+                                                  List<Content> contentList,
+                                                  Set<Long> scrapContentIdSet) {
 
         List<SubscribeDto> subscribes = subscribeList.stream().map(SubscribeDto::of).toList();
         List<ContentScrapDto> contents = contentList.stream()
                 .map(content -> ContentScrapDto.of(content, scrapContentIdSet)).toList();
 
-        return SubscribeWithContentDto.builder()
+        return SubscribeWithContentScrapDto.builder()
                 .subscribes(subscribes)
                 .curSubscribeId(curSubscribeId)
                 .contents(contents)
