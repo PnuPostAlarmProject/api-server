@@ -50,8 +50,6 @@ public class ScrapWriteService {
                 () -> new Exception404(BaseExceptionStatus.SCRAP_NOT_FOUND)
         );
 
-        validateIsWriter(user, scrap);
-
         scrapJpaRepository.delete(scrap);
     }
 

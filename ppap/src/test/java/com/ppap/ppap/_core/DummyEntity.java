@@ -1,6 +1,7 @@
 package com.ppap.ppap._core;
 
 import com.ppap.ppap._core.rss.RssData;
+import com.ppap.ppap.domain.scrap.entity.Scrap;
 import com.ppap.ppap.domain.subscribe.entity.Content;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
