@@ -19,7 +19,7 @@ public class ScrapReadService {
     public List<ScrapFindByContentIdDto> findByContentIds(Long userId, List<Long> contentIds) {
         List<Scrap> scrapList = scrapJpaRepository.findByContentIds(userId, contentIds);
         return scrapList.stream()
-                .map(scrap -> ScrapFindByContentIdDto.of(scrap, scrap.getUser(), scrap.getContent()))
+                .map(ScrapFindByContentIdDto::of)
                 .toList();
     }
 
