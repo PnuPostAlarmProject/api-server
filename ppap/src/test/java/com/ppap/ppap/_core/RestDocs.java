@@ -42,7 +42,7 @@ public class RestDocs {
     protected MockMvc mvc;
     protected RestDocumentationResultHandler document;
 
-    protected final String snippt = "{class-name}/{method-name}";
+    protected final String snippet = "{class-name}/{method-name}";
 
     @Autowired
     private UserJpaRepository userJpaRepository;
