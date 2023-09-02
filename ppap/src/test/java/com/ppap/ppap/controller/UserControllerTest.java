@@ -113,7 +113,7 @@ public class UserControllerTest extends RestDocs {
 
             resultActions.andDo(
                     document(
-                            snippt,
+                            snippet,
                             getDocumentRequest(),
                             getDocumentResponse(),
                             resource(
@@ -280,7 +280,7 @@ public class UserControllerTest extends RestDocs {
 
             resultActions.andDo(
                     document(
-                            snippt,
+                            snippet,
                             getDocumentRequest(),
                             getDocumentResponse(),
                             resource(
@@ -413,7 +413,7 @@ public class UserControllerTest extends RestDocs {
             );
 
             resultActions.andDo(document(
-                    snippt,
+                    snippet,
                     getDocumentRequest(),
                     getDocumentResponse(),
                     resource(

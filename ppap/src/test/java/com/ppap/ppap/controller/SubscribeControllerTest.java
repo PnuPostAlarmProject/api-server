@@ -79,7 +79,7 @@ public class SubscribeControllerTest extends RestDocs {
                     jsonPath("$.error").doesNotExist()
             );
             resultActions.andDo(document(
-                    snippt,
+                    snippet,
                     getDocumentRequest(),
                     getDocumentResponse(),
                     resource(
@@ -223,7 +223,7 @@ public class SubscribeControllerTest extends RestDocs {
                     jsonPath("$.error").doesNotExist()
             );
             resultActions.andDo(document(
-                    snippt,
+                    snippet,
                     getDocumentRequest(),
                     getDocumentResponse(),
                     resource(
@@ -276,7 +276,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // document
             resultActions.andDo(document(
-                    snippt,
+                    snippet,
                     getDocumentRequest(),
                     getDocumentResponse(),
                     resource(ResourceSnippetParameters.builder()
@@ -422,7 +422,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // document
             resultActions.andDo(document(
-                    snippt,
+                    snippet,
                     getDocumentRequest(),
                     getDocumentResponse(),
                     resource(ResourceSnippetParameters.builder()
@@ -493,7 +493,7 @@ public class SubscribeControllerTest extends RestDocs {
             );
 
             resultActions.andDo(document(
-                    snippt,
+                    snippet,
                     getDocumentRequest(),
                     getDocumentResponse(),
                     resource(ResourceSnippetParameters.builder()
