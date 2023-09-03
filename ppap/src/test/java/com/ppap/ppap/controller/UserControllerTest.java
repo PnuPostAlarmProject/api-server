@@ -1,6 +1,8 @@
 package com.ppap.ppap.controller;
 
+import com.epages.restdocs.apispec.ResourceDocumentation;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.SimpleType;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.firebase.ErrorCode;
 import com.google.firebase.FirebaseException;
@@ -21,8 +23,10 @@ import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.dto.LoginMemberResponseDto;
 import com.ppap.ppap.domain.user.dto.ReissueDto;
 import com.ppap.ppap.domain.user.dto.oauth.kakao.KakaoUserInfo;
+import com.ppap.ppap.domain.user.service.UserWriteService;
 import com.ppap.ppap.domain.user.utils.kakao.KakaoRestTemplate;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.*;
@@ -38,12 +42,11 @@ import java.util.Optional;
 import java.util.Random;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -121,7 +124,7 @@ public class UserControllerTest extends RestDocs {
 //                                            .tag("유저")
                                             .description("카카오 로그인 API")
                                             .requestHeaders(
-                                                headerWithName("Kakao").description("카카오 Access토큰: 카카오 액세스 토큰을 넣어야 합니다.(그대로 입력시 에러발생)")
+                                                headerWithName("Kakao").type(SimpleType.STRING).description("카카오 Access토큰: 카카오 액세스 토큰을 넣어야 합니다.(그대로 입력시 에러발생)")
                                             )
                                             .requestFields(
                                                 fieldWithPath("fcmToken").type(JsonFieldType.STRING).description("Fcm Device 토큰")
@@ -420,7 +423,7 @@ public class UserControllerTest extends RestDocs {
                             ResourceSnippetParameters.builder()
                                     .description("로그아웃 API")
                                     .requestHeaders(
-                                            headerWithName(JwtProvider.HEADER).description("Access JWT 토큰")
+                                            headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("access 토큰")
                                     )
                                     .build()
                     )
@@ -453,10 +456,73 @@ public class UserControllerTest extends RestDocs {
                     jsonPath("$.error.message").value(BaseExceptionStatus.REFRESH_TOKEN_NOT_FOUND.getMessage()),
                     jsonPath("$.error.status").value(BaseExceptionStatus.REFRESH_TOKEN_NOT_FOUND.getStatus())
             );
-
         }
     }
 
+    @DisplayName("회원탈퇴 API")
+    @Nested
+    class WithdrawlTest {
+        @DisplayName("성공")
+        @Test
+        void success() throws Exception {
+            // given
+            String accessToken = getAccessToken("rjsdnxogh12@kakao.com");
+
+            // when
+            ResultActions resultActions = mvc.perform(
+                    post("/auth/withdrawal")
+                            .header(JwtProvider.HEADER, accessToken)
+            );
+            String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+
+            // then
+            resultActions.andExpectAll(
+                    jsonPath("$.success").value("true"),
+                    jsonPath("$.response").doesNotExist(),
+                    jsonPath("$.error").doesNotExist()
+            );
+
+            resultActions.andDo(document(
+                    snippet,
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    resource(ResourceSnippetParameters.builder()
+                            .description("회원 탈퇴 API")
+                            .requestHeaders(
+                                    headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("access 토큰")
+                            )
+                            .build())
+            ));
+        }
+
+        @DisplayName("실패 존재하지 않는 회원")
+        @Test
+        void fail_user_not_found() throws Exception {
+            // given
+            String accessToken = getAccessToken("rjsdnxogh12@kakao.com");
+
+            // when
+            ResultActions resultActions = mvc.perform(
+                    post("/auth/withdrawal")
+                            .header(JwtProvider.HEADER, accessToken)
+            );
+
+            resultActions = mvc.perform(
+                    post("/auth/withdrawal")
+                            .header(JwtProvider.HEADER, accessToken)
+            );
+
+            String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+
+            // then
+            resultActions.andExpectAll(
+                    jsonPath("$.success").value("false"),
+                    jsonPath("$.response").doesNotExist(),
+                    jsonPath("$.error.message").value(BaseExceptionStatus.USER_NOT_FOUND.getMessage()),
+                    jsonPath("$.error.status").value(BaseExceptionStatus.USER_NOT_FOUND.getStatus())
+            );
+        }
+    }
 
     private KakaoUserInfo getKakaoUserInfo(String email) {
         Random random = new Random();
