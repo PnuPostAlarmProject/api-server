@@ -31,12 +31,13 @@ public class ScrapController {
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
-    @PostMapping("/delete/{scrap_id}")
-    public ResponseEntity<?> deleteByScrapId(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                             @PathVariable("scrap_id") Long scrapId) {
-        scrapWriteService.deleteByScrapId(userDetails.getUser(), scrapId);
-        return ResponseEntity.ok(ApiUtils.success(null));
-    }
+    // 사용 안함
+//    @PostMapping("/delete/{scrap_id}")
+//    public ResponseEntity<?> deleteByScrapId(@AuthenticationPrincipal CustomUserDetails userDetails,
+//                                             @PathVariable("scrap_id") Long scrapId) {
+//        scrapWriteService.deleteByScrapId(userDetails.getUser(), scrapId);
+//        return ResponseEntity.ok(ApiUtils.success(null));
+//    }
 
     @PostMapping("/delete/content/{content_id}")
     public ResponseEntity<?> deleteByContentId(@AuthenticationPrincipal CustomUserDetails userDetails,
