@@ -14,11 +14,11 @@ public record ScrapFindByContentIdDto(
     public ScrapFindByContentIdDto {
     }
 
-    public static ScrapFindByContentIdDto of(Scrap scrap, User user, Content content) {
+    public static ScrapFindByContentIdDto of(Scrap scrap) {
         return ScrapFindByContentIdDto.builder()
                 .id(scrap.getId())
-                .userId(user.getId())
-                .contentId(content.getId())
+                .userId(scrap.getUser().getId())
+                .contentId(scrap.getContent().getId())
                 .build();
     }
 

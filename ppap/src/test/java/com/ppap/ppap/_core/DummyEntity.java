@@ -1,5 +1,8 @@
 package com.ppap.ppap._core;
 
+import com.ppap.ppap._core.rss.RssData;
+import com.ppap.ppap.domain.scrap.entity.Scrap;
+import com.ppap.ppap.domain.subscribe.entity.Content;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
 import com.ppap.ppap.domain.user.entity.User;
@@ -69,5 +72,39 @@ public class DummyEntity {
                             .build());
         }
         return testSubscribeList;
+    }
+
+    public List<Content> getTestContentList(Notice notice) {
+        return List.of(
+                new Content(1L, notice, "컴퓨터 및 프로그래밍 입문(001분반, 조환규 교수님) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/931071/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(2L, notice, "컴퓨터알고리즘(059분반) 조환규 교수님 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/930883/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(3L, notice, "[등록기간 연장]2021 ICPC 예선 안내(~9/30까지 신청)", "http://his.pusan.ac.kr/bbs/cse/2615/880989/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(4L, notice, "자료구조(060분반) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/879352/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(5L, notice, "컴퓨터 및 프로그래밍 입문(001분반, 조환규 교수님) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/931071/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(6L, notice, "컴퓨터알고리즘(059분반) 조환규 교수님 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/930883/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(7L, notice, "[등록기간 연장]2021 ICPC 예선 안내(~9/30까지 신청)", "http://his.pusan.ac.kr/bbs/cse/2615/880989/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(8L, notice, "자료구조(060분반) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/879352/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(9L, notice, "컴퓨터 및 프로그래밍 입문(001분반, 조환규 교수님) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/931071/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(10L, notice, "컴퓨터알고리즘(059분반) 조환규 교수님 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/930883/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(11L, notice, "[등록기간 연장]2021 ICPC 예선 안내(~9/30까지 신청)", "http://his.pusan.ac.kr/bbs/cse/2615/880989/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new Content(12L, notice, "자료구조(060분반) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/879352/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null)
+        );
+    }
+
+    public List<RssData> getTestRssList(){
+        return List.of(
+                new RssData("컴퓨터 및 프로그래밍 입문(001분반, 조환규 교수님) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/931071/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("컴퓨터알고리즘(059분반) 조환규 교수님 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/930883/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("[등록기간 연장]2021 ICPC 예선 안내(~9/30까지 신청)", "http://his.pusan.ac.kr/bbs/cse/2615/880989/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("자료구조(060분반) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/879352/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("컴퓨터 및 프로그래밍 입문(001분반, 조환규 교수님) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/931071/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("컴퓨터알고리즘(059분반) 조환규 교수님 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/930883/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("[등록기간 연장]2021 ICPC 예선 안내(~9/30까지 신청)", "http://his.pusan.ac.kr/bbs/cse/2615/880989/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("자료구조(060분반) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/879352/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("컴퓨터 및 프로그래밍 입문(001분반, 조환규 교수님) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/931071/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("컴퓨터알고리즘(059분반) 조환규 교수님 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/930883/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("[등록기간 연장]2021 ICPC 예선 안내(~9/30까지 신청)", "http://his.pusan.ac.kr/bbs/cse/2615/880989/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
+                new RssData("자료구조(060분반) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/879352/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null)
+        );
     }
 }

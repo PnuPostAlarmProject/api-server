@@ -2,8 +2,10 @@ package com.ppap.ppap.service.subscribe;
 
 import com.ppap.ppap._core.DummyEntity;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
+import com.ppap.ppap._core.exception.Exception403;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeGetListResponseDto;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeGetResponseDto;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
 import com.ppap.ppap.domain.subscribe.repository.SubscribeJpaRepository;
@@ -19,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,9 +39,9 @@ public class SubscribeReadServiceTest{
 
     private final DummyEntity dummyEntity = new DummyEntity();
 
-    @DisplayName("유저ID로 구독 조회 테스트")
+    @DisplayName("유저ID로 구독 리스트 조회 테스트")
     @Nested
-    class FindByUserIdTest {
+    class GetSubscribeListTest {
 
         @DisplayName("성공")
         @Test
@@ -52,7 +55,7 @@ public class SubscribeReadServiceTest{
             given(subscribeJpaRepository.findByUserId(user.getId())).willReturn(testSubscribeList);
 
             // when
-            List<SubscribeGetListResponseDto> resultDtos = subscribeReadService.getSubscribe(user);
+            List<SubscribeGetListResponseDto> resultDtos = subscribeReadService.getSubscribeList(user);
 
             // then
             assertEquals(testSubscribeList.size(), resultDtos.size());
@@ -64,9 +67,9 @@ public class SubscribeReadServiceTest{
         }
     }
 
-    @DisplayName("공지ID로 구독 조회 테스트")
+    @DisplayName("공지ID로 구독리스트 조회 테스트")
     @Nested
-    class FindByNoticeIdTest {
+    class GetSubscribeByNoticeIdTest {
         @DisplayName("성공")
         @Test
         void success() {
@@ -89,9 +92,9 @@ public class SubscribeReadServiceTest{
         }
     }
 
-    @DisplayName("유저ID로 구독 조회 join 공지사항 테스트")
+    @DisplayName("유저ID로 구독 엔티티 리스트 조회 테스트")
     @Nested
-    class findByUserIdFetchJoinNotice {
+    class GetSubscribeEntityListTest {
 
         @DisplayName("성공")
         @Test
@@ -102,10 +105,10 @@ public class SubscribeReadServiceTest{
             List<Subscribe> testSubscribeList = dummyEntity.getTestSubscribeList(user, testNoticeList);
 
             // mock
-            given(subscribeJpaRepository.findByUserIdFetchJoinNotice(user.getId())).willReturn(testSubscribeList);
+            given(subscribeJpaRepository.findByUserId(user.getId())).willReturn(testSubscribeList);
 
             // when
-            List<Subscribe> resultDtos = subscribeReadService.getSubscribeEntityJoinNotice(user);
+            List<Subscribe> resultDtos = subscribeReadService.getSubscribeEntityList(user);
 
             // then
             assertEquals(testSubscribeList.size(), resultDtos.size());
@@ -123,14 +126,82 @@ public class SubscribeReadServiceTest{
             User user = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
 
             // mock
-            given(subscribeJpaRepository.findByUserIdFetchJoinNotice(user.getId())).willReturn(List.of());
+            given(subscribeJpaRepository.findByUserId(user.getId())).willReturn(List.of());
 
             // when
-            Throwable exception = assertThrows(Exception404.class, () -> subscribeReadService.getSubscribeEntityJoinNotice(user));
+            Throwable exception = assertThrows(Exception404.class, () -> subscribeReadService.getSubscribeEntityList(user));
 
             // then
             assertEquals(BaseExceptionStatus.SUBSCRIBE_EMPTY.getMessage(), exception.getMessage());
 
+        }
+    }
+
+    @DisplayName("단일 구독 조회 테스트")
+    @Nested
+    class GetSubscribeTest {
+        @DisplayName("성공")
+        @Test
+        void success() {
+            // given
+            User testUser = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            Subscribe testSubscribe = dummyEntity.getTestSubscribeList(testUser, testNoticeList).get(0);
+
+            // mock
+            given(subscribeJpaRepository.findByIdFetchJoinNotice(testSubscribe.getId()))
+                    .willReturn(Optional.of(testSubscribe));
+
+            // when
+            SubscribeGetResponseDto response = subscribeReadService.getSubscribe(testUser, testSubscribe.getId());
+
+            // then
+            assertEquals(testSubscribe.getId(), response.subscribeId());
+            assertEquals(testSubscribe.getTitle(), response.title());
+            assertEquals(testSubscribe.getNoticeLink(), response.noticeLink());
+            assertEquals(testSubscribe.getNotice().getRssLink(), response.rssLink());
+            assertEquals(testSubscribe.getIsActive(), response.isActive());
+        }
+
+        @DisplayName("실패 존재하지 않는 구독")
+        @Test
+        void fail_subscribe_not_found() {
+            // given
+            User testUser = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            Subscribe testSubscribe = dummyEntity.getTestSubscribeList(testUser, testNoticeList).get(0);
+
+            // mock
+            given(subscribeJpaRepository.findByIdFetchJoinNotice(testSubscribe.getId()))
+                    .willReturn(Optional.empty());
+
+            // when
+            Throwable exception = assertThrows(Exception404.class,
+                    () -> subscribeReadService.getSubscribe(testUser, testSubscribe.getId()));
+
+            // then
+            assertEquals(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getMessage(), exception.getMessage());
+        }
+
+        @DisplayName("실패 작성자가 아닌 사람의 요청")
+        @Test
+        void fail_request_not_writer() {
+            // given
+            User testUser = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+            User anotherUser = dummyEntity.getTestUser("rjsdnxogh12@gmail.com", 2L);
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            Subscribe testSubscribe = dummyEntity.getTestSubscribeList(testUser, testNoticeList).get(0);
+
+            // mock
+            given(subscribeJpaRepository.findByIdFetchJoinNotice(testSubscribe.getId()))
+                    .willReturn(Optional.of(testSubscribe));
+
+            // when
+            Throwable exception = assertThrows(Exception403.class,
+                    () -> subscribeReadService.getSubscribe(anotherUser, testSubscribe.getId()));
+
+            // then
+            assertEquals(BaseExceptionStatus.SUBSCRIBE_FORBIDDEN.getMessage(), exception.getMessage());
         }
     }
 }

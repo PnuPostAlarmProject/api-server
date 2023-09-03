@@ -22,10 +22,14 @@ public interface ScrapJpaRepository extends JpaRepository<Scrap, Long> {
             "where s.user.id = :userId and s.content.id = :contentId")
     Optional<Scrap> findByContentIdAndUserId(@Param("userId") Long userId, @Param("contentId") Long contentId);
 
+    // 해당 경우와 같이 Scrap이 아닌 Content의 데이터에 정렬기준이 있으면 pageable이 아닌 직접 order by를 사용해야한다.
     @Query(value = "select s from Scrap s " +
             "join fetch s.content c " +
             "where s.user.id = :userId and c.notice.id = :noticeId " +
-            "order by c.pubDate desc")
+            "order by c.pubDate desc",
+            countQuery = "select count(s) from Scrap s " +
+                    "join s.content c " +
+                    "where s.user.id = :userId and c.notice.id = :noticeId")
     Page<Scrap> findByUserIdAndNoticeIdFetchJoinContent(@Param("userId") Long userId,
                                                         @Param("noticeId") Long noticeId,
                                                         Pageable pageable);

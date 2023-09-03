@@ -27,7 +27,7 @@ public class ContentWriteService {
         if (rssDataList.isEmpty()) return ;
 
         List<Content> content = rssDataList.stream()
-                        .map(rssData -> Content.from(rssData, notice))
+                        .map(rssData -> Content.of(rssData, notice))
                         .toList();
 
         try {

@@ -22,7 +22,6 @@ public class GetScrapSubscirbeUseCase {
     private final SubscribeReadService subscribeReadService;
     private final ScrapReadService scrapReadService;
 
-    // 미완성
     public ScrapWithSubscribeDto execute(Optional<Long> subscribeId, User user, Pageable pageable) {
         // 등록중인 subscribe
         List<Subscribe> subscribeList = subscribeReadService.getSubscribeEntityList(user);
