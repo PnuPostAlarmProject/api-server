@@ -75,6 +75,9 @@ public class ContentControllerTest extends RestDocs {
                     resource(
                             ResourceSnippetParameters.builder()
                                     .description("공지사항 뷰 API")
+                                    .requestHeaders(
+                                            headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("accesss 토큰")
+                                    )
                                     .pathParameters(
                                             parameterWithName("subscribe_id").type(SimpleType.INTEGER).optional().description("구독 ID")
                                     )
@@ -91,10 +94,10 @@ public class ContentControllerTest extends RestDocs {
         void success_default_2page() throws Exception {
             // given
             String accessToken = getAccessToken("rjsdnxogh@naver.com");
-
+            int page = 1;
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/content?page=1")
+                    get("/content?page={page}", page)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
