@@ -4,7 +4,8 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception500;
 import com.ppap.ppap._core.exception.Exception502;
-import com.ppap.ppap.domain.subscribe.entity.Notice;
+import com.ppap.ppap._core.utils.UrlFactory;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jdom2.Document;
@@ -12,9 +13,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +21,6 @@ import java.net.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
