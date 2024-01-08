@@ -82,7 +82,6 @@ public class GetSubscribeContentUseCaseTest {
             // then
             verify(contentReadService, times(1)).findByNoticeId(curSubscribeId.capture(), any());
             assertEquals(curSubscribeId.getValue(), 1L);
-            assertEquals(22, response.subscribes().size());
             assertEquals(10, response.contents().size());
             for (int i=0; i<5; i++) {
                 assertEquals(true, response.contents().get(i).isScraped());
@@ -119,7 +118,6 @@ public class GetSubscribeContentUseCaseTest {
             // then
             verify(contentReadService, times(1)).findByNoticeId(curSubscribeId.capture(), any());
             assertEquals(curSubscribeId.getValue(), 1L);
-            assertEquals(22, response.subscribes().size());
             assertEquals(2, response.contents().size());
             for (int i=0; i<response.contents().size(); i++) {
                 assertEquals(false, response.contents().get(i).isScraped());
@@ -153,7 +151,6 @@ public class GetSubscribeContentUseCaseTest {
             // then
             verify(contentReadService, times(1)).findByNoticeId(curSubscribeId.capture(), any());
             assertEquals(curSubscribeId.getValue(), 2L);
-            assertEquals(22, response.subscribes().size());
             assertEquals(10, response.contents().size());
             for (int i=0; i<response.contents().size(); i++) {
                 assertEquals(false, response.contents().get(i).isScraped());

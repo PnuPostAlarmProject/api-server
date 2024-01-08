@@ -5,7 +5,7 @@ import com.epages.restdocs.apispec.SimpleType;
 
 import com.ppap.ppap._core.RestDocs;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
-import com.ppap.ppap._core.rss.UrlFactory;
+import com.ppap.ppap._core.utils.UrlFactory;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeCreateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
@@ -14,7 +14,6 @@ import org.jdom2.input.SAXBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -22,7 +21,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
-import java.net.URL;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;

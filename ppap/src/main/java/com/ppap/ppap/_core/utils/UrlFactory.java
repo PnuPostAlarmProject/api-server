@@ -1,4 +1,4 @@
-package com.ppap.ppap._core.rss;
+package com.ppap.ppap._core.utils;
 
 import org.springframework.stereotype.Component;
 

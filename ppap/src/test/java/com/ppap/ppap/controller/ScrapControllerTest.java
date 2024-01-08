@@ -188,9 +188,6 @@ public class ScrapControllerTest extends RestDocs {
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.subscribes[0].subscribeId").value(1L),
-                    jsonPath("$.response.subscribes[1].subscribeId").value(2L),
-                    jsonPath("$.response.subscribes[2].subscribeId").value(3L),
                     jsonPath("$.response.curSubscribeId").value(1L),
                     jsonPath("$.response.scraps[0].contentId").value(1L),
                     jsonPath("$.response.scraps[1].contentId").value(2L),
@@ -240,9 +237,6 @@ public class ScrapControllerTest extends RestDocs {
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.subscribes[0].subscribeId").value(1L),
-                    jsonPath("$.response.subscribes[1].subscribeId").value(2L),
-                    jsonPath("$.response.subscribes[2].subscribeId").value(3L),
                     jsonPath("$.response.curSubscribeId").value(1L),
                     jsonPath("$.response.scraps[0].contentId").value(17L),
                     jsonPath("$.error").doesNotExist()
@@ -266,9 +260,6 @@ public class ScrapControllerTest extends RestDocs {
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.subscribes[0].subscribeId").value(1L),
-                    jsonPath("$.response.subscribes[1].subscribeId").value(2L),
-                    jsonPath("$.response.subscribes[2].subscribeId").value(3L),
                     jsonPath("$.response.curSubscribeId").value(2L),
                     jsonPath("$.response.scraps[0].contentId").value(19L),
                     jsonPath("$.response.scraps[1].contentId").value(21L),

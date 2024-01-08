@@ -41,6 +41,6 @@ public class GetScrapSubscirbeUseCase {
                 pageable);
 
 
-        return ScrapWithSubscribeDto.of(subscribeList, curSubscribeId, scrapList);
+        return ScrapWithSubscribeDto.of(curSubscribeId, scrapList);
     }
 }
