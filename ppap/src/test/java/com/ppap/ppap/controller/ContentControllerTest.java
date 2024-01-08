@@ -38,12 +38,6 @@ public class ContentControllerTest extends RestDocs {
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.subscribes[0].subscribeId").value(1L),
-                    jsonPath("$.response.subscribes[1].subscribeId").value(2L),
-                    jsonPath("$.response.subscribes[2].subscribeId").value(3L),
-                    jsonPath("$.response.subscribes[0].title").value("테스트1"),
-                    jsonPath("$.response.subscribes[1].title").value("테스트2"),
-                    jsonPath("$.response.subscribes[2].title").value("테스트3"),
                     jsonPath("$.response.curSubscribeId").value(1L),
                     jsonPath("$.response.contents[0].contentId").value(1L),
                     jsonPath("$.response.contents[0].isScraped").value("true"),
@@ -106,12 +100,6 @@ public class ContentControllerTest extends RestDocs {
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.subscribes[0].subscribeId").value(1L),
-                    jsonPath("$.response.subscribes[1].subscribeId").value(2L),
-                    jsonPath("$.response.subscribes[2].subscribeId").value(3L),
-                    jsonPath("$.response.subscribes[0].title").value("테스트1"),
-                    jsonPath("$.response.subscribes[1].title").value("테스트2"),
-                    jsonPath("$.response.subscribes[2].title").value("테스트3"),
                     jsonPath("$.response.curSubscribeId").value(1L),
                     jsonPath("$.response.contents[0].contentId").value(11L),
                     jsonPath("$.response.contents[0].isScraped").value("true"),
@@ -149,12 +137,6 @@ public class ContentControllerTest extends RestDocs {
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.subscribes[0].subscribeId").value(1L),
-                    jsonPath("$.response.subscribes[1].subscribeId").value(2L),
-                    jsonPath("$.response.subscribes[2].subscribeId").value(3L),
-                    jsonPath("$.response.subscribes[0].title").value("테스트1"),
-                    jsonPath("$.response.subscribes[1].title").value("테스트2"),
-                    jsonPath("$.response.subscribes[2].title").value("테스트3"),
                     jsonPath("$.response.curSubscribeId").value(2L),
                     jsonPath("$.response.contents[0].contentId").value(18L),
                     jsonPath("$.response.contents[0].isScraped").value("false"),

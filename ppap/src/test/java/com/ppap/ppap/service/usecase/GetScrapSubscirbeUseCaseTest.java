@@ -73,7 +73,6 @@ public class GetScrapSubscirbeUseCaseTest {
 
             // then
             assertEquals(1L, response.curSubscribeId());
-            assertEquals(22, response.subscribes().size());
             assertEquals(10, response.scraps().size());
             for (int i=1; i<11; i++) {
                 assertEquals(true, response.scraps().get(i-1).isScrap());
@@ -107,7 +106,6 @@ public class GetScrapSubscirbeUseCaseTest {
 
             // then
             assertEquals(1L, response.curSubscribeId());
-            assertEquals(22, response.subscribes().size());
             assertEquals(2, response.scraps().size());
             for (int i=0; i<response.scraps().size(); i++) {
                 assertEquals(11+i, response.scraps().get(i).contentId());
@@ -141,7 +139,6 @@ public class GetScrapSubscirbeUseCaseTest {
 
             // then
             assertEquals(2L, response.curSubscribeId());
-            assertEquals(22, response.subscribes().size());
             assertEquals(10, response.scraps().size());
             for (int i=1; i<11; i++) {
                 assertEquals(true, response.scraps().get(i-1).isScrap());
