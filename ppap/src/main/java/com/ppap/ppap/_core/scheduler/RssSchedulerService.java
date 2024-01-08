@@ -40,7 +40,7 @@ public class RssSchedulerService {
     private final FcmService fcmService;
 
 
-    @Scheduled(cron = "0 * * * * ?", zone="Asia/Seoul")
+    @Scheduled(cron = "0 0/10 * * * ?", zone="Asia/Seoul")
     public void run() {
         log.info("cron Start");
         Long start = System.currentTimeMillis();
