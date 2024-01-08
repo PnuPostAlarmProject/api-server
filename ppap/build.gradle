@@ -86,6 +86,9 @@ tasks.withType(GenerateSwaggerUI) {
 
 bootJar {
     dependsOn 'openapi3'
+    archiveBaseName = 'ppap'
+    archiveFileName = 'ppap.jar'
+    archiveVersion = "0.0.1"
 }
 
 jar {

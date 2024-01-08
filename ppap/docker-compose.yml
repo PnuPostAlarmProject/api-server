@@ -1,0 +1,47 @@
+version: "3"
+services:
+  database:
+    image: mysql
+    container_name: ppap_db
+    env_file:
+      - ./conf/mysql/.env
+#    environment:
+#      - MYSQLD_INNODB_AUTOINC_LOCK_MODE=0 #insert가 실패 or 무시되어도 id가 증가하지 않음.
+    ports:
+      - "3306:3306"
+    volumes:  #로컬 디비를 이용하기 위한 Volume 설정
+      - ./conf/mysql/db:/var/lib/mysql
+    networks:
+      - spring-stage-network
+
+  redis:
+    image: redis:alpine
+    container_name: redis_stage
+    hostname: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - spring-stage-network
+
+  ppap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: web_stage
+    env_file:
+      - ./.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    tty: true
+    restart: on-failure:2
+    depends_on:
+      - redis
+      - database
+    networks:
+      - spring-stage-network
+
+networks:
+  spring-stage-network:
+

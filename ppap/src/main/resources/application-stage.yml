@@ -1,0 +1,60 @@
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATABASE_URI}
+    username: root
+    password: ${DATABASE_PASSWORD}
+
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+      default_batch_fetch_size: 100
+    open-in-view: false
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+  quartz:
+    job-store-type: jdbc
+    jdbc.initialize-schema: always
+
+logging:
+  level:
+    '[com.ppap.ppap]': DEBUG
+    '[org.hibernate.type]': TRACE
+    '[org.springframework.jdbc]': DEBUG
+
+
+
+access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
+refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde
+
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    secret: ${KAKAO_SECRET}
+    redirect: http://localhost:8080/dev/kakao/login/redirect
+
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    url: /docs/openapi3.yaml
+    path: /docs/api-docs # api doc path
