@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record ScrapWithSubscribeDto(
-        List<SubscribeDto> subscribes,
         Long curSubscribeId,
         List<ScrapDto> scraps
 ) {
@@ -53,11 +52,9 @@ public record ScrapWithSubscribeDto(
         }
     }
 
-    public static ScrapWithSubscribeDto of(List<Subscribe> subscribeList, Long curSubscribeId, List<Scrap> scrapList) {
-        List<SubscribeDto> subscribes = subscribeList.stream().map(SubscribeDto::of).toList();
+    public static ScrapWithSubscribeDto of(Long curSubscribeId, List<Scrap> scrapList) {
         List<ScrapDto> scraps = scrapList.stream().map(ScrapDto::of).toList();
         return ScrapWithSubscribeDto.builder()
-                .subscribes(subscribes)
                 .curSubscribeId(curSubscribeId)
                 .scraps(scraps)
                 .build();

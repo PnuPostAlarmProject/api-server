@@ -38,7 +38,8 @@ public class GetSubscribeContentUseCase {
         // 현재 클릭한 subscribe
         Subscribe curSubcribe = subscribeList.stream()
                 .filter(subscribe -> subscribe.getId().equals(curSubscribeId))
-                .findFirst().orElseThrow(() -> new Exception404(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND));
+                .findFirst()
+                .orElseThrow(() -> new Exception404(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND));
 
         // 현재 클릭한 구독의 컨텐츠들
         // One To Many sql 1번 vs notice 1번, content 1번 -> 총 2번 (이거 선택)
@@ -52,6 +53,6 @@ public class GetSubscribeContentUseCase {
                 .map(ScrapFindByContentIdDto::contentId)
                 .collect(Collectors.toSet());
 
-        return SubscribeWithContentScrapDto.of(subscribeList, curSubscribeId, contentList, scrapContentIdSet);
+        return SubscribeWithContentScrapDto.of(curSubscribeId, contentList, scrapContentIdSet);
     }
 }

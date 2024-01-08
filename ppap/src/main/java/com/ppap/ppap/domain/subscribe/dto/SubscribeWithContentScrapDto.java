@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 public record SubscribeWithContentScrapDto(
-        List<SubscribeDto> subscribes,
         Long curSubscribeId,
         List<ContentScrapDto>  contents
         ) {
@@ -52,17 +51,14 @@ public record SubscribeWithContentScrapDto(
         }
     }
 
-    public static SubscribeWithContentScrapDto of(List<Subscribe> subscribeList,
-                                                  Long curSubscribeId,
+    public static SubscribeWithContentScrapDto of(Long curSubscribeId,
                                                   List<Content> contentList,
                                                   Set<Long> scrapContentIdSet) {
 
-        List<SubscribeDto> subscribes = subscribeList.stream().map(SubscribeDto::of).toList();
         List<ContentScrapDto> contents = contentList.stream()
                 .map(content -> ContentScrapDto.of(content, scrapContentIdSet)).toList();
 
         return SubscribeWithContentScrapDto.builder()
-                .subscribes(subscribes)
                 .curSubscribeId(curSubscribeId)
                 .contents(contents)
                 .build();
