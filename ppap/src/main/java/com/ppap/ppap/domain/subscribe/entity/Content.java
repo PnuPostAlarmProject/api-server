@@ -32,7 +32,7 @@ public class Content {
     @JoinColumn(name = "notice_id", nullable = false)
     private Notice notice;
 
-    @Column(length = 100, nullable = false)
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
