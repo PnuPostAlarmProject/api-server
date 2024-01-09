@@ -23,6 +23,22 @@ services:
     networks:
       - spring-stage-network
 
+  nginx:
+    image: nginx:latest
+    container_name: server_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/app/
+      - ./conf/nginx:/etc/nginx/conf.d
+    environment:
+      - TZ=Asia/Seoul
+    depends_on:
+      - ppap
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    networks:
+      - spring-stage-network
+
   ppap:
     build:
       context: .
@@ -41,6 +57,8 @@ services:
       - database
     networks:
       - spring-stage-network
+
+
 
 networks:
   spring-stage-network:
