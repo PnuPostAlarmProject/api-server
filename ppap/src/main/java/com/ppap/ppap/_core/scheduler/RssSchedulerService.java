@@ -105,7 +105,7 @@ public class RssSchedulerService {
 
     /**
      * 받은 rss링크를 통해 Rss 데이터를 가져온 뒤 갱신해야 하는 데이터를 반환하는 코드
-     * 만약 처음 공지사항을 받아온다면 50개를 저장하고 아니라면 갱신해야하는 데이터만 디비에 저장한다.
+     * 만약 처음 공지사항을 받아온다면 30개를 저장하고 아니라면 갱신해야하는 데이터만 디비에 저장한다.
      * @param notice : 공지사항
      * @param errorNotice : 에러가 발생한 공지사항
      * @return 알림을 줘야하는(갱신된) rss 데이터
@@ -117,7 +117,7 @@ public class RssSchedulerService {
             List<RssData> filterRssDataList = rssDataList.stream()
                     .filter(rssData -> rssData.pubDate().isAfter(notice.getLastNoticeTime())).toList();
 
-            // 처음 받아오는 거라면 50개를 저장, 아니라면 서버에 저장된 시간보다 뒤에 있는 값만 저장.
+            // 처음 받아오는 거라면 30개를 저장, 아니라면 서버에 저장된 시간보다 뒤에 있는 값만 저장.
             if(isInit) {
                 contentWriteService.contentsSave(rssDataList, notice);
             } else{
@@ -135,7 +135,6 @@ public class RssSchedulerService {
 
     // 공지사항 최근 날짜 업데이트
     private void updateMaxPubDateNotice(Map<Notice, List<RssData>> filterNoticeRssGroup) {
-
         Map<Notice, LocalDateTime> maxPubDateNotice = filterNoticeRssGroup.entrySet().stream()
                 .collect(toMap( Map.Entry::getKey,
                         map -> map.getValue().stream()
@@ -159,8 +158,8 @@ public class RssSchedulerService {
 //        })).join();
     }
 
+    // 리팩토링 필요
     private Set<Subscribe> getSubscribeSet(Set<Notice> noticeSet) {
-
         return forkJoinPool.submit(() -> noticeSet.parallelStream()
                 .map(Notice::getId)
                 .flatMap(noticeId -> subscribeReadService.getSubscribeByNoticeId(noticeId).stream())
