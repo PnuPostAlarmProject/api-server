@@ -1,10 +1,12 @@
 package com.ppap.ppap._core.firebase.message;
 
 import com.google.api.core.ApiFuture;
+import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.SendResponse;
 import com.ppap.ppap._core.rss.RssData;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
@@ -17,8 +19,13 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -49,14 +56,37 @@ public class FcmService {
 
         List<List<Message>> chunkMessages = devideMessageList(messageList, 500);
 
-        // 아래를 Reactive 프로그래밍으로 변경해보기
-        try {
-            for (List<Message> messages : chunkMessages) {
-                firebaseMessaging.sendEach(messages);
-            }
-        } catch (FirebaseMessagingException e) {
-            throw new RuntimeException(e);
-        }
+        final ExecutorService executor = Executors.newFixedThreadPool(Math.min(chunkMessages.size(), 10),
+            r -> {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            });
+
+        // 아래를 비동기(CompletableFuture) 프로그래밍으로 변경해보기
+        List<CompletableFuture<BatchResponse>> futureList = chunkMessages.stream()
+            .map(messages -> CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        return firebaseMessaging.sendEach(messages);
+                    } catch (FirebaseMessagingException e) {
+                        log.error(e.getMessage());
+                        return null;
+                    }
+                },executor))
+            .map(future -> future.exceptionally(ex -> {
+                log.error(ex.getMessage());
+                return null;
+            }))
+            .toList();
+
+        // 두 개로 나눈 이유는 하나의 파이프라인에서 처리할 시 동기적으로 처리하게 되는 문제가 발생한다.
+        List<BatchResponse> responseList = futureList.stream()
+            .map(CompletableFuture::join)
+            .filter(Objects::nonNull)
+            .toList();
+
+        // executor.shutdown();
     }
 
     public String sendNotification() {

@@ -24,6 +24,8 @@ public class FcmConfig {
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(inputStream))
+                // .setConnectTimeout(10000)
+                // .setReadTimeout(10000)
                 .build();
 
         if (FirebaseApp.getApps().isEmpty())
