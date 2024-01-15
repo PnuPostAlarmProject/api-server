@@ -38,28 +38,28 @@ public class InitDataGenerator implements ApplicationRunner {
         userJpaRepository.saveAll(userList);
 
         List<String> rssLinkList = List.of(
-                "https://cse.pusan.ac.kr/bbs/cse/2615/rssList.do",
-                "https://cse.pusan.ac.kr/bbs/cse/12549/rssList.do",
-                "https://cse.pusan.ac.kr/bbs/cse/12278/rssList.do",
-                "https://chemeng.pusan.ac.kr/bbs/chemeng/2870/rssList.do",
-                "https://cse.pusan.ac.kr/bbs/cse/2606/rssList.do",
-                "https://french.pusan.ac.kr/bbs/french/4295/rssList.do",
-                "https://cse.pusan.ac.kr/bbs/cse/2617/rssList.do",
-                "https://ocean.pusan.ac.kr/bbs/ocean/2877/rssList.do",
-                "https://fsn.pusan.ac.kr/bbs/fsn/2783/rssList.do",
-                "https://cse.pusan.ac.kr/bbs/cse/2618/rssList.do",
-                "https://molbiology.pusan.ac.kr/bbs/molbiology/3918/rssList.do",
-                "https://phys.pusan.ac.kr/bbs/phys/2658/rssList.do",
-                "https://sct.pusan.ac.kr/bbs/sct/17403/rssList.do",
-                "https://nanomecha.pusan.ac.kr/bbs/nanomecha/3264/rssList.do",
-                "https://biology.pusan.ac.kr/bbs/biology/3143/rssList.do",
-                "https://cse.pusan.ac.kr/bbs/cse/2616/rssList.do",
-                "https://pnuecon.pusan.ac.kr/bbs/pnuecon/3210/rssList.do",
-                "https://biz.pusan.ac.kr/bbs/biz/2557/rssList.do",
+            "https://cse.pusan.ac.kr/bbs/cse/2605/rssList.do",
                 "https://eec.pusan.ac.kr/bbs/eehome/2650/rssList.do",
-                "https://cse.pusan.ac.kr/bbs/cse/2605/rssList.do",
-                "https://his.pusan.ac.kr/bbs/ee/2635/rssList.do",
-                "https://ee.pusan.ac.kr/bbs/ee/2635/rssList.do"
+                "https://cse.pusan.ac.kr/bbs/cse/12549/rssList.do",
+                "https://cse.pusan.ac.kr/bbs/cse/12278/rssList.do"
+                // "https://chemeng.pusan.ac.kr/bbs/chemeng/2870/rssList.do",
+                // "https://cse.pusan.ac.kr/bbs/cse/2606/rssList.do",
+                // "https://french.pusan.ac.kr/bbs/french/4295/rssList.do",
+                // "https://cse.pusan.ac.kr/bbs/cse/2617/rssList.do",
+                // "https://ocean.pusan.ac.kr/bbs/ocean/2877/rssList.do",
+                // "https://fsn.pusan.ac.kr/bbs/fsn/2783/rssList.do",
+                // "https://cse.pusan.ac.kr/bbs/cse/2618/rssList.do",
+                // "https://molbiology.pusan.ac.kr/bbs/molbiology/3918/rssList.do",
+                // "https://phys.pusan.ac.kr/bbs/phys/2658/rssList.do",
+                // "https://sct.pusan.ac.kr/bbs/sct/17403/rssList.do",
+                // "https://nanomecha.pusan.ac.kr/bbs/nanomecha/3264/rssList.do",
+                // "https://biology.pusan.ac.kr/bbs/biology/3143/rssList.do",
+                // "https://cse.pusan.ac.kr/bbs/cse/2616/rssList.do",
+                // "https://pnuecon.pusan.ac.kr/bbs/pnuecon/3210/rssList.do",
+                // "https://biz.pusan.ac.kr/bbs/biz/2557/rssList.do",
+                // "https://cse.pusan.ac.kr/bbs/cse/2615/rssList.do",
+                // "https://his.pusan.ac.kr/bbs/ee/2635/rssList.do",
+                // "https://ee.pusan.ac.kr/bbs/ee/2635/rssList.do"
         );
 
         List<Notice> noticeList = rssLinkList.stream()
@@ -72,21 +72,21 @@ public class InitDataGenerator implements ApplicationRunner {
                 Subscribe.builder().title("테스트1").user(userList.get(0)).notice(noticeList.get(0)).isActive(true).build(),
                 Subscribe.builder().title("테스트2").user(userList.get(0)).notice(noticeList.get(1)).isActive(true).build(),
                 Subscribe.builder().title("테스트3").user(userList.get(0)).notice(noticeList.get(2)).isActive(true).build(),
-                Subscribe.builder().title("테스트4").user(userList.get(1)).notice(noticeList.get(2)).isActive(true).build(),
-                Subscribe.builder().title("테스트5").user(userList.get(1)).notice(noticeList.get(3)).isActive(true).build(),
+                Subscribe.builder().title("테스트4").user(userList.get(1)).notice(noticeList.get(0)).isActive(true).build(),
+                Subscribe.builder().title("테스트5").user(userList.get(1)).notice(noticeList.get(1)).isActive(true).build(),
                 Subscribe.builder().title("테스트6").user(userList.get(2)).notice(noticeList.get(2)).isActive(true).build());
 
         subscribeJpaRepository.saveAll(subscribeList);
 
-        List<Device> deviceList = List.of(
-                Device.builder().fcmToken("testToken1").user(userList.get(0)).build(),
-                Device.builder().fcmToken("testToken2").user(userList.get(0)).build(),
-                Device.builder().fcmToken("testToken3").user(userList.get(1)).build(),
-                Device.builder().fcmToken("testToken4").user(userList.get(2)).build(),
-                Device.builder().fcmToken("testToken5").user(userList.get(2)).build(),
-                Device.builder().fcmToken("testToken6").user(userList.get(2)).build()
-        ) ;
-        deviceJpaRepository.saveAll(deviceList);
+        // List<Device> deviceList = List.of(
+        //         Device.builder().fcmToken("c4H_pzp-RQ2tFiSp1Qq61p:APA91bHQEaHOoOk5oo6zLh92UMC8vD1eX3Ek9U7bI2bQ_gD2wC4BmyiMjd_NsbbNbrb27SFD9kgBJ5EqzKYcSq1IwJuaBFrncTOU8wT0VVD8omQZgJ0xCY2o2cPhX0lNLWOk71JNhg17").user(userList.get(0)).build()
+        //         Device.builder().fcmToken("testToken2").user(userList.get(0)).build(),
+        //         Device.builder().fcmToken("testToken3").user(userList.get(1)).build(),
+        //         Device.builder().fcmToken("testToken4").user(userList.get(2)).build(),
+        //         Device.builder().fcmToken("testToken5").user(userList.get(2)).build(),
+        //         Device.builder().fcmToken("testToken6").user(userList.get(2)).build()
+        // ) ;
+        // deviceJpaRepository.saveAll(deviceList);
 
     }
 }

@@ -14,9 +14,13 @@ import com.ppap.ppap.domain.user.entity.Device;
 import io.netty.util.concurrent.CompleteFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,38 +29,30 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadFactory;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FcmService {
     private final FirebaseMessaging firebaseMessaging;
+    private final ForkJoinPool forkJoinPool;
+    private static final int CHUNK_SIZE = 500;
 
     public void sendRssNotification(Map<Notice, List<RssData>> filterNoticeRssGroup,
                                     Set<Subscribe> subscribeSet,
                                     Map<Long, List<Device>> userDeviceGroup) {
-        // FCM 푸시 메세지 보내기.
-        Notification notification = Notification.builder()
-            .setTitle("새로운 공지사항이 등록되었습니다.")
-            .build();
 
-        List<Message> messageList = new ArrayList<>();
-        for (List<Device> devices : userDeviceGroup.values()) {
-            devices.forEach((device) -> {
-                    messageList.add(Message.builder()
-                        .setNotification(notification)
-                        .setToken(device.getFcmToken())
-                        .putData("click_action", "NOTIFICATION_CLICK")
-                        // .putData("deeplink", "APP_URL")
-                        .build());
-                });
-        }
+        List<List<Message>> chunkMessages = getChunkMessages(filterNoticeRssGroup, subscribeSet, userDeviceGroup);
 
-        List<List<Message>> chunkMessages = devideMessageList(messageList, 500);
+        if (userDeviceGroup.keySet().isEmpty())
+            return ;
 
-        final ExecutorService executor = Executors.newFixedThreadPool(Math.min(chunkMessages.size(), 10),
+        ExecutorService executor = Executors.newFixedThreadPool(Math.min(chunkMessages.size(), 10),
             r -> {
                 Thread t = new Thread(r);
                 t.setDaemon(true);
@@ -86,7 +82,6 @@ public class FcmService {
             .filter(Objects::nonNull)
             .toList();
 
-        // executor.shutdown();
     }
 
     public String sendNotification() {
@@ -108,9 +103,53 @@ public class FcmService {
         return "ok";
     }
 
-    private List<List<Message>> devideMessageList(List<Message> messageList, int size) {
-        return IntStream.iterate(0, i -> i < messageList.size(), i -> i + size)
-            .mapToObj(i -> messageList.subList(i, Math.min(i + size, messageList.size())))
+    private List<List<Message>> getChunkMessages(Map<Notice, List<RssData>> filterNoticeRssGroup,
+                                                Set<Subscribe> subscribeSet,
+                                                Map<Long, List<Device>> userDeviceGroup) {
+
+        Map<Long, List<RssData>> filterNoticeIdRssGroup = filterNoticeRssGroup.entrySet().stream()
+            .collect(Collectors.toMap(
+                entry -> entry.getKey().getId(),
+                Map.Entry::getValue));
+
+        List<Message> messageList = createMessages(subscribeSet, filterNoticeIdRssGroup, userDeviceGroup);
+
+        return IntStream.iterate(0, i -> i < messageList.size(), i -> i + CHUNK_SIZE)
+            .mapToObj(i -> messageList.subList(i, Math.min(i + CHUNK_SIZE, messageList.size())))
+            .toList();
+    }
+
+    private List<Message> createMessages(Set<Subscribe> subscribeSet,
+                                        Map<Long, List<RssData>> filterNoticeIdRssGroup,
+                                        Map<Long, List<Device>> userDeviceGroup) {
+
+        return forkJoinPool.submit(() -> subscribeSet.parallelStream()
+            .flatMap(subscribe -> createMessageForSubscribe(subscribe, filterNoticeIdRssGroup, userDeviceGroup))
+            .toList()
+        ).join();
+    }
+
+    private Stream<Message> createMessageForSubscribe(Subscribe subscribe,
+                                                    Map<Long, List<RssData>> filterNoticeIdRssGroup,
+                                                    Map<Long, List<Device>> userDeviceGroup) {
+
+        List<RssData> rssDataList = filterNoticeIdRssGroup.getOrDefault(subscribe.getNotice().getId(), Collections.emptyList());
+        List<Device> devices = userDeviceGroup.getOrDefault(subscribe.getUser().getId(), Collections.emptyList());
+        return rssDataList.stream()
+            .flatMap(rssData -> createMessagesForRssData(rssData, devices).stream());
+    }
+
+    private List<Message> createMessagesForRssData(RssData rssData, List<Device> devices) {
+
+        Notification notification = Notification.builder()
+            .setTitle(rssData.title())
+            .build();
+        return devices.stream()
+            .map(device -> Message.builder()
+                .setNotification(notification)
+                .setToken(device.getFcmToken())
+                .putData("click_action", "NOTIFICATION_CLICK")
+                .build())
             .toList();
     }
 }

@@ -1,10 +1,8 @@
 package com.ppap.ppap._core.scheduler;
 
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.ppap.ppap._core.firebase.message.FcmService;
 import com.ppap.ppap._core.rss.RssData;
 import com.ppap.ppap._core.rss.RssReader;
-import com.ppap.ppap.domain.subscribe.entity.Content;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
 import com.ppap.ppap.domain.subscribe.repository.NoticeJpaRepository;
@@ -75,7 +73,7 @@ public class RssSchedulerService {
 
 
         // 가져온 FCM 토큰들을 통해 알림 전송
-//        fcmService.sendRssNotification(filterNoticeRssGroup, subscribeSet, userDeviceGroup);
+        fcmService.sendRssNotification(filterNoticeRssGroup, subscribeSet, userDeviceGroup);
 
         // 각 공지사항 중, 가장 최근 데이터의 발행시각을 가져온 뒤 디비에 업데이트
         updateMaxPubDateNotice(filterNoticeRssGroup);
