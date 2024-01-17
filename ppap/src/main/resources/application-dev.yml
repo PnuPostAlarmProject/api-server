@@ -32,15 +32,15 @@ spring:
       host: localhost
       port: 6379
 
-  quartz:
-    job-store-type: jdbc
-    jdbc.initialize-schema: always
+#  quartz:
+#    job-store-type: jdbc
+#    jdbc.initialize-schema: always
 
-logging:
-  level:
-    '[com.ppap.ppap]': DEBUG
-    '[org.hibernate.type]': TRACE
-    '[org.springframework.jdbc]': DEBUG
+#logging:
+#  level:
+#    '[com.ppap.ppap]': DEBUG
+#    '[org.hibernate.type]': TRACE
+#    '[org.springframework.jdbc]': DEBUG
 
 
 

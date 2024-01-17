@@ -14,6 +14,8 @@ import com.ppap.ppap.domain.user.entity.Device;
 import com.ppap.ppap.domain.user.service.DeviceReadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -40,14 +42,19 @@ public class RssSchedulerService {
 
     @Scheduled(cron = "0 0/10 * * * ?", zone="Asia/Seoul")
     public void run() {
-        log.info("cron Start");
-        Long start = System.currentTimeMillis();
+        try {
+            MDC.put("logFileName", "schedule");
+            log.info("cron Start");
+            Long start = System.currentTimeMillis();
 
-        processRssData();
+            processRssData();
 
-        Long end = System.currentTimeMillis();
-        log.info("실행시간 : " + (end-start) + "ms");
-        log.info("cron end");
+            Long end = System.currentTimeMillis();
+            log.info("실행시간 : " + (end - start) + "ms");
+            log.info("cron end");
+        } finally {
+            MDC.clear();
+        }
     }
 
     private void processRssData() {
@@ -58,18 +65,18 @@ public class RssSchedulerService {
         // 각 noticeId에 대해 읽어 공지사항별 RSS데이터 그룹을 만든다.
         Map<Notice, List<RssData>> filterNoticeRssGroup = getFilterNoticeGroup(noticeList, errorNotices, noticeIdSetInContent);
 
-        System.out.println("===========filterNoticeRssGroup==========");
-        System.out.println(filterNoticeRssGroup);
+        // System.out.println("===========filterNoticeRssGroup==========");
+        // System.out.println(filterNoticeRssGroup);
 
         // 필요한 구독 목록 중복없이 다 가져옴.
         Set<Subscribe> subscribeSet = getSubscribeSet(filterNoticeRssGroup.keySet());
-        System.out.println("===========subscribeSet==========");
-        System.out.println(subscribeSet);
+        // System.out.println("===========subscribeSet==========");
+        // System.out.println(subscribeSet);
 
         // userId별 Fcm토큰 값들을 조회
-        System.out.println("===========userDeviceGroup==========");
+        // System.out.println("===========userDeviceGroup==========");
         Map<Long, List<Device>> userDeviceGroup = getFcmTokenGroup(subscribeSet);
-        System.out.println(userDeviceGroup);
+        // System.out.println(userDeviceGroup);
 
 
         // 가져온 FCM 토큰들을 통해 알림 전송
@@ -78,8 +85,11 @@ public class RssSchedulerService {
         // 각 공지사항 중, 가장 최근 데이터의 발행시각을 가져온 뒤 디비에 업데이트
         updateMaxPubDateNotice(filterNoticeRssGroup);
 
-        System.out.println("===========errorNotices============");
-        System.out.println(errorNotices);
+        // System.out.println("===========errorNotices============");
+        if (!errorNotices.isEmpty())
+            log.error("Error Notices: {}", errorNotices);
+
+        // System.out.println(errorNotices);
     }
 
     /**
