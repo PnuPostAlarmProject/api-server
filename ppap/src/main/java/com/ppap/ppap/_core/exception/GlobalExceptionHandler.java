@@ -4,6 +4,7 @@ import com.ppap.ppap._core.utils.ApiUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -52,7 +53,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<?> unknownServerError(Exception e) {
         // logging 추가
-        log.error(e.getMessage());
+        log.error(ExceptionUtils.getStackTrace(e));
         return new ResponseEntity<>(
                 ApiUtils.error("서버에서 알 수 없는 에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
                 HttpStatus.INTERNAL_SERVER_ERROR
