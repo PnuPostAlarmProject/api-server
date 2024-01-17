@@ -18,6 +18,10 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+
+    configureEach {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
 }
 
 repositories {
@@ -51,11 +55,12 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 
     // third party
+    implementation 'org.codehaus.janino:janino' // 필터 적용을 위한 의존성
     implementation 'com.google.firebase:firebase-admin:9.2.0' //fcm을 위한 의존성
     implementation 'org.jdom:jdom2:2.0.6.1' // RSS를 받기 위한 jdom 라이브러리 해당 버전 이하는 XXE공격 취약점이 있다고 함.
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.3.0'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2'
-
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
 }
 
 test {

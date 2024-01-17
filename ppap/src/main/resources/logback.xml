@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+    <!--파일에 로그를 출력한다-->
+    <appender name="API_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./log/api/LogFile-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+    </appender>
+
+    <appender name="SCHEDULE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./log/cron/ScheduleLogFile-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--콘솔에 로그를 출력한다-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <!--WARN 레벨 이상의 로그를 콘솔에 출력한다-->
+    <appender name="CONSOLE-WARN" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <!--ERROR 레벨의 로그를 별도의 파일로 저장한다-->
+    <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./log/error/ErrorLogFile-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} %M - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC_API" class ="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="API_LOG"/>
+        <filter class="com.ppap.ppap._core.filter.MDCFilterRegular">
+            <MDCKey>logFileName</MDCKey>
+            <Value>api</Value>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="ASYNC_SCHEDULE" class ="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="SCHEDULE_LOG"/>
+        <filter class="com.ppap.ppap._core.filter.MDCFilterRegular">
+            <MDCKey>logFileName</MDCKey>
+            <Value>schedule</Value>
+            <onMatch>NEUTRAL</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+<!--        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">-->
+<!--            <evaluator>-->
+<!--                <expression>-->
+<!--                    return logger.contains("com.ppap.ppap.PpapApplication");-->
+<!--                </expression>-->
+<!--            </evaluator>-->
+<!--            <onMatch>DENY</onMatch>-->
+<!--            <onMismatch>NEUTRAL</onMismatch>-->
+<!--        </filter>-->
+    </appender>
+
+    <appender name="ASYNC_ERROR_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE-ERROR"/>
+        <filter class="com.ppap.ppap._core.filter.MDCFilterRegular">
+            <MDCKey>logFileName</MDCKey>
+            <Value>api</Value>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <logger name="com.ppap.ppap._core.filter.LoggingFilter" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_API" />
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_SCHEDULE" />
+        <appender-ref ref="ASYNC_ERROR_FILE"/>
+    </root>
+
+
+
+    <!--배포환경의 로그 설정-->
+<!--    <springProfile name="prod">-->
+<!--        <root level="INFO">-->
+<!--            <appender-ref ref="FILE"/>-->
+<!--            <appender-ref ref="CONSOLE-WARN"/>-->
+<!--            <appender-ref ref="FILE-ERROR"/>-->
+<!--        </root>-->
+<!--    </springProfile>-->
+
+<!--    &lt;!&ndash;로컬환경의 로그 설정&ndash;&gt;-->
+<!--    <springProfile name="local">-->
+<!--        <root level="INFO">-->
+<!--&lt;!&ndash;            <appender-ref ref="FILE"/>&ndash;&gt;-->
+<!--            <appender-ref ref="CONSOLE"/>-->
+<!--&lt;!&ndash;            <appender-ref ref="FILE-ERROR"/>&ndash;&gt;-->
+<!--        </root>-->
+<!--    </springProfile>-->
+
+</configuration>
