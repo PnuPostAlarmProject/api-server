@@ -159,7 +159,7 @@ public class SubscribeReadServiceTest{
             assertEquals(testSubscribe.getId(), response.subscribeId());
             assertEquals(testSubscribe.getTitle(), response.title());
             assertEquals(testSubscribe.getNoticeLink(), response.noticeLink());
-            assertEquals(testSubscribe.getNotice().getRssLink(), response.rssLink());
+            assertEquals(testSubscribe.getNotice().getLink(), response.rssLink());
             assertEquals(testSubscribe.getIsActive(), response.isActive());
         }
 

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,6 +36,10 @@ public class SubscribeReadService {
         return subscribeList.stream()
                 .map(SubscribeGetListResponseDto::of)
                 .toList();
+    }
+
+    public Set<Subscribe> getSubscribeByNoticeIdIn(List<Long> noticeIds) {
+        return subscribeJpaRepository.findByNoticeIdIn(noticeIds);
     }
 
     public List<Subscribe> getSubscribeByNoticeId(Long noticeId) {

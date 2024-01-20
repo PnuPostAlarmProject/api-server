@@ -1,8 +1,12 @@
 package com.ppap.ppap.domain.subscribe.entity;
 
 import com.ppap.ppap.domain.base.entity.AuditingEntity;
+import com.ppap.ppap.domain.subscribe.entity.constant.NoticeType;
+
 import jakarta.persistence.*;
 import lombok.*;
+
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -22,23 +26,27 @@ public class Notice extends AuditingEntity {
     private Long id;
 
     @Column(length = 255, nullable = false)
-    private String rssLink;
+    private String link;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Column(name="last_time", nullable = false)
     private LocalDateTime lastNoticeTime;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(length=20, nullable = false)
+    private NoticeType noticeType;
 
     @Builder
-    public Notice(Long id, String rssLink, LocalDateTime lastNoticeTime) {
+    public Notice(Long id, String link, LocalDateTime lastNoticeTime, NoticeType noticeType) {
         this.id = id;
-        this.rssLink = rssLink;
+        this.link = link;
         this.lastNoticeTime = lastNoticeTime;
+        this.noticeType = Objects.nonNull(noticeType) ? noticeType : NoticeType.RSS;
     }
 
     public static Notice of(String rssLink) {
         return Notice.builder()
-                .rssLink(rssLink)
+                .link(rssLink)
                 .lastNoticeTime(LocalDateTime.now().minusDays(5))
                 .build();
     }
@@ -52,11 +60,11 @@ public class Notice extends AuditingEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Notice notice = (Notice) o;
-        return Objects.equals(getId(), notice.getId()) && Objects.equals(getRssLink(), notice.getRssLink());
+        return Objects.equals(getId(), notice.getId()) && Objects.equals(getLink(), notice.getLink());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getRssLink());
+        return Objects.hash(getId(), getLink());
     }
 }

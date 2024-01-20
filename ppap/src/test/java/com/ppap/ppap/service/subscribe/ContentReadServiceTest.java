@@ -7,12 +7,11 @@ import com.ppap.ppap.domain.subscribe.entity.Content;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.repository.ContentJpaRepository;
 import com.ppap.ppap.domain.subscribe.service.ContentReadService;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -54,10 +53,10 @@ public class ContentReadServiceTest {
                     .collect(Collectors.toSet());
 
             // mock
-            given(contentJpaRepository.findAllDistinctNoticeId()).willReturn(contentDistinctIds);
+            given(contentJpaRepository.findDistinctNoticeIdIn(testNoticeList)).willReturn(contentDistinctIds);
 
             // when
-            Set<Long> results = contentReadService.findDistinctNoticeId();
+            Set<Long> results = contentReadService.findDistinctNoticeIdIn(testNoticeList);
 
             // then
             assertEquals(12, results.size());
@@ -104,7 +103,7 @@ public class ContentReadServiceTest {
             Page<Content> testContentPage;
             if (testContentList.size() >= 20) {
                 testContentPage = new PageImpl<>(testContentList.subList(10, 20), pageable, testContentList.size());
-            }else if( 10<=testContentList.size()){
+            }else if( 10<= testContentList.size()){
                 testContentPage = new PageImpl<>(testContentList.subList(10, testContentList.size()), pageable, testContentList.size());
             } else{
                 testContentPage = new PageImpl<>(List.of(), pageable, testContentList.size());
@@ -132,7 +131,8 @@ public class ContentReadServiceTest {
             List<Content> testContentList = dummyEntity.getTestContentList(testNoticeList.get(0));
 
             // mock
-            given(contentJpaRepository.findById(testContentList.get(0).getId())).willReturn(Optional.of(testContentList.get(0)));
+            given(contentJpaRepository.findById(testContentList.get(0).getId())).willReturn(Optional.of(
+				testContentList.get(0)));
 
             // when
             Content content = contentReadService.findById(testContentList.get(0).getId());
@@ -152,7 +152,8 @@ public class ContentReadServiceTest {
             given(contentJpaRepository.findById(testContentList.get(0).getId())).willReturn(Optional.empty());
 
             // when
-            Throwable throwable = assertThrows(Exception404.class, () -> contentReadService.findById(testContentList.get(0).getId()));
+            Throwable throwable = assertThrows(Exception404.class, () -> contentReadService.findById(
+				testContentList.get(0).getId()));
 
             // then
             assertEquals(BaseExceptionStatus.CONTENT_NOT_FOUND.getMessage(), throwable.getMessage());

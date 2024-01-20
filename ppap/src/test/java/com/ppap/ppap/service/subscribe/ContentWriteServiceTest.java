@@ -1,18 +1,18 @@
 package com.ppap.ppap.service.subscribe;
 
 import com.ppap.ppap._core.DummyEntity;
+import com.ppap.ppap._core.crawler.CrawlingData;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception500;
-import com.ppap.ppap._core.rss.RssData;
+import com.ppap.ppap._core.crawler.RssData;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.repository.ContentJpaRepository;
 import com.ppap.ppap.domain.subscribe.service.ContentWriteService;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -44,7 +44,7 @@ public class ContentWriteServiceTest {
         void success() {
             // given
             Notice testNotice = dummyEntity.getTestNoticeList().get(0);
-            List<RssData> testRssDataList = dummyEntity.getTestRssList();
+            List<CrawlingData> testRssDataList = dummyEntity.getTestRssList();
 
             // mock
             willDoNothing().given(contentJpaRepository).saveAllBatch(any());
@@ -74,7 +74,7 @@ public class ContentWriteServiceTest {
         void fail_save_db_error() {
             // given
             Notice testNotice = dummyEntity.getTestNoticeList().get(0);
-            List<RssData> testRssDataList = dummyEntity.getTestRssList();
+            List<CrawlingData> testRssDataList = dummyEntity.getTestRssList();
 
             // mock
             willThrow(new RuntimeException("db error")).given(contentJpaRepository).saveAllBatch(any());

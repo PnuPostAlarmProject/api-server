@@ -1,9 +1,10 @@
 package com.ppap.ppap.service.rss;
 
+import com.ppap.ppap._core.crawler.CrawlingData;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
-import com.ppap.ppap._core.rss.RssData;
-import com.ppap.ppap._core.rss.RssReader;
+import com.ppap.ppap._core.crawler.RssData;
+import com.ppap.ppap._core.crawler.RssReader;
 import com.ppap.ppap._core.utils.UrlFactory;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import org.jdom2.Document;
@@ -139,7 +140,7 @@ public class RssReaderServiceTest {
             given(mockSaxBuilder.build(any(InputStream.class))).willReturn(document);
 
             // when
-            List<RssData> resultDatas = rssReader.getRssData(notice.getRssLink(), false);
+            List<CrawlingData> resultDatas = rssReader.getRssData(notice.getLink(), false);
 
             // then
             assertEquals(10, resultDatas.size());

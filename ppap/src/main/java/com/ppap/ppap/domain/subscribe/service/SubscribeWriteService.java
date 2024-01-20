@@ -4,7 +4,7 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception403;
 import com.ppap.ppap._core.exception.Exception404;
-import com.ppap.ppap._core.rss.RssReader;
+import com.ppap.ppap._core.crawler.RssReader;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeCreateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateResponseDto;
@@ -34,7 +34,7 @@ public class SubscribeWriteService {
         String makeHttpsAndRemoveQueryString = rssReader.makeHttpsAndRemoveQueryString(requestDto.rssLink());
 
         // 링크로 주어진 값이 Notice에 없다면 rss링크가 유효한지 확인하고 save()
-        Notice notice = noticeReadService.findByRssLink(makeHttpsAndRemoveQueryString).orElseGet(
+        Notice notice = noticeReadService.findByLink(makeHttpsAndRemoveQueryString).orElseGet(
                 () -> {
                     rssReader.validRssLink(makeHttpsAndRemoveQueryString);
                     return noticeWriteService.save(makeHttpsAndRemoveQueryString);
@@ -44,7 +44,7 @@ public class SubscribeWriteService {
             throw new Exception400(BaseExceptionStatus.SUBSCRIBE_ALREADY_EXIST);
         }
 
-        String validNoticeLink = getValidNoticeLink(requestDto.noticeLink(), notice.getRssLink());
+        String validNoticeLink = getValidNoticeLink(requestDto.noticeLink(), notice.getLink());
 
         subscribeJpaRepository.save(Subscribe.of(user, notice, requestDto.title(), validNoticeLink, true));
     }
@@ -57,7 +57,7 @@ public class SubscribeWriteService {
         // 현재 접속한 회원과 접근한 구독의 작성자가 같은지 체크
         validSubscribeWriter(subscribe, user);
 
-        String validNoticeLink = getValidNoticeLink(requestDto.noticeLink(), subscribe.getNotice().getRssLink());
+        String validNoticeLink = getValidNoticeLink(requestDto.noticeLink(), subscribe.getNotice().getLink());
 
         subscribe.changeNoticeLinkAndTitle(validNoticeLink, requestDto.title());
         subscribeJpaRepository.saveAndFlush(subscribe);

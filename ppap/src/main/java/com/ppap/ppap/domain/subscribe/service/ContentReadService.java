@@ -3,6 +3,7 @@ package com.ppap.ppap.domain.subscribe.service;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap.domain.subscribe.entity.Content;
+import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.repository.ContentJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +20,8 @@ public class ContentReadService {
     private final ContentJpaRepository contentJpaRepository;
 
 
-    public Set<Long> findDistinctNoticeId() {
-        return contentJpaRepository.findAllDistinctNoticeId();
+    public Set<Long> findDistinctNoticeIdIn(List<Notice> noticeList) {
+        return contentJpaRepository.findDistinctNoticeIdIn(noticeList);
     }
     public List<Content> findByNoticeId(Long noticeId, Pageable pageable) {
         return contentJpaRepository.findByNoticeId(noticeId, pageable).toList();

@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface SubscribeJpaRepository extends JpaRepository<Subscribe, Long> {
 
@@ -29,4 +31,8 @@ public interface SubscribeJpaRepository extends JpaRepository<Subscribe, Long> {
             "join fetch s.notice n " +
             "where s.id = :subscribeId")
     Optional<Subscribe> findByIdFetchJoinNotice(@Param("subscribeId") Long subscribeId);
+
+    @Query(value = "select s from Subscribe s "
+        + "where s.notice.id in (:noticeIds)")
+    Set<Subscribe> findByNoticeIdIn(@Param("noticeIds")Collection<Long> noticeIds);
 }
