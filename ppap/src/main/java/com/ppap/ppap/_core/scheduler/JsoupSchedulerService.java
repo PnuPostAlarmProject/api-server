@@ -47,18 +47,19 @@ public class JsoupSchedulerService {
 
 	@Scheduled(cron = "0 0/10 * * * *", zone = "Asia/Seoul")
 	public void run() {
+		MDC.put("logFileName","schedule");
+		MDC.put("kind", "Jsoup");
 		log.info("Jsoup cron start");
 		long start = System.currentTimeMillis();
 		try{
-			MDC.put("logFileName","schedule");
-			MDC.put("kind", "Jsoup");
+
 			processJsoupData();
 
 		} catch (IOException ignore) {
 		} finally {
-			MDC.clear();
 			log.info("실행시간 : {} ms", System.currentTimeMillis()-start);
 			log.info("Jsoup cron end");
+			MDC.clear();
 		}
 	}
 
@@ -70,9 +71,9 @@ public class JsoupSchedulerService {
 		Map<Notice, List<CrawlingData>> filterNoticeJsoupGroup = getFilterNoticeGroup(noticeList, noticeIdSetInContent, errorNotices);
 		Set<Subscribe> subscribeSet = getSubscribeSet(filterNoticeJsoupGroup.keySet());
 
-		Map<Long, List<Device>> userDeviceGroup = getFcmTokenGroup(subscribeSet);
+		// Map<Long, List<Device>> userDeviceGroup = getFcmTokenGroup(subscribeSet);
 
-		fcmService.sendRssNotification(filterNoticeJsoupGroup, subscribeSet, userDeviceGroup);
+		// fcmService.sendRssNotification(filterNoticeJsoupGroup, subscribeSet, userDeviceGroup);
 		updateMaxPubData(filterNoticeJsoupGroup);
 
 	}

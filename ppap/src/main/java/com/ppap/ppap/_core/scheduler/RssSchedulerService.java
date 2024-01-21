@@ -43,19 +43,18 @@ public class RssSchedulerService {
     private final FcmService fcmService;
 
 
-    // @Scheduled(cron = "0 0/10 * * * ?", zone="Asia/Seoul")
+    @Scheduled(cron = "0 0/10 * * * ?", zone="Asia/Seoul")
     public void run() {
+        MDC.put("logFileName", "schedule");
+        MDC.put("kind", "Rss");
         log.info("RSS cron Start");
         long start = System.currentTimeMillis();
         try {
-            MDC.put("logFileName", "schedule");
-            MDC.put("kind", "Rss");
             processRssData();
-
         } finally {
-            MDC.clear();
             log.info("실행시간 : {} ms", System.currentTimeMillis() - start);
             log.info("RSS cron end");
+            MDC.clear();
         }
     }
 
