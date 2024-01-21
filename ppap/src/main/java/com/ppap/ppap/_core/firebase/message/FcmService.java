@@ -6,7 +6,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import com.ppap.ppap._core.rss.RssData;
+import com.ppap.ppap._core.crawler.CrawlingData;
 import com.ppap.ppap._core.utils.MDCUtils;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
@@ -37,7 +37,7 @@ public class FcmService {
     private final ForkJoinPool forkJoinPool;
     private static final int CHUNK_SIZE = 500;
 
-    public void sendRssNotification(Map<Notice, List<RssData>> filterNoticeRssGroup,
+    public void sendRssNotification(Map<Notice, List<CrawlingData>> filterNoticeRssGroup,
                                     Set<Subscribe> subscribeSet,
                                     Map<Long, List<Device>> userDeviceGroup) {
 
@@ -97,11 +97,11 @@ public class FcmService {
         return "ok";
     }
 
-    private List<List<Message>> getChunkMessages(Map<Notice, List<RssData>> filterNoticeRssGroup,
+    private List<List<Message>> getChunkMessages(Map<Notice, List<CrawlingData>> filterNoticeRssGroup,
                                                 Set<Subscribe> subscribeSet,
                                                 Map<Long, List<Device>> userDeviceGroup) {
 
-        Map<Long, List<RssData>> filterNoticeIdRssGroup = filterNoticeRssGroup.entrySet().stream()
+        Map<Long, List<CrawlingData>> filterNoticeIdRssGroup = filterNoticeRssGroup.entrySet().stream()
             .collect(Collectors.toMap(
                 entry -> entry.getKey().getId(),
                 Map.Entry::getValue));
@@ -114,7 +114,7 @@ public class FcmService {
     }
 
     private List<Message> createMessages(Set<Subscribe> subscribeSet,
-                                        Map<Long, List<RssData>> filterNoticeIdRssGroup,
+                                        Map<Long, List<CrawlingData>> filterNoticeIdRssGroup,
                                         Map<Long, List<Device>> userDeviceGroup) {
 
         return forkJoinPool.submit(() -> subscribeSet.parallelStream()
@@ -124,19 +124,19 @@ public class FcmService {
     }
 
     private Stream<Message> createMessageForSubscribe(Subscribe subscribe,
-                                                    Map<Long, List<RssData>> filterNoticeIdRssGroup,
+                                                    Map<Long, List<CrawlingData>> filterNoticeIdRssGroup,
                                                     Map<Long, List<Device>> userDeviceGroup) {
 
-        List<RssData> rssDataList = filterNoticeIdRssGroup.getOrDefault(subscribe.getNotice().getId(), Collections.emptyList());
+        List<CrawlingData> crawlingDataList = filterNoticeIdRssGroup.getOrDefault(subscribe.getNotice().getId(), Collections.emptyList());
         List<Device> devices = userDeviceGroup.getOrDefault(subscribe.getUser().getId(), Collections.emptyList());
-        return rssDataList.stream()
-            .flatMap(rssData -> createMessagesForRssData(rssData, devices).stream());
+        return crawlingDataList.stream()
+            .flatMap(crawlingData -> createMessagesForRssData(crawlingData, devices).stream());
     }
 
-    private List<Message> createMessagesForRssData(RssData rssData, List<Device> devices) {
+    private List<Message> createMessagesForRssData(CrawlingData crawlingData, List<Device> devices) {
 
         Notification notification = Notification.builder()
-            .setTitle(rssData.title())
+            .setTitle(crawlingData.title())
             .build();
         return devices.stream()
             .map(device -> Message.builder()

@@ -1,4 +1,4 @@
-package com.ppap.ppap._core.rss;
+package com.ppap.ppap._core.crawler;
 
 
 import org.jdom2.Document;
@@ -7,12 +7,9 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Timer;
 
 public class RssTest {
 

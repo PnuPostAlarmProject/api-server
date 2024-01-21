@@ -1,10 +1,11 @@
 package com.ppap.ppap._core;
 
-import com.ppap.ppap._core.rss.RssData;
-import com.ppap.ppap.domain.scrap.entity.Scrap;
+import com.ppap.ppap._core.crawler.CrawlingData;
+import com.ppap.ppap._core.crawler.RssData;
 import com.ppap.ppap.domain.subscribe.entity.Content;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
+import com.ppap.ppap.domain.subscribe.entity.constant.NoticeType;
 import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.entity.constant.Provider;
 import com.ppap.ppap.domain.user.entity.constant.Role;
@@ -53,7 +54,7 @@ public class DummyEntity {
     public List<Notice> getTestNoticeList() {
         List<Notice> testNoticeList = new ArrayList<>();
         for(int i=0; i< testRssLink.size(); i++) {
-            testNoticeList.add(new Notice(i+1L, testRssLink.get(i), LocalDateTime.now()));
+            testNoticeList.add(new Notice(i+1L, testRssLink.get(i), LocalDateTime.now(), NoticeType.RSS));
         }
         return testNoticeList;
     }
@@ -91,7 +92,7 @@ public class DummyEntity {
         );
     }
 
-    public List<RssData> getTestRssList(){
+    public List<CrawlingData> getTestRssList(){
         return List.of(
                 new RssData("컴퓨터 및 프로그래밍 입문(001분반, 조환규 교수님) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/931071/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
                 new RssData("컴퓨터알고리즘(059분반) 조환규 교수님 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/930883/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),

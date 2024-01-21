@@ -1,8 +1,9 @@
 package com.ppap.ppap.domain.subscribe.service;
 
+import com.ppap.ppap._core.crawler.CrawlingData;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception500;
-import com.ppap.ppap._core.rss.RssData;
+import com.ppap.ppap._core.crawler.RssData;
 import com.ppap.ppap.domain.subscribe.entity.Content;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.repository.ContentJpaRepository;
@@ -21,13 +22,13 @@ public class ContentWriteService {
     private final ContentJpaRepository contentJpaRepository;
 
     /**
-     * 스케줄러에서 받아온 rssData를 저장하는 메소드
+     * 스케줄러에서 받아온 Data를 저장하는 메소드
      */
-    public void contentsSave(List<RssData> rssDataList, Notice notice) {
-        if (rssDataList.isEmpty()) return ;
+    public void contentsSave(List<CrawlingData> crawlingDataList, Notice notice) {
+        if (crawlingDataList.isEmpty()) return ;
 
-        List<Content> content = rssDataList.stream()
-                        .map(rssData -> Content.of(rssData, notice))
+        List<Content> content = crawlingDataList.stream()
+                        .map(crawlingData -> Content.of(crawlingData, notice))
                         .toList();
 
         try {

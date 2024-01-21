@@ -20,7 +20,7 @@ public class ContentControllerTest extends RestDocs {
 
     @DisplayName("공지사항 내용 뷰 가져오기 통합 테스트")
     @Nested
-    class GetContentControllerTest{
+    class GetContentControllerTest {
         @DisplayName("성공 기본 페이지")
         @Test
         void success_default_page() throws Exception {

@@ -29,6 +29,10 @@ public enum BaseExceptionStatus {
     RSS_LINK_NETWORK_ERROR("RSS 링크 검증 중 네트워크 에러가 발생했습니다. 잠시 후에 다시 시도해주세요.", 502),
     RSS_NOTICE_LINK_MISMATCH("RSS와 공지사항 링크 학과가 일치하지 않습니다.", 400),
 
+    // Jsoup link
+    JSOUP_LINK_UNKNOWN_ERROR("Jsoup 크롤링 중 알 수 없는 에러가 발생했습니다.", 500),
+    JSOUP_LINK_NETWORK_ERROR("Jsoup 크롤링 중 네트워크 에러가 발생했습니다.", 502),
+
     // subscribe
     SUBSCRIBE_ALREADY_EXIST("이미 존재하는 구독입니다.", 400),
     SUBSCRIBE_FORBIDDEN("허가되지 않은 접근입니다.", 403),

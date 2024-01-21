@@ -6,7 +6,7 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception403;
 import com.ppap.ppap._core.exception.Exception404;
-import com.ppap.ppap._core.rss.RssReader;
+import com.ppap.ppap._core.crawler.RssReader;
 import com.ppap.ppap._core.utils.UrlFactory;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeCreateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
@@ -74,7 +74,7 @@ public class SubscribeWriteServiceTest {
             Notice notice = dummyEntity.getTestNoticeList().get(0);
 
             // mock
-            given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.of(notice));
+            given(noticeReadService.findByLink(anyString())).willReturn(Optional.of(notice));
             given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(false);
 
             // when
@@ -97,7 +97,7 @@ public class SubscribeWriteServiceTest {
             Notice notice = dummyEntity.getTestNoticeList().get(0);
 
             // mock
-            given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.of(notice));
+            given(noticeReadService.findByLink(anyString())).willReturn(Optional.of(notice));
             given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(false);
 
             // when
@@ -119,7 +119,7 @@ public class SubscribeWriteServiceTest {
             Notice notice = dummyEntity.getTestNoticeList().get(0);
 
             // mock
-            given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.empty());
+            given(noticeReadService.findByLink(anyString())).willReturn(Optional.empty());
             willDoNothing().given(rssReader).validRssLink(anyString());
             given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(false);
             given(noticeWriteService.save(requestDto.rssLink())).willReturn(notice);
@@ -143,7 +143,7 @@ public class SubscribeWriteServiceTest {
             Notice notice = dummyEntity.getTestNoticeList().get(0);
 
             // mock
-            given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.of(notice));
+            given(noticeReadService.findByLink(anyString())).willReturn(Optional.of(notice));
             given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(true);
 
             // when
@@ -165,7 +165,7 @@ public class SubscribeWriteServiceTest {
             Notice notice = dummyEntity.getTestNoticeList().get(0);
 
             // mock
-            given(noticeReadService.findByRssLink(anyString())).willReturn(Optional.of(notice));
+            given(noticeReadService.findByLink(anyString())).willReturn(Optional.of(notice));
             given(subscribeJpaRepository.existsByUserAndNotice(any(), any())).willReturn(false);
 
             // when

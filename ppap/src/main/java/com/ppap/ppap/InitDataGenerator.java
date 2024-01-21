@@ -2,6 +2,7 @@ package com.ppap.ppap;
 
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
+import com.ppap.ppap.domain.subscribe.entity.constant.NoticeType;
 import com.ppap.ppap.domain.subscribe.repository.NoticeJpaRepository;
 import com.ppap.ppap.domain.subscribe.repository.SubscribeJpaRepository;
 import com.ppap.ppap.domain.user.entity.Device;
@@ -16,6 +17,9 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Profile("dev")
@@ -62,31 +66,52 @@ public class InitDataGenerator implements ApplicationRunner {
                 // "https://ee.pusan.ac.kr/bbs/ee/2635/rssList.do"
         );
 
-        List<Notice> noticeList = rssLinkList.stream()
-                .map(Notice::of)
-                .toList();
+        List<Notice> noticeList = new ArrayList<>(rssLinkList.stream()
+            .map(Notice::of)
+            .toList());
+
+        List<String> jsoupLinkList = List.of(
+            "https://me.pusan.ac.kr/new/sub05/sub01_01.asp",
+            "https://me.pusan.ac.kr/new/sub05/sub01_02.asp",
+            "https://me.pusan.ac.kr/new/sub05/sub01_05.asp"
+        );
+        jsoupLinkList.forEach(
+            (jsoupLink) -> {
+                noticeList.add(
+                    Notice.builder()
+                        .link(jsoupLink)
+                        .lastNoticeTime(LocalDate.now().minusDays(5L).atStartOfDay())
+                        .noticeType(NoticeType.JSOUP)
+                        .build()
+                );
+            }
+        );
+
         noticeJpaRepository.saveAll(noticeList);
 
 
         List<Subscribe> subscribeList = List.of(
-                Subscribe.builder().title("테스트1").user(userList.get(0)).notice(noticeList.get(0)).isActive(true).build(),
-                Subscribe.builder().title("테스트2").user(userList.get(0)).notice(noticeList.get(1)).isActive(true).build(),
-                Subscribe.builder().title("테스트3").user(userList.get(0)).notice(noticeList.get(2)).isActive(true).build(),
-                Subscribe.builder().title("테스트4").user(userList.get(1)).notice(noticeList.get(0)).isActive(true).build(),
-                Subscribe.builder().title("테스트5").user(userList.get(1)).notice(noticeList.get(1)).isActive(true).build(),
-                Subscribe.builder().title("테스트6").user(userList.get(2)).notice(noticeList.get(2)).isActive(true).build());
+                // Subscribe.builder().title("테스트1").user(userList.get(0)).notice(noticeList.get(0)).isActive(true).build(),
+                // Subscribe.builder().title("테스트2").user(userList.get(0)).notice(noticeList.get(1)).isActive(true).build(),
+                // Subscribe.builder().title("테스트3").user(userList.get(0)).notice(noticeList.get(2)).isActive(true).build(),
+                // Subscribe.builder().title("테스트4").user(userList.get(1)).notice(noticeList.get(0)).isActive(true).build(),
+                // Subscribe.builder().title("테스트5").user(userList.get(1)).notice(noticeList.get(1)).isActive(true).build(),
+                // Subscribe.builder().title("테스트6").user(userList.get(2)).notice(noticeList.get(2)).isActive(true).build(),
+                Subscribe.builder().title("테스트7").user(userList.get(2)).notice(noticeList.get(4)).isActive(true).build(),
+                Subscribe.builder().title("테스트8").user(userList.get(2)).notice(noticeList.get(5)).isActive(true).build()
+            );
 
         subscribeJpaRepository.saveAll(subscribeList);
 
-        // List<Device> deviceList = List.of(
-        //         Device.builder().fcmToken("c4H_pzp-RQ2tFiSp1Qq61p:APA91bHQEaHOoOk5oo6zLh92UMC8vD1eX3Ek9U7bI2bQ_gD2wC4BmyiMjd_NsbbNbrb27SFD9kgBJ5EqzKYcSq1IwJuaBFrncTOU8wT0VVD8omQZgJ0xCY2o2cPhX0lNLWOk71JNhg17").user(userList.get(0)).build()
-        //         Device.builder().fcmToken("testToken2").user(userList.get(0)).build(),
-        //         Device.builder().fcmToken("testToken3").user(userList.get(1)).build(),
-        //         Device.builder().fcmToken("testToken4").user(userList.get(2)).build(),
-        //         Device.builder().fcmToken("testToken5").user(userList.get(2)).build(),
-        //         Device.builder().fcmToken("testToken6").user(userList.get(2)).build()
-        // ) ;
-        // deviceJpaRepository.saveAll(deviceList);
+        List<Device> deviceList = List.of(
+                // Device.builder().fcmToken("c4H_pzp-RQ2tFiSp1Qq61p:APA91bHQEaHOoOk5oo6zLh92UMC8vD1eX3Ek9U7bI2bQ_gD2wC4BmyiMjd_NsbbNbrb27SFD9kgBJ5EqzKYcSq1IwJuaBFrncTOU8wT0VVD8omQZgJ0xCY2o2cPhX0lNLWOk71JNhg17").user(userList.get(0)).build()
+                // Device.builder().fcmToken("testToken2").user(userList.get(0)).build(),
+                // Device.builder().fcmToken("testToken3").user(userList.get(1)).build(),
+                // Device.builder().fcmToken("testToken4").user(userList.get(2)).build(),
+                Device.builder().fcmToken("testToken5").user(userList.get(2)).build(),
+                Device.builder().fcmToken("testToken6").user(userList.get(2)).build()
+        ) ;
+        deviceJpaRepository.saveAll(deviceList);
 
     }
 }

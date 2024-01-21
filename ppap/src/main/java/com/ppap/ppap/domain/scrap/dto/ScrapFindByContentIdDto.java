@@ -1,8 +1,7 @@
 package com.ppap.ppap.domain.scrap.dto;
 
 import com.ppap.ppap.domain.scrap.entity.Scrap;
-import com.ppap.ppap.domain.subscribe.entity.Content;
-import com.ppap.ppap.domain.user.entity.User;
+
 import lombok.Builder;
 
 public record ScrapFindByContentIdDto(

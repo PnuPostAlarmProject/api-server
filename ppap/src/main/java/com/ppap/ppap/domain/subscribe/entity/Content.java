@@ -1,7 +1,8 @@
 package com.ppap.ppap.domain.subscribe.entity;
 
-import com.ppap.ppap._core.rss.RssData;
-import com.ppap.ppap.domain.base.entity.AuditingEntity;
+import com.ppap.ppap._core.crawler.CrawlingData;
+import com.ppap.ppap._core.crawler.RssData;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -9,7 +10,6 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @ToString(exclude = {"notice"})
@@ -58,14 +58,14 @@ public class Content {
         this.category = category;
     }
 
-    public static Content of(RssData rssData, Notice notice) {
+    public static Content of(CrawlingData crawlingData, Notice notice) {
         return Content.builder()
                 .notice(notice)
-                .title(rssData.title())
-                .link(rssData.link())
-                .pubDate(rssData.pubDate())
-                .author(rssData.author())
-                .category(rssData.category())
+                .title(crawlingData.title())
+                .link(crawlingData.link())
+                .pubDate(crawlingData.pubDate())
+                .author(crawlingData.author())
+                .category(crawlingData.category())
                 .build();
     }
 

@@ -1,5 +1,8 @@
 package com.ppap.ppap.domain.subscribe.service;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.repository.NoticeJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,5 +19,8 @@ public class NoticeWriteService {
 
     public Notice save(String rssLink) {
         return noticeJpaRepository.save(Notice.of(rssLink));
+    }
+    public void saveAllAndFlush(Collection<Notice> noticeList) {
+        noticeJpaRepository.saveAllAndFlush(noticeList);
     }
 }

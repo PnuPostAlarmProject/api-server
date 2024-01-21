@@ -19,7 +19,7 @@ public record SubscribeGetResponseDto(
                 .subscribeId(subscribe.getId())
                 .title(subscribe.getTitle())
                 .noticeLink(subscribe.getNoticeLink())
-                .rssLink(subscribe.getNotice().getRssLink())
+                .rssLink(subscribe.getNotice().getLink())
                 .isActive(subscribe.getIsActive())
                 .build();
     }
