@@ -41,7 +41,8 @@ public class JsoupReader {
 				String contentId = href.substring(20,href.length()-1);
 				String author = subElement.getElementsByClass("writer").text();
 				LocalDateTime pubDate = getLocalDateTime(contentId, subElement.getElementsByClass("date").text());
-				String detailUrl = String.format("https://me.pusan.ac.kr/new/sub05/sub01_01.asp?seq=%s&db=hakbunotice&page=1&perPage=20&SearchPart=BD_SUBJECT&SearchStr=&page_mode=view", contentId);
+				//아래 코드 수정필요 sub01_()..로 될 수 있게
+				String detailUrl = String.format("%s?seq=%s&db=hakbunotice&page=1&perPage=20&SearchPart=BD_SUBJECT&SearchStr=&page_mode=view", url, contentId);
 				if (title.endsWith("...") && (pubDate.isAfter(maxPubDateTime) || isInit)) {
 					// detailUrl을 통해서 데이터 더 가져오기
 					Connection detailUrlConnection = Jsoup.connect(detailUrl);
