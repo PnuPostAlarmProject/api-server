@@ -22,7 +22,7 @@ public class NoticeReadService {
         return noticeJpaRepository.findByLink(rssLink);
     }
 
-    public List<Notice> findByNoticeType(NoticeType noticeType) {
-        return noticeJpaRepository.findByNoticeType(noticeType);
+    public List<Notice> findAll() {
+        return noticeJpaRepository.findAll();
     }
 }

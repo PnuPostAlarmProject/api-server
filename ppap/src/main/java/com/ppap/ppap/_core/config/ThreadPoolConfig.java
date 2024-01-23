@@ -7,7 +7,7 @@ import java.util.concurrent.ForkJoinPool;
 
 @Configuration
 public class ThreadPoolConfig {
-    private final int PARALLELISM = 3;
+    private final int PARALLELISM = 10;
 
     @Bean
     public ForkJoinPool forkJoinPool() {

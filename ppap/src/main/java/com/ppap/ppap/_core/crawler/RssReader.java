@@ -55,7 +55,7 @@ public class RssReader {
     }
 
     // sax를 싱글톤으로 바꾸면 경합조건이 발생해서 threadSafe하지 못하게 변한다.
-    public List<CrawlingData> getRssData(String rssLink, boolean isInit){
+    public List<CrawlingData> getRssData(String rssLink, LocalDateTime maxPubDate, boolean isInit){
         List<CrawlingData> rssDataList = new ArrayList<>();
         try {
             InputStream inputStream = urlFactory.getInputStream(isInit ? rssLink +"?row=30" : rssLink, CONNECTION_TIMEOUT, READ_TIMEOUT);
@@ -89,7 +89,9 @@ public class RssReader {
             throw new Exception500(BaseExceptionStatus.RSS_LINK_UNKNOWN_ERROR);
         }
 
-        return rssDataList;
+        return isInit ? rssDataList : rssDataList.stream()
+            .filter(data -> data.pubDate().isAfter(maxPubDate))
+            .toList();
     }
 
 

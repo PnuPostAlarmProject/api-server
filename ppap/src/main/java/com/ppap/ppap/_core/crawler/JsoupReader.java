@@ -7,8 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception500;
-import com.ppap.ppap.domain.subscribe.entity.Notice;
+import com.ppap.ppap._core.utils.JsoupFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class JsoupReader {
+	private final JsoupFactory jsoupFactory;
 
 	public List<CrawlingData> getMechanicNoticeData(String url, LocalDateTime maxPubDateTime, boolean isInit) throws IOException {
-		Connection connection = Jsoup.connect(url);
-		Document document = connection.get();
+		Document document = jsoupFactory.getDocumentData(url);
 		Elements element = document.getElementsByClass("board-list02");
 		Elements subElements = element.first().select("tbody>tr");
 		List<CrawlingData> crawalingDatas = subElements.stream()
@@ -41,13 +40,14 @@ public class JsoupReader {
 				String contentId = href.substring(20,href.length()-1);
 				String author = subElement.getElementsByClass("writer").text();
 				LocalDateTime pubDate = getLocalDateTime(contentId, subElement.getElementsByClass("date").text());
-				//아래 코드 수정필요 sub01_()..로 될 수 있게
-				String detailUrl = String.format("%s?seq=%s&db=hakbunotice&page=1&perPage=20&SearchPart=BD_SUBJECT&SearchStr=&page_mode=view", url, contentId);
+				String detailUrl = String.format("%s?seq=%s&db=%s&page=1&perPage=20&SearchPart=BD_SUBJECT&SearchStr=&page_mode=view",
+					url,
+					contentId,
+					getNoticeDbType(url));
+				// 제목이 길어 ...로 끝난다면 추가적으로 요청해 데이터를 가져온다.
 				if (title.endsWith("...") && (pubDate.isAfter(maxPubDateTime) || isInit)) {
-					// detailUrl을 통해서 데이터 더 가져오기
-					Connection detailUrlConnection = Jsoup.connect(detailUrl);
 					try {
-						Document detailUrlDocument = detailUrlConnection.get();
+						Document detailUrlDocument = jsoupFactory.getDocumentData(detailUrl);
 						Element detailUrlElement = detailUrlDocument.getElementsByClass("board-view").first().child(0);
 						title = detailUrlElement.select("dd").text();
 					} catch (SocketTimeoutException e) {
@@ -78,5 +78,13 @@ public class JsoupReader {
 		int second = idInt/1000%3600%60;
 		int miliSecond = idInt%1000*1_000_000;
 		return LocalDate.parse(time).atTime(hour, minute, second,miliSecond);
+	}
+
+	private String getNoticeDbType(String url) {
+		for (MechanicNoticeEnum type : MechanicNoticeEnum.values()) {
+			if (url.endsWith(type.getSuffix()))
+				return type.getDbType();
+		}
+		throw new Exception500(BaseExceptionStatus.JSOUP_LINK_NETWORK_ERROR);
 	}
 }
