@@ -37,14 +37,14 @@ public class FcmService {
     private final ForkJoinPool forkJoinPool;
     private static final int CHUNK_SIZE = 500;
 
-    public void sendRssNotification(Map<Notice, List<CrawlingData>> filterNoticeRssGroup,
+    public void sendNotification(Map<Notice, List<CrawlingData>> filterNoticeCrwalingGroup,
                                     Set<Subscribe> subscribeSet,
                                     Map<Long, List<Device>> userDeviceGroup) {
 
         if (userDeviceGroup.keySet().isEmpty())
             return ;
 
-        List<List<Message>> chunkMessages = getChunkMessages(filterNoticeRssGroup, subscribeSet, userDeviceGroup);
+        List<List<Message>> chunkMessages = getChunkMessages(filterNoticeCrwalingGroup, subscribeSet, userDeviceGroup);
         ExecutorService executor = Executors.newFixedThreadPool(Math.min(chunkMessages.size(), 10),
             r -> {
                 Thread t = new Thread(r);
@@ -78,35 +78,35 @@ public class FcmService {
 
     }
 
-    public String sendNotification() {
-        Notification notification = Notification.builder()
-                .setTitle("테스트용 타이틀")
-                .setBody("테스트용 내용")
-                .build();
+    // public String sendNotification() {
+    //     Notification notification = Notification.builder()
+    //             .setTitle("테스트용 타이틀")
+    //             .setBody("테스트용 내용")
+    //             .build();
+    //
+    //     Message message = Message.builder()
+    //             .setNotification(notification)
+    //             .setToken("czqDaETOQQCGd59IwTU4Nr:APA91bH0jhPPMEEneSDkHSCuqSbByWv5Ts8dUeD--Ueq1cdnLls_CRD7ut1qo6TFZNw1kagPwLMj3IrHFlH7MIWLGgq3KehFolRat1_kwAEIDecUmaTSDBA7gFAKwDNRPtlRT6uT5E1-")
+    //             .build();
+    //
+    //     ApiFuture<String> future = firebaseMessaging.sendAsync(message);
+    //     future.addListener(() -> {
+    //         if(future.isDone()) log.info("전송 성공");
+    //         else log.error("전송 실패");
+    //     }, Executors.newSingleThreadExecutor());
+    //     return "ok";
+    // }
 
-        Message message = Message.builder()
-                .setNotification(notification)
-                .setToken("czqDaETOQQCGd59IwTU4Nr:APA91bH0jhPPMEEneSDkHSCuqSbByWv5Ts8dUeD--Ueq1cdnLls_CRD7ut1qo6TFZNw1kagPwLMj3IrHFlH7MIWLGgq3KehFolRat1_kwAEIDecUmaTSDBA7gFAKwDNRPtlRT6uT5E1-")
-                .build();
-
-        ApiFuture<String> future = firebaseMessaging.sendAsync(message);
-        future.addListener(() -> {
-            if(future.isDone()) log.info("전송 성공");
-            else log.error("전송 실패");
-        }, Executors.newSingleThreadExecutor());
-        return "ok";
-    }
-
-    private List<List<Message>> getChunkMessages(Map<Notice, List<CrawlingData>> filterNoticeRssGroup,
+    private List<List<Message>> getChunkMessages(Map<Notice, List<CrawlingData>> filterNoticeCrawlingGroup,
                                                 Set<Subscribe> subscribeSet,
                                                 Map<Long, List<Device>> userDeviceGroup) {
 
-        Map<Long, List<CrawlingData>> filterNoticeIdRssGroup = filterNoticeRssGroup.entrySet().stream()
+        Map<Long, List<CrawlingData>> filterNoticeIdCrawlingGroup = filterNoticeCrawlingGroup.entrySet().stream()
             .collect(Collectors.toMap(
                 entry -> entry.getKey().getId(),
                 Map.Entry::getValue));
 
-        List<Message> messageList = createMessages(subscribeSet, filterNoticeIdRssGroup, userDeviceGroup);
+        List<Message> messageList = createMessages(subscribeSet, filterNoticeIdCrawlingGroup, userDeviceGroup);
 
         return IntStream.iterate(0, i -> i < messageList.size(), i -> i + CHUNK_SIZE)
             .mapToObj(i -> messageList.subList(i, Math.min(i + CHUNK_SIZE, messageList.size())))
@@ -114,20 +114,20 @@ public class FcmService {
     }
 
     private List<Message> createMessages(Set<Subscribe> subscribeSet,
-                                        Map<Long, List<CrawlingData>> filterNoticeIdRssGroup,
+                                        Map<Long, List<CrawlingData>> filterNoticeIdCrawlingGroup,
                                         Map<Long, List<Device>> userDeviceGroup) {
 
         return forkJoinPool.submit(() -> subscribeSet.parallelStream()
-            .flatMap(subscribe -> createMessageForSubscribe(subscribe, filterNoticeIdRssGroup, userDeviceGroup))
+            .flatMap(subscribe -> createMessageForSubscribe(subscribe, filterNoticeIdCrawlingGroup, userDeviceGroup))
             .toList()
         ).join();
     }
 
     private Stream<Message> createMessageForSubscribe(Subscribe subscribe,
-                                                    Map<Long, List<CrawlingData>> filterNoticeIdRssGroup,
+                                                    Map<Long, List<CrawlingData>> filterNoticeIdCrawlingGroup,
                                                     Map<Long, List<Device>> userDeviceGroup) {
 
-        List<CrawlingData> crawlingDataList = filterNoticeIdRssGroup.getOrDefault(subscribe.getNotice().getId(), Collections.emptyList());
+        List<CrawlingData> crawlingDataList = filterNoticeIdCrawlingGroup.getOrDefault(subscribe.getNotice().getId(), Collections.emptyList());
         List<Device> devices = userDeviceGroup.getOrDefault(subscribe.getUser().getId(), Collections.emptyList());
         return crawlingDataList.stream()
             .flatMap(crawlingData -> createMessagesForRssData(crawlingData, devices).stream());

@@ -1,6 +1,7 @@
 package com.ppap.ppap._core.utils;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -43,6 +44,27 @@ public class MDCUtils {
 			try{
 				MDC.setContextMap(contextMap);
 				return function.apply(t);
+			} finally {
+				MDC.setContextMap(oldContext);
+			}
+		}
+	}
+
+	public static class MDCAwareCallable<V> implements Callable<V> {
+		private final Callable<V> callable;
+		private final Map<String, String> contextMap;
+
+		public MDCAwareCallable(Callable<V> callable) {
+			this.callable = callable;
+			this.contextMap = MDC.getCopyOfContextMap();
+		}
+
+		@Override
+		public V call() throws Exception {
+			Map<String, String> oldContext = MDC.getCopyOfContextMap();
+			try{
+				MDC.setContextMap(contextMap);
+				return callable.call();
 			} finally {
 				MDC.setContextMap(oldContext);
 			}

@@ -20,7 +20,12 @@ public class NoticeWriteService {
     public Notice save(String rssLink) {
         return noticeJpaRepository.save(Notice.of(rssLink));
     }
+
     public void saveAllAndFlush(Collection<Notice> noticeList) {
         noticeJpaRepository.saveAllAndFlush(noticeList);
+    }
+
+    public void updateAll(Collection<Notice> noticeList) {
+        noticeJpaRepository.updateAll(noticeList);
     }
 }

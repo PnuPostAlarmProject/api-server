@@ -38,12 +38,11 @@ public class CustomContentRepositoryImpl implements CustomContentRepository{
 
             @Override
             public int getBatchSize() {
-                return contentList.size();
+                return Math.min(contentList.size(), 1000);
             }
         };
 
         jdbcTemplate.getJdbcTemplate().batchUpdate(insertQuery, batchSetter);
         em.flush();
-        em.clear();
     }
 }

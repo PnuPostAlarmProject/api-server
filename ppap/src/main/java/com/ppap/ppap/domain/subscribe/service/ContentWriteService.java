@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,6 +34,26 @@ public class ContentWriteService {
 
         try {
             contentJpaRepository.saveAllBatch(content);
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new Exception500(BaseExceptionStatus.CONTENT_SAVE_ERROR);
+        }
+    }
+
+    public void contentAllSave(Map<Notice, List<CrawlingData>> crawlingNoticeGroup) {
+
+        List<Content> contentList = crawlingNoticeGroup.entrySet().stream()
+            .flatMap(entry -> entry.getValue().stream()
+                .map(crawlingData -> Content.of(crawlingData, entry.getKey()))
+                .toList()
+                .stream()
+            )
+            .toList();
+
+        if (contentList.isEmpty()) return;
+
+        try {
+            contentJpaRepository.saveAllBatch(contentList);
         } catch(Exception e) {
             log.error(e.getMessage());
             throw new Exception500(BaseExceptionStatus.CONTENT_SAVE_ERROR);

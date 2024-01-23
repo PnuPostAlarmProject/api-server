@@ -31,6 +31,7 @@ public enum BaseExceptionStatus {
 
     // Jsoup link
     JSOUP_LINK_UNKNOWN_ERROR("Jsoup 크롤링 중 알 수 없는 에러가 발생했습니다.", 500),
+    JSOUP_NOT_REGISTRY_URL("현재 등록되지 않은 URL입니다.", 500),
     JSOUP_LINK_NETWORK_ERROR("Jsoup 크롤링 중 네트워크 에러가 발생했습니다.", 502),
 
     // subscribe

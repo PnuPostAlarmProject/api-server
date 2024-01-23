@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface NoticeJpaRepository extends JpaRepository<Notice, Long> {
+public interface NoticeJpaRepository extends JpaRepository<Notice, Long>, CustomNoticeRepository{
 
     Optional<Notice> findByLink(String link);
 

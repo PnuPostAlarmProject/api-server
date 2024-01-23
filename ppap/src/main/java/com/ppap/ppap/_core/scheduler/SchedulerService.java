@@ -1,13 +1,12 @@
 package com.ppap.ppap._core.scheduler;
 
 import com.ppap.ppap._core.crawler.CrawlingData;
+import com.ppap.ppap._core.crawler.JsoupReader;
 import com.ppap.ppap._core.firebase.message.FcmService;
-import com.ppap.ppap._core.crawler.RssData;
 import com.ppap.ppap._core.crawler.RssReader;
+import com.ppap.ppap._core.utils.MDCUtils;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
-import com.ppap.ppap.domain.subscribe.entity.constant.NoticeType;
-import com.ppap.ppap.domain.subscribe.repository.NoticeJpaRepository;
 import com.ppap.ppap.domain.subscribe.service.ContentReadService;
 import com.ppap.ppap.domain.subscribe.service.ContentWriteService;
 import com.ppap.ppap.domain.subscribe.service.NoticeReadService;
@@ -15,15 +14,17 @@ import com.ppap.ppap.domain.subscribe.service.NoticeWriteService;
 import com.ppap.ppap.domain.subscribe.service.SubscribeReadService;
 import com.ppap.ppap.domain.user.entity.Device;
 import com.ppap.ppap.domain.user.service.DeviceReadService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.slf4j.MDC;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 
 import static java.util.stream.Collectors.*;
@@ -31,9 +32,11 @@ import static java.util.stream.Collectors.*;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class RssSchedulerService {
+@Transactional
+public class SchedulerService {
     private final ForkJoinPool forkJoinPool;
     private final RssReader rssReader;
+    private final JsoupReader jsoupReader;
     private final NoticeReadService noticeReadService;
     private final NoticeWriteService noticeWriteService;
     private final SubscribeReadService subscribeReadService;
@@ -42,98 +45,103 @@ public class RssSchedulerService {
     private final ContentWriteService contentWriteService;
     private final FcmService fcmService;
 
-
-    @Scheduled(cron = "0 0/10 * * * ?", zone="Asia/Seoul")
     public void run() {
         MDC.put("logFileName", "schedule");
-        MDC.put("kind", "Rss");
-        log.info("RSS cron Start");
+        log.info("cron Start");
         long start = System.currentTimeMillis();
         try {
-            processRssData();
+            processData();
         } finally {
             log.info("실행시간 : {} ms", System.currentTimeMillis() - start);
-            log.info("RSS cron end");
+            log.info("cron end");
             MDC.clear();
         }
     }
 
-    private void processRssData() {
-        List<Notice> noticeList = noticeReadService.findByNoticeType(NoticeType.RSS);
+    private void processData() {
+        List<Notice> noticeList = noticeReadService.findAll();
+
         Set<Long> noticeIdSetInContent = contentReadService.findDistinctNoticeIdIn(noticeList);
-        Map<Notice, String> errorNotices = new HashMap<>();
 
-        // 각 noticeId에 대해 읽어 공지사항별 RSS데이터 그룹을 만든다.
-        Map<Notice, List<CrawlingData>> filterNoticeRssGroup = getFilterNoticeGroup(noticeList, errorNotices, noticeIdSetInContent);
+		// 멀티 쓰레드 환경에서 실행되므로 Thread Safe한 자료구조를 사용해야한다.
+		ConcurrentHashMap<Notice, String> errorNotices = new ConcurrentHashMap<>();
 
-        // System.out.println("===========filterNoticeRssGroup==========");
-        // System.out.println(filterNoticeRssGroup);
+        // 각 noticeId에 대해 읽어 공지사항별 공지사항 데이터 그룹을 만든다.
+        Map<Notice, List<CrawlingData>> filterNoticeCrawlingGroup = getFilterNoticeGroup(noticeList, errorNotices, noticeIdSetInContent);
+
 
         // 필요한 구독 목록 중복없이 다 가져옴.
-        Set<Subscribe> subscribeSet = getSubscribeSet(filterNoticeRssGroup.keySet());
-        // System.out.println("===========subscribeSet==========");
-        // System.out.println(subscribeSet);
+        Set<Subscribe> subscribeSet = getSubscribeSet(filterNoticeCrawlingGroup.keySet());
+
 
         // userId별 Fcm토큰 값들을 조회
-        // System.out.println("===========userDeviceGroup==========");
         Map<Long, List<Device>> userDeviceGroup = getFcmTokenGroup(subscribeSet);
-        // System.out.println(userDeviceGroup);
-
 
         // 가져온 FCM 토큰들을 통해 알림 전송
-        fcmService.sendRssNotification(filterNoticeRssGroup, subscribeSet, userDeviceGroup);
+        fcmService.sendNotification(filterNoticeCrawlingGroup, subscribeSet, userDeviceGroup);
 
         // 각 공지사항 중, 가장 최근 데이터의 발행시각을 가져온 뒤 디비에 업데이트
-        updateMaxPubDateNotice(filterNoticeRssGroup);
+        updateMaxPubDateNotice(filterNoticeCrawlingGroup);
 
-        // System.out.println("===========errorNotices============");
-        if (!errorNotices.isEmpty())
-            log.error("Error Notices: {}", errorNotices);
-
-        // System.out.println(errorNotices);
+        if (!errorNotices.isEmpty()) {
+            log.error("Error Notices: {}", errorNotices.entrySet()
+                .stream()
+                .collect(toMap(
+                    entry -> entry.getKey().getLink(),
+                    Map.Entry::getValue
+                )));
+        }
     }
 
     /**
-     * 데이터베이스에 저장된 공지사항 rss링크들을 통해 학교 공지사항 RSS 데이터를 받아오는 메소드
+     * 데이터베이스에 저장된 공지사항 링크들을 통해 학교 공지사항 데이터를 받아오는 메소드
      * @param noticeList : 데이터베이스에 들어있는 전체 공지사항
      * @param errorNotices : 에러가 발생한 공지사항
-     * @return : 공지사항Id별 RssData
+     * @return : 공지사항Id별 크롤링 데이터
      */
     private Map<Notice, List<CrawlingData>> getFilterNoticeGroup(List<Notice> noticeList, Map<Notice, String> errorNotices,
                                                           Set<Long> noticeIdSetInContent) {
-        Map<Notice, List<CrawlingData>> filterNoticeGroup = forkJoinPool.submit(() -> noticeList.parallelStream()
-                .collect(groupingBy(notice -> notice,
-                        flatMapping(notice -> getRssData(notice, errorNotices, noticeIdSetInContent).stream(), toList()))
-                )).join();
 
-        return filterNoticeGroup.entrySet().stream()
-                .filter(map -> !map.getValue().isEmpty())
-                .collect(toMap(Map.Entry::getKey,
-                        Map.Entry::getValue));
+        Map<Notice, List<CrawlingData>> crawlingNoticeGroup = forkJoinPool.submit(
+            new MDCUtils.MDCAwareCallable<>( () -> noticeList.parallelStream()
+                .collect(groupingBy(notice -> notice,
+                    flatMapping(notice -> getCrawlingData(notice, errorNotices, noticeIdSetInContent).stream(), toList()))
+                ))).join();
+
+		// 처음 받아오는 거라면 전체 저장, 아니라면 서버에 저장된 시간보다 뒤에 있는 값만 저장.
+        contentWriteService.contentAllSave(crawlingNoticeGroup);
+
+		Map<Notice, List<CrawlingData>> filterCrawlingNoticeGroup =
+			crawlingNoticeGroup.entrySet().stream()
+				.collect(groupingBy(Map.Entry::getKey,
+					flatMapping((entry -> entry.getValue().stream()
+							.filter(crawlingData -> crawlingData.pubDate().isAfter(entry.getKey().getLastNoticeTime()))
+						),
+						toList()))
+				);
+
+		filterCrawlingNoticeGroup.keySet().removeIf(key -> filterCrawlingNoticeGroup.get(key).isEmpty());
+
+        return filterCrawlingNoticeGroup;
     }
 
     /**
-     * 받은 rss링크를 통해 Rss 데이터를 가져온 뒤 갱신해야 하는 데이터를 반환하는 코드
+     * 받은 링크를 통해 공지사항 데이터를 가져온 뒤 갱신해야 하는 데이터를 반환하는 코드
      * 만약 처음 공지사항을 받아온다면 30개를 저장하고 아니라면 갱신해야하는 데이터만 디비에 저장한다.
      * @param notice : 공지사항
      * @param errorNotice : 에러가 발생한 공지사항
-     * @return 알림을 줘야하는(갱신된) rss 데이터
+     * @return 알림을 줘야하는(갱신된) 공지사항 데이터
      */
-    private List<CrawlingData> getRssData(Notice notice, Map<Notice, String> errorNotice, Set<Long> noticeIdSetInContent) {
+    private List<CrawlingData> getCrawlingData(Notice notice, Map<Notice, String> errorNotice, Set<Long> noticeIdSetInContent) {
         boolean isInit = !noticeIdSetInContent.contains(notice.getId());
+        List<CrawlingData> crawlingDataList = new ArrayList<>();
         try{
-            List<CrawlingData> rssDataList = rssReader.getRssData(notice.getLink(), isInit);
-            List<CrawlingData> filterRssDataList = rssDataList.stream()
-                    .filter(rssData -> rssData.pubDate().isAfter(notice.getLastNoticeTime())).toList();
-
-            // 처음 받아오는 거라면 30개를 저장, 아니라면 서버에 저장된 시간보다 뒤에 있는 값만 저장.
-            if(isInit) {
-                contentWriteService.contentsSave(rssDataList, notice);
-            } else{
-                contentWriteService.contentsSave(filterRssDataList, notice);
+            switch (notice.getNoticeType()) {
+                case RSS -> crawlingDataList = rssReader.getRssData(notice.getLink(), notice.getLastNoticeTime(), isInit);
+                case JSOUP -> crawlingDataList = jsoupReader.getMechanicNoticeData(notice.getLink(), notice.getLastNoticeTime(), isInit);
             }
 
-            return filterRssDataList;
+            return crawlingDataList;
         }catch (Exception e) {
             // 에러가 발생하면 errorNotice에 저장하고, 이후 관리자에게 메일을 보낼 수 있도록 한다.
             errorNotice.put(notice, e.getMessage());
@@ -143,8 +151,8 @@ public class RssSchedulerService {
 
 
     // 공지사항 최근 날짜 업데이트
-    private void updateMaxPubDateNotice(Map<Notice, List<CrawlingData>> filterNoticeRssGroup) {
-        Map<Notice, LocalDateTime> maxPubDateNotice = filterNoticeRssGroup.entrySet().stream()
+    private void updateMaxPubDateNotice(Map<Notice, List<CrawlingData>> filterNoticeCrawlingGroup) {
+        Map<Notice, LocalDateTime> maxPubDateNotice = filterNoticeCrawlingGroup.entrySet().stream()
                 .collect(toMap( Map.Entry::getKey,
                         map -> map.getValue().stream()
                                 .map(CrawlingData::pubDate)
@@ -156,24 +164,15 @@ public class RssSchedulerService {
             Notice notice = map.getKey();
             notice.changeLastNoticeTime(map.getValue());
         }
-        noticeWriteService.saveAllAndFlush(maxPubDateNotice.keySet());
 
-        // 데이터베이스에 비동기 update는 트랜잭션 락 때문에 위험해 사용하지 않았습니다.
-//        forkJoinPool.submit(() -> maxPubDateNotice.entrySet().parallelStream()
-//                .forEach((map) -> {
-//                    Notice notice = map.getKey();
-//                    notice.changeLastNoticeTime(map.getValue());
-//                    noticeJpaRepository.saveAndFlush(notice);
-//        })).join();
+        noticeWriteService.updateAll(maxPubDateNotice.keySet());
+
     }
 
-    // 리팩토링 필요
     private Set<Subscribe> getSubscribeSet(Set<Notice> noticeSet) {
-        return forkJoinPool.submit(() -> noticeSet.parallelStream()
-                .map(Notice::getId)
-                .flatMap(noticeId -> subscribeReadService.getSubscribeByNoticeId(noticeId).stream())
-                .collect(toSet()))
-                .join();
+		return subscribeReadService.getSubscribeByNoticeIdIn(noticeSet.stream()
+			.map(Notice::getId)
+			.toList());
     }
 
     // userId별 기기 그룹 조회
