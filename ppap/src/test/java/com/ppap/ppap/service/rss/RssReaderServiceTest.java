@@ -133,14 +133,13 @@ public class RssReaderServiceTest {
             Document document = saxTestBuilder.build(file);
 
             // mock
-            // mock
             SAXBuilder mockSaxBuilder = mock(SAXBuilder.class);
             given(saxBuilderProvider.getObject()).willReturn(mockSaxBuilder);
             given(urlFactory.getInputStream(anyString(), anyInt(), anyInt())).willReturn(InputStream.nullInputStream());
             given(mockSaxBuilder.build(any(InputStream.class))).willReturn(document);
 
             // when
-            List<CrawlingData> resultDatas = rssReader.getRssData(notice.getLink(), false);
+            List<CrawlingData> resultDatas = rssReader.getRssData(notice.getLink(), notice.getLastNoticeTime(), true);
 
             // then
             assertEquals(10, resultDatas.size());

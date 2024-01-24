@@ -8,6 +8,8 @@ import lombok.*;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -36,12 +38,26 @@ public class Notice extends AuditingEntity {
     @Column(length=20, nullable = false)
     private NoticeType noticeType;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "univ_id")
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private Univ univ;
+
     @Builder
+    public Notice(Long id, String link, LocalDateTime lastNoticeTime, NoticeType noticeType, Univ univ) {
+        this.id = id;
+        this.link = link;
+        this.lastNoticeTime = lastNoticeTime;
+        this.noticeType = Objects.nonNull(noticeType) ? noticeType : NoticeType.RSS;
+        this.univ = univ;
+    }
+
     public Notice(Long id, String link, LocalDateTime lastNoticeTime, NoticeType noticeType) {
         this.id = id;
         this.link = link;
         this.lastNoticeTime = lastNoticeTime;
         this.noticeType = Objects.nonNull(noticeType) ? noticeType : NoticeType.RSS;
+        this.univ = null;
     }
 
     public static Notice of(String rssLink) {
