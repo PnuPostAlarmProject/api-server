@@ -48,6 +48,7 @@ public enum BaseExceptionStatus {
     SCRAP_ALREADY_EXIST("이미 존재하는 스크랩입니다.", 400),
     SCRAP_FORBIDDEN("허가되지 않은 접근입니다.", 403),
     SCRAP_NOT_FOUND("존재하지 않는 스크랩입니다.", 404),
+    SCRAP_IS_EMPTY("스크랩에 데이터가 존재하지 않습니다.", 404),
 
     // device
     DEVICE_FCM_TOKEN_INVALID("유효하지 않은 FCM 토큰입니다.", 400),

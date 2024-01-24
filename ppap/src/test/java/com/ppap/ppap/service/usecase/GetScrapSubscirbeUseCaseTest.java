@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -162,6 +163,31 @@ public class GetScrapSubscirbeUseCaseTest {
 
             // then
             assertEquals(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getMessage(), exception.getMessage());
+        }
+
+        @DisplayName("실패 구독한 공지의 스크랩 데이터가 존재하지 않음")
+        @Test
+        void fail_scrap_is_empty() {
+            // given
+            User testUser = dummyEntity.getTestUser("rjsdnxogh@naver.com", 1L);
+            Pageable pageable = PageRequest.of(1, 10, Sort.by(Sort.Direction.DESC, "pubDate"));
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            List<Subscribe> testSubscribeList = dummyEntity.getTestSubscribeList(testUser, testNoticeList);
+            List<Content> testContentList = dummyEntity.getTestContentList(testNoticeList.get(0));
+            List<Scrap> testScrapList = List.of();
+
+            // mock
+            given(subscribeReadService.getSubscribeEntityList(testUser)).willReturn(testSubscribeList);
+            given(scrapReadService.findByUserIdAndNoticeIdFetchJoinContent(testUser.getId(),
+                testSubscribeList.get(0).getNotice().getId(),
+                pageable)).willReturn(testScrapList);
+
+            // when
+            Throwable response = assertThrows(Exception404.class,
+                () -> getScrapSubscirbeUseCase.execute(Optional.empty(), testUser, pageable));
+
+            // then
+            assertEquals(BaseExceptionStatus.SCRAP_IS_EMPTY.getMessage(), response.getMessage());
         }
     }
 }

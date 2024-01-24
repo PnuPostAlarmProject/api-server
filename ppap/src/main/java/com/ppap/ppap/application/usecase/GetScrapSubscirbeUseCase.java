@@ -40,6 +40,9 @@ public class GetScrapSubscirbeUseCase {
                 curSubcribe.getNotice().getId(),
                 pageable);
 
+        if (scrapList.isEmpty()) {
+            throw new Exception404(BaseExceptionStatus.SCRAP_IS_EMPTY);
+        }
 
         return ScrapWithSubscribeDto.of(curSubscribeId, scrapList);
     }
