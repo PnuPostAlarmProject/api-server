@@ -50,6 +50,7 @@ services:
       - ./.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./log:/opt/ppap/log
     tty: true
     restart: on-failure:2
     depends_on:
