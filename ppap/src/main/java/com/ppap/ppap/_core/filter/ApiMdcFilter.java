@@ -20,9 +20,10 @@ public class ApiMdcFilter implements OrderedFilter {
 		public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws
 		IOException,
 			ServletException {
-			// String requestId = ((HttpServletRequest) request).getHeader("X-RequestID");
+			String requestId = ((HttpServletRequest) request).getHeader("X-RequestID");
 			MDC.put("logFileName", "api");
-			// MDC.put(requestId, StringUtils.defaultString(requestId, UUID.randomUUID().toString().replaceAll("-", "")));
+			MDC.put("requestId",
+				StringUtils.defaultString(requestId, UUID.randomUUID().toString().replaceAll("-", "")));
 			chain.doFilter(request, response);
 			MDC.clear();
 		}

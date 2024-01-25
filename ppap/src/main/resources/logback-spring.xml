@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
+    <contextListener class="com.ppap.ppap._core.utils.LoggerStartupListener"/>
+
+    <!-- 로그 이메일 전송 시스템 -->
+    <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <smtpHost>smtp.gmail.com</smtpHost>
+        <smtpPort>587</smtpPort>
+        <STARTTLS>true</STARTTLS>
+        <username>${GMAIL_USER}</username>
+        <password>${GMAIL_PASSWORD}</password>
+        <to>${ADMIN_EMAIL}</to>
+        <from>PPAP &lt;${GMAIL_USER}&gt;</from>
+        <subject>에러가 발생했습니다: %logger{20} - %msg</subject>
+        <layout class="ch.qos.logback.classic.html.HTMLLayout"/>
+        <cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTracker">
+            <bufferSize>1</bufferSize>
+        </cyclicBufferTracker>
+    </appender>
+
     <!--파일에 로그를 출력한다-->
     <appender name="API_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -8,7 +29,7 @@
             <maxHistory>10</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%X{requestId} %d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
 
     </appender>
@@ -54,7 +75,7 @@
             <maxHistory>10</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} %M - %msg%n</pattern>
+            <pattern>%X{requestId} %d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -73,7 +94,7 @@
         <filter class="com.ppap.ppap._core.filter.MDCFilterRegular">
             <MDCKey>logFileName</MDCKey>
             <Value>schedule</Value>
-            <onMatch>NEUTRAL</onMatch>
+            <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
 <!--        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">-->
@@ -101,9 +122,13 @@
         <appender-ref ref="ASYNC_API" />
     </logger>
 
+    <logger name="com.ppap.ppap._core.exception.GlobalExceptionHandler" level="ERROR">
+        <appender-ref ref="ASYNC_ERROR_FILE"/>
+        <appender-ref ref="EMAIL"/>
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ASYNC_SCHEDULE" />
         <appender-ref ref="ASYNC_ERROR_FILE"/>
     </root>
 

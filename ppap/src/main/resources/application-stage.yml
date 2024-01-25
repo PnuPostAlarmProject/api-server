@@ -19,10 +19,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    show-sql: true
     properties:
-      hibernate:
-        format_sql: true
       default_batch_fetch_size: 100
     open-in-view: false
 
@@ -31,17 +28,19 @@ spring:
       host: redis
       port: 6379
 
-  quartz:
-    job-store-type: jdbc
-    jdbc.initialize-schema: always
-
-logging:
-  level:
-    '[com.ppap.ppap]': DEBUG
-    '[org.hibernate.type]': TRACE
-    '[org.springframework.jdbc]': DEBUG
-
-
+  mail:
+    host: smtp.gmail.com
+    username: ${GMAIL_USER}
+    password: ${GMAIL_PASSWORD}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          socketFactory.class: javax.net.ssl.SSLSocketFactory
+          auth: true
+          starttls:
+            enable: true
+    admin: ${ADMIN_EMAIL}
 
 access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
 refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde
@@ -53,8 +52,13 @@ oauth:
     redirect: http://localhost:8080/dev/kakao/login/redirect
 
 springdoc:
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    enabled: false
   swagger-ui:
-    url: /docs/openapi3.yaml
-    path: /docs/api-docs # api doc path
+    enabled: false
+#springdoc:
+#  default-consumes-media-type: application/json;charset=UTF-8
+#  default-produces-media-type: application/json;charset=UTF-8
+#  swagger-ui:
+#    url: /docs/openapi3.yaml
+#    path: /docs/api-docs # api doc path

@@ -40,8 +40,14 @@ oauth:
     secret: ""
 
 springdoc:
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
-    url: /docs/openapi3.yaml
-    path: /docs/api-docs # api doc path
+    enabled: false
+  api-docs:
+    enabled: false
+
+#springdoc:
+#  default-consumes-media-type: application/json;charset=UTF-8
+#  default-produces-media-type: application/json;charset=UTF-8
+#  swagger-ui:
+#    url: /docs/openapi3.yaml
+#    path: /docs/api-docs # api doc path

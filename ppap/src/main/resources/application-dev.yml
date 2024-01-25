@@ -27,6 +27,19 @@ spring:
       host: localhost
       port: 6379
 
+  mail:
+    host: smtp.gmail.com
+    username: ${GMAIL_USER}
+    password: ${GMAIL_PASSWORD}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          socketFactory.class: javax.net.ssl.SSLSocketFactory
+          auth: true
+          starttls:
+            enable: true
+    admin: ${ADMIN_EMAIL}
 
 #logging:
 #  level:
@@ -36,8 +49,6 @@ spring:
 #    '[com.ppap.ppap]': DEBUG
 #    '[org.hibernate.type]': TRACE
 #    '[org.springframework.jdbc]': DEBUG
-
-
 
 access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
 refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde

@@ -4,6 +4,7 @@ import com.ppap.ppap._core.crawler.CrawlingData;
 import com.ppap.ppap._core.crawler.JsoupReader;
 import com.ppap.ppap._core.firebase.message.FcmService;
 import com.ppap.ppap._core.crawler.RssReader;
+import com.ppap.ppap._core.utils.EmailService;
 import com.ppap.ppap._core.utils.MDCUtils;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
@@ -15,10 +16,13 @@ import com.ppap.ppap.domain.subscribe.service.SubscribeReadService;
 import com.ppap.ppap.domain.user.entity.Device;
 import com.ppap.ppap.domain.user.service.DeviceReadService;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +33,7 @@ import java.util.concurrent.ForkJoinPool;
 
 import static java.util.stream.Collectors.*;
 
+@Profile({"dev", "stage", "prod"})
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -44,6 +49,10 @@ public class SchedulerService {
     private final ContentReadService contentReadService;
     private final ContentWriteService contentWriteService;
     private final FcmService fcmService;
+    private final EmailService emailService;
+
+    @Value("${spring.mail.admin}")
+    private String toEmail;
 
     public void run() {
         MDC.put("logFileName", "schedule");
@@ -69,10 +78,8 @@ public class SchedulerService {
         // 각 noticeId에 대해 읽어 공지사항별 공지사항 데이터 그룹을 만든다.
         Map<Notice, List<CrawlingData>> filterNoticeCrawlingGroup = getFilterNoticeGroup(noticeList, errorNotices, noticeIdSetInContent);
 
-
         // 필요한 구독 목록 중복없이 다 가져옴.
         Set<Subscribe> subscribeSet = getSubscribeSet(filterNoticeCrawlingGroup.keySet());
-
 
         // userId별 Fcm토큰 값들을 조회
         Map<Long, List<Device>> userDeviceGroup = getFcmTokenGroup(subscribeSet);
@@ -84,12 +91,11 @@ public class SchedulerService {
         updateMaxPubDateNotice(filterNoticeCrawlingGroup);
 
         if (!errorNotices.isEmpty()) {
-            log.error("Error Notices: {}", errorNotices.entrySet()
-                .stream()
-                .collect(toMap(
-                    entry -> entry.getKey().getLink(),
-                    Map.Entry::getValue
-                )));
+            try {
+                emailService.sendEmailForSchdulerErrorLog(errorNotices, toEmail);
+            } catch (MessagingException e) {
+                log.error(e.getMessage());
+            }
         }
     }
 
