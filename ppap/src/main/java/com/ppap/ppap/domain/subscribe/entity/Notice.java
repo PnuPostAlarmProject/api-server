@@ -63,7 +63,7 @@ public class Notice extends AuditingEntity {
     public static Notice of(String rssLink) {
         return Notice.builder()
                 .link(rssLink)
-                .lastNoticeTime(LocalDateTime.now().minusDays(5))
+                .lastNoticeTime(LocalDateTime.now())
                 .build();
     }
 
@@ -71,6 +71,9 @@ public class Notice extends AuditingEntity {
         this.lastNoticeTime = lastNoticeTime;
     }
 
+    public void changeUniv(Univ univ) {
+        this.univ = univ;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -83,11 +83,22 @@ public class RssReader {
             log.error("error :", e);
             throw new Exception400(BaseExceptionStatus.RSS_LINK_INVALID);
         } catch(SocketException | SocketTimeoutException e){
+            log.error("error :", e);
             throw new Exception502(BaseExceptionStatus.RSS_LINK_NETWORK_ERROR);
         } catch (IOException e) {
             log.error("error :", e);
             throw new Exception500(BaseExceptionStatus.RSS_LINK_UNKNOWN_ERROR);
         }
+
+        // 크롤링한 데이터에 null이 있는 경우가 존재해 예외처리
+        rssDataList = rssDataList.stream()
+            .filter(data -> {
+                if (Objects.isNull(data.pubDate()))
+                    return false;
+
+                return !Objects.isNull(data.link()) && !data.link().isBlank();
+            })
+            .toList();
 
         return isInit ? rssDataList : rssDataList.stream()
             .filter(data -> data.pubDate().isAfter(maxPubDate))

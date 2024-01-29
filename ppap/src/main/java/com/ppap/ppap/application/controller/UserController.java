@@ -29,7 +29,6 @@ public class UserController {
     private final UserWriteService userWriteService;
     private final KakaoRestTemplate kakaoRestTemplate;
 
-
     @PostMapping("/kakao/login")
     public ResponseEntity<?> kakaoLogin(@RequestBody @Valid FcmTokenDto fcmTokenDto, HttpServletRequest request) {
         String token = request.getHeader("Kakao");

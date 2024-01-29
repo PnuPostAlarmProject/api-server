@@ -1,6 +1,8 @@
 package com.ppap.ppap._core.firebase.message;
 
 import com.google.api.core.ApiFuture;
+import com.google.firebase.messaging.AndroidConfig;
+import com.google.firebase.messaging.AndroidNotification;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -37,14 +39,14 @@ public class FcmService {
     private final ForkJoinPool forkJoinPool;
     private static final int CHUNK_SIZE = 500;
 
-    public void sendNotification(Map<Notice, List<CrawlingData>> filterNoticeCrwalingGroup,
+    public void sendNotification(Map<Notice, List<CrawlingData>> filterNoticeCrawlingGroup,
                                     Set<Subscribe> subscribeSet,
                                     Map<Long, List<Device>> userDeviceGroup) {
 
         if (userDeviceGroup.keySet().isEmpty())
             return ;
 
-        List<List<Message>> chunkMessages = getChunkMessages(filterNoticeCrwalingGroup, subscribeSet, userDeviceGroup);
+        List<List<Message>> chunkMessages = getChunkMessages(filterNoticeCrawlingGroup, subscribeSet, userDeviceGroup);
         ExecutorService executor = Executors.newFixedThreadPool(Math.min(chunkMessages.size(), 10),
             r -> {
                 Thread t = new Thread(r);
@@ -130,19 +132,22 @@ public class FcmService {
         List<CrawlingData> crawlingDataList = filterNoticeIdCrawlingGroup.getOrDefault(subscribe.getNotice().getId(), Collections.emptyList());
         List<Device> devices = userDeviceGroup.getOrDefault(subscribe.getUser().getId(), Collections.emptyList());
         return crawlingDataList.stream()
-            .flatMap(crawlingData -> createMessagesForRssData(crawlingData, devices).stream());
+            .flatMap(crawlingData -> createMessagesForCrawlingData(subscribe, crawlingData, devices).stream());
     }
 
-    private List<Message> createMessagesForRssData(CrawlingData crawlingData, List<Device> devices) {
-
-        Notification notification = Notification.builder()
-            .setTitle(crawlingData.title())
-            .build();
+    private List<Message> createMessagesForCrawlingData(Subscribe subscribe, CrawlingData crawlingData, List<Device> devices) {
         return devices.stream()
             .map(device -> Message.builder()
-                .setNotification(notification)
                 .setToken(device.getFcmToken())
-                .putData("click_action", "NOTIFICATION_CLICK")
+                .setAndroidConfig(AndroidConfig.builder()
+                    .setTtl(86400)
+                    .setNotification(AndroidNotification.builder()
+                        .setTitle(subscribe.getTitle())
+                        .setBody(crawlingData.title())
+                        .setClickAction(".MainActivity")
+                        .build())
+                    .build())
+                .putData("link", crawlingData.link())
                 .build())
             .toList();
     }

@@ -51,6 +51,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./log:/opt/ppap/log
+      - ./src/main/resources:/opt/ppap/src/main/resources
     tty: true
     restart: on-failure:2
     depends_on:

@@ -42,6 +42,13 @@ spring:
             enable: true
     admin: ${ADMIN_EMAIL}
 
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+
 access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
 refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde
 

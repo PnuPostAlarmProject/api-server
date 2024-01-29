@@ -69,6 +69,10 @@ public class Subscribe extends AuditingEntity {
         this.title = title;
     }
 
+    public void changeTitle(String title) {
+        this.title = title;
+    }
+
     public void changeActive(){
         this.isActive = !this.isActive;
     }

@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-logging'
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 
     //Springboot 2.x 버전은 아래를 사용한다.
 //    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'

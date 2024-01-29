@@ -17,8 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoticeWriteService {
     private final NoticeJpaRepository noticeJpaRepository;
 
-    public Notice save(String rssLink) {
-        return noticeJpaRepository.save(Notice.of(rssLink));
+    public Notice save(String link) {
+        return noticeJpaRepository.save(Notice.of(link));
+    }
+
+    public Notice save(Notice notice) {
+        return noticeJpaRepository.save(notice);
     }
 
     public void saveAllAndFlush(Collection<Notice> noticeList) {

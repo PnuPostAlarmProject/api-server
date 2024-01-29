@@ -129,6 +129,7 @@
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_SCHEDULE"/>
         <appender-ref ref="ASYNC_ERROR_FILE"/>
     </root>
 

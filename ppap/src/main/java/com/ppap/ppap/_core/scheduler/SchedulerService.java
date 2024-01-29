@@ -121,7 +121,9 @@ public class SchedulerService {
 			crawlingNoticeGroup.entrySet().stream()
 				.collect(groupingBy(Map.Entry::getKey,
 					flatMapping((entry -> entry.getValue().stream()
-							.filter(crawlingData -> crawlingData.pubDate().isAfter(entry.getKey().getLastNoticeTime()))
+							.filter(crawlingData ->
+                                crawlingData.pubDate().isAfter(entry.getKey().getLastNoticeTime())
+                            )
 						),
 						toList()))
 				);
@@ -175,6 +177,7 @@ public class SchedulerService {
 
     }
 
+    // 공지사항 별 구독 목록 조회
     private Set<Subscribe> getSubscribeSet(Set<Notice> noticeSet) {
 		return subscribeReadService.getSubscribeByNoticeIdIn(noticeSet.stream()
 			.map(Notice::getId)

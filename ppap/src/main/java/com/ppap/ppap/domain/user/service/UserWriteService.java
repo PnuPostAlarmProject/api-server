@@ -65,6 +65,7 @@ public class UserWriteService {
         );
     }
 
+
     // 유저가 이미 존재한다면 예외처리
     private void checkEmail(String email){
         if(userJpaRepository.existsByEmail(email))
