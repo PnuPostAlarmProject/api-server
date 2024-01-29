@@ -63,7 +63,7 @@ public class Notice extends AuditingEntity {
     public static Notice of(String rssLink) {
         return Notice.builder()
                 .link(rssLink)
-                .lastNoticeTime(LocalDateTime.now().minusDays(2))
+                .lastNoticeTime(LocalDateTime.now())
                 .build();
     }
 
