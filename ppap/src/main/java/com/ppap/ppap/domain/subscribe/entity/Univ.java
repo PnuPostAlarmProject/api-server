@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "univ_tb")
+@Table(name = "univ_tb", uniqueConstraints = {
+	@UniqueConstraint(name = "uk_univ_college_department", columnNames = {"college", "department"})
+})
 public class Univ {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "univ_id")
@@ -41,11 +44,12 @@ public class Univ {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		Univ univ = (Univ)o;
-		return Objects.equals(getId(), univ.getId());
+		return Objects.equals(getCollege(), univ.getCollege()) && Objects.equals(getDepartment(),
+			univ.getDepartment());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId());
+		return Objects.hash(getCollege(), getDepartment());
 	}
 }

@@ -31,7 +31,7 @@ public class CustomNoticeRepositoryImpl implements CustomNoticeRepository{
 
 		jdbcTemplate.getJdbcTemplate().batchUpdate(updateQuery,
 			noticeList,
-			Math.min(noticeList.size(), 1000),
+			noticeList.size(),
 			(ps, notice) -> {
 				ps.setTimestamp(1, Timestamp.valueOf(notice.getLastNoticeTime()));
 				ps.setLong(2, notice.getId());

@@ -12,10 +12,6 @@ spring:
     username: root
     password: qwer1234
 
-  h2:
-    console:
-      enabled: true
-
   jpa:
     hibernate:
       ddl-auto: create
@@ -35,7 +31,6 @@ logging:
   level:
     '[com.ppap.ppap]': DEBUG
     '[org.hibernate.type]': TRACE
-
 
 
 access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ

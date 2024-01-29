@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 public enum Role {
     ROLE_USER("ROLE_USER", "유저"),
     ROLE_ANONYMOUS("ROLE_ANONYMOUS", "익명"),
-    ROLE_ADMIN("ROLE_ADMIN", "관리자");
+    ROLE_ADMIN("ROLE_ADMIN", "관리자"),
+    ROLE_BATCH("ROLE_BATCH", "데이터");
 
     @Getter
     private final String roleName;

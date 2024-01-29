@@ -5,6 +5,7 @@ import java.net.SocketTimeoutException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -51,10 +52,10 @@ public class JsoupReader {
 						Element detailUrlElement = detailUrlDocument.getElementsByClass("board-view").first().child(0);
 						title = detailUrlElement.select("dd").text();
 					} catch (SocketTimeoutException e) {
-						log.error(ExceptionUtils.getMessage(e));
+						log.error(ExceptionUtils.getStackTrace(e));
 						throw new Exception500(BaseExceptionStatus.JSOUP_LINK_NETWORK_ERROR);
 					} catch (IOException e) {
-						log.error(ExceptionUtils.getMessage(e));
+						log.error(ExceptionUtils.getStackTrace(e));
 						throw new Exception500(BaseExceptionStatus.JSOUP_LINK_UNKNOWN_ERROR);
 					}
 				}
@@ -66,7 +67,19 @@ public class JsoupReader {
 					.category(category)
 					.build();})
 			.toList();
-		return crawalingDatas;
+
+		// 크롤링한 데이터에 null이 있는 경우가 존재해 예외처리
+		crawalingDatas = crawalingDatas.stream()
+			.filter(data -> {
+				if (Objects.isNull(data.pubDate()))
+					return false;
+				return !Objects.isNull(data.link()) && !data.link().isBlank();
+			})
+			.toList();
+
+		return isInit ? crawalingDatas : crawalingDatas.stream()
+			.filter(data -> data.pubDate().isAfter(maxPubDateTime))
+			.toList();
 	}
 
 	private LocalDateTime getLocalDateTime(String id, String time) {

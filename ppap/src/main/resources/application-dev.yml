@@ -41,6 +41,13 @@ spring:
             enable: true
     admin: ${ADMIN_EMAIL}
 
+  batch:
+#    job:
+#      enabled: false
+    jdbc:
+      initialize-schema: always
+
+
 #logging:
 #  level:
 #    org:

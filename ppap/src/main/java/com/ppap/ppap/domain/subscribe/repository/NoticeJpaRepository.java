@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface NoticeJpaRepository extends JpaRepository<Notice, Long>, CustomNoticeRepository{
 
@@ -17,4 +18,8 @@ public interface NoticeJpaRepository extends JpaRepository<Notice, Long>, Custom
     @Query(value = "select n From Notice n "
         + "where n.noticeType = :noticeType")
     List<Notice> findByNoticeType(@Param("noticeType") NoticeType noticeType);
+
+    @Query(value = "select n From Notice n "
+        + "where n.link in (:linkList)")
+    List<Notice> findByLinkIn(@Param("linkList") List<String> linkList);
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -18,11 +19,15 @@ import java.util.Optional;
 public class NoticeReadService {
     private final NoticeJpaRepository noticeJpaRepository;
 
-    public Optional<Notice> findByLink(String rssLink) {
-        return noticeJpaRepository.findByLink(rssLink);
+    public Optional<Notice> findByLink(String link) {
+        return noticeJpaRepository.findByLink(link);
     }
 
     public List<Notice> findAll() {
         return noticeJpaRepository.findAll();
+    }
+
+    public List<Notice> findByLinkIn(List<String> linkList){
+        return noticeJpaRepository.findByLinkIn(linkList);
     }
 }
