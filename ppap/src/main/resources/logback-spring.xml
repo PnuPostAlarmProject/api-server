@@ -124,7 +124,9 @@
 
     <logger name="com.ppap.ppap._core.exception.GlobalExceptionHandler" level="ERROR">
         <appender-ref ref="ASYNC_ERROR_FILE"/>
-        <appender-ref ref="EMAIL"/>
+        <springProfile name="prod">
+            <appender-ref ref="EMAIL"/>
+        </springProfile>
     </logger>
 
     <root level="INFO">
