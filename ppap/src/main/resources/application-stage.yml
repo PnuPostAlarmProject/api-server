@@ -42,12 +42,16 @@ spring:
             enable: true
     admin: ${ADMIN_EMAIL}
 
-
   batch:
-    job:
-      enabled: false
+    #    job:
+    #      enabled: false
     jdbc:
       initialize-schema: always
+
+logging:
+  level:
+    '[com.ppap.ppap]': DEBUG
+#    '[org.hibernate.type]': TRACE
 
 access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
 refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde

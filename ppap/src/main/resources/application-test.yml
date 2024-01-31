@@ -23,10 +23,6 @@ spring:
       default_batch_fetch_size: 100
     open-in-view: false
 
-logging:
-  level:
-    '[com.example.kakao]': DEBUG
-    '[org.hibernate.type]': TRACE
 
 file:
   path: ./images/

@@ -5,9 +5,12 @@ import com.ppap.ppap._core.exception.Exception403;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeGetListResponseDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeGetResponseDto;
+import com.ppap.ppap.domain.subscribe.dto.query.FindByUnivAndRoleQueryDto;
 import com.ppap.ppap.domain.subscribe.entity.Subscribe;
 import com.ppap.ppap.domain.subscribe.repository.SubscribeJpaRepository;
 import com.ppap.ppap.domain.user.entity.User;
+import com.ppap.ppap.domain.user.entity.constant.Role;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,11 @@ public class SubscribeReadService {
         validateIsWriter(user, subscribe);
 
         return SubscribeGetResponseDto.from(subscribe);
+    }
+
+    // 배치 프로그램으로 등록된 구독 데이터 조회
+    public List<FindByUnivAndRoleQueryDto> getSubscribeByUnivId(Long univId) {
+        return subscribeJpaRepository.findByUnivIdAndRoleFetchJoin(univId, Role.ROLE_BATCH);
     }
 
     private void validateIsWriter(User user, Subscribe subscribe) {

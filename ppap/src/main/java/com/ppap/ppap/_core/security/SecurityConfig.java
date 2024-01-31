@@ -100,7 +100,8 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/auth/**"),
                                 new AntPathRequestMatcher("/subscribe/**"),
                                 new AntPathRequestMatcher("/scrap/**"),
-                                new AntPathRequestMatcher("/content/**")).authenticated()
+                                new AntPathRequestMatcher("/content/**"),
+                                new AntPathRequestMatcher("/univ/**")).authenticated()
                         .anyRequest().permitAll()
         );
 
