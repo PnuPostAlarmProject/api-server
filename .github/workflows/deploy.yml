@@ -3,10 +3,10 @@ name: PR and Push Workflow
 on:
   pull_request:
     branches:
-      - weekly
+      - main
   push:
     branches:
-      - weekly
+      - main
 
 defaults:
   run:
