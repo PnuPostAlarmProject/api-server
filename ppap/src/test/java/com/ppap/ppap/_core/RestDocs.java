@@ -51,7 +51,7 @@ public class RestDocs {
     protected ObjectMapper om;
 
     @BeforeEach
-    private void setup(WebApplicationContext webApplicationContext,
+    public void setup(WebApplicationContext webApplicationContext,
                        RestDocumentationContextProvider restDocumentation) {
         this.document = MockMvcRestDocumentationWrapper.document("{class-name}/{method-name}",
                 Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),

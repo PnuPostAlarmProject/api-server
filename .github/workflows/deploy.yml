@@ -34,25 +34,25 @@ jobs:
         run: chmod +x ./gradlew
 
 
-      # Gradle 빌드 및 테스트 실행
+      # Gradle 테스트 실행
       - name: Build and Test with Gradle
         run: |
-          ./gradlew clean build
+          ./gradlew clean test --scan
 
       # 빌드 실패 시 PR failure로 상태 변경
-      - name: Close PR, if Build Fails
+      - name: Close PR, if Test Fails
         if: failure()
         uses: actions/github-script@v6
         with:
           github-token: ${{ github.TOKEN }}
           script: |
-            const pull_number = ${{ github.event.pull_request.number }}
-            const updated_title = `[BUILD FAIL] ${{ github.event.pull_request.title }}`
+            const pull_number = ${ github.event.pull_request.number }
+            const updated_title = `[BUILD FAIL] ${ github.event.pull_request.title }`
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: pull_number,
-              body: '빌드에 실패했습니다.',
+              body: '테스트에 실패했습니다.',
               event: 'REQUEST_CHANGES'
             })
             await github.rest.pulls.update({

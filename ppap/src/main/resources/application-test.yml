@@ -10,9 +10,6 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
-  h2:
-    console:
-      enabled: true
   jpa:
     hibernate:
       ddl-auto: create
@@ -23,9 +20,6 @@ spring:
       default_batch_fetch_size: 100
     open-in-view: false
 
-
-file:
-  path: ./images/
 
 access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
 refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde
