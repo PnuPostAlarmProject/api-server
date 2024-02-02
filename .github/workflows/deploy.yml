@@ -5,8 +5,7 @@ on:
     branches:
       - main
   push:
-    branches:
-      - main
+    branches: ['main', 'test/citest']
 
 defaults:
   run:
@@ -46,8 +45,8 @@ jobs:
         with:
           github-token: ${{ github.TOKEN }}
           script: |
-            const pull_number = ${ github.event.pull_request.number }
-            const updated_title = `[BUILD FAIL] ${ github.event.pull_request.title }`
+            const pull_number = ${{ github.event.pull_request.number }};
+            const updated_title = `[BUILD FAIL] ${{ github.event.pull_request.title }}`;
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
