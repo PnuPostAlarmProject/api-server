@@ -14,11 +14,11 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
-    show-sql: true
+      ddl-auto: none
+#    show-sql: true
     properties:
       hibernate:
-        format_sql: true
+#        format_sql: true
       default_batch_fetch_size: 100
     open-in-view: false
 
@@ -27,7 +27,25 @@ spring:
       host: localhost
       port: 6379
 
+  mail:
+    host: smtp.gmail.com
+    username: ${GMAIL_USER}
+    password: ${GMAIL_PASSWORD}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          socketFactory.class: javax.net.ssl.SSLSocketFactory
+          auth: true
+          starttls:
+            enable: true
+    admin: ${ADMIN_EMAIL}
 
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never
 
 access-jwt-secret-key: ${ACCESS_TOKEN}
 refresh-jwt-secret-key: ${REFRESH_TOKEN}
@@ -37,10 +55,8 @@ oauth:
     client-id: ${KAKAO_CLIENT_ID}
     secret: ${KAKAO_SECRET}
 
-
 springdoc:
-  default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8
+  api-docs:
+    enabled: false
   swagger-ui:
-    url: /docs/openapi3.yaml
-    path: /docs/api-docs # api doc path
+    enabled: false

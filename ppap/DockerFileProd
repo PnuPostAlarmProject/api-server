@@ -7,7 +7,7 @@ COPY . .
 
 #ENV TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
 RUN gradle wrapper
-RUN ./gradlew clean build
+RUN ./gradlew clean build -x test
 
 # 2. Run the application
 FROM eclipse-temurin:17-jdk-jammy

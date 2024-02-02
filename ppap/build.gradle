@@ -44,7 +44,7 @@ dependencies {
 //    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
     //Springboot 3.x 버전은 아래를 사용한다.
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

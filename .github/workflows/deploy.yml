@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'  # 필요한 JDK버전 설정
           distribution: 'adopt' # 어떤 JDK 배포판을 사용할건지 설정해줘야합니다. 기본적으로 권장되는 adopt사용했습니다.
@@ -64,6 +64,7 @@ jobs:
             })
 
       
+  # deploy:
 
 
       # Deploy

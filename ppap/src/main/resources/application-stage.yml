@@ -63,13 +63,8 @@ oauth:
     redirect: http://localhost:8080/dev/kakao/login/redirect
 
 springdoc:
-  api-docs:
-    enabled: false
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
-    enabled: false
-#springdoc:
-#  default-consumes-media-type: application/json;charset=UTF-8
-#  default-produces-media-type: application/json;charset=UTF-8
-#  swagger-ui:
-#    url: /docs/openapi3.yaml
-#    path: /docs/api-docs # api doc path
+    url: /docs/openapi3.yaml
+    path: /docs/api-docs # api doc path
