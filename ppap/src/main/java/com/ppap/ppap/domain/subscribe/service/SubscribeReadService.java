@@ -42,7 +42,7 @@ public class SubscribeReadService {
     }
 
     public Set<Subscribe> getSubscribeByNoticeIdIn(List<Long> noticeIds) {
-        return subscribeJpaRepository.findByNoticeIdIn(noticeIds);
+        return subscribeJpaRepository.findByNoticeIdInAndIsActive(noticeIds);
     }
 
     public List<Subscribe> getSubscribeByNoticeId(Long noticeId) {

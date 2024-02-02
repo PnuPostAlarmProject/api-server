@@ -1,0 +1,38 @@
+name: PR and Push Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches: ['main', 'test/citest']
+
+defaults:
+  run:
+    working-directory: ./ppap
+
+jobs:
+  gradle-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'  # 필요한 JDK버전 설정
+          distribution: 'adopt' # 어떤 JDK 배포판을 사용할건지 설정해줘야합니다. 기본적으로 권장되는 adopt사용했습니다.
+          # AdoptOpenJDK (adopt): AdoptOpenJDK는 Adoptium 프로젝트의 일부로, 오픈 소스로 유지 및 지원되는 JDK 배포판입니다. AdoptOpenJDK는 다양한 버전과 라이선스 옵션을 제공합니다.
+          cache: 'gradle'
+
+
+        #Gradle 실행 스크립트에 실행 권한 부여
+      - name: Give execute permission to Gradle Wrapper
+        run: chmod +x ./gradlew
+
+      # Gradle 테스트 실행
+      - name: Test with Gradle
+        run: |
+          ./gradlew clean test
