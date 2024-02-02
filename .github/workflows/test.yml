@@ -50,6 +50,10 @@ jobs:
             cp -r $dir report_files/$module_path/$(basename $(dirname $dir))
           done
           tar czvf report_files_$TIMESTAMP.tar.gz report_files
+          
+          if [ -e "report_files/$TIMESTAMP.tar.gz"]; then
+            echo "Compressing Success!!"
+          fi
       
       - name: Upload Error Report Files
         if: ${{ failure() }}
