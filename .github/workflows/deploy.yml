@@ -45,13 +45,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            await github.rest.pulls.createReview({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ github.event.pull_request.number}},
-              body: '테스트에 실패했습니다.',
-              event: 'REQUEST_CHANGES'
-            })
             await github.rest.pulls.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
