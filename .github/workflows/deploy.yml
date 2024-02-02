@@ -41,15 +41,12 @@ jobs:
       # 빌드 실패 시 PR failure로 상태 변경
       - name: Close PR, if Test Fails
         if: failure()
-        uses: actions/github-script@v6
-        env:
-          PULL_NUMBER: ${{ github.event.pull_request.number }}
-          UPDATED_TITLE: ${{ github.event.pull_request.title }}
+        uses: actions/github-script@v6          
         with:
           github-token: ${{ github.TOKEN }}
           script: |
-            const pull_number = ${process.env.PULL_NUMBER}
-            const updated_title = `[BUILD FAIL] ${process.env.UPDATED_TITLE}`
+            const pull_number = "${{github.event.pull_request.number}}"
+            const updated_title "${{github.event.pull_request.title}}"
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
