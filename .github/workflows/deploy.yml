@@ -43,13 +43,13 @@ jobs:
         if: failure()
         uses: actions/github-script@v6
         env:
-          PULL_NUMBER: ${{github.event.pull_request.number}}
-          UPDATED_TITLE: ${{github.event.pull_request.title}}
+          PULL_NUMBER: ${{ github.event.pull_request.number }}
+          UPDATED_TITLE: ${{ github.event.pull_request.title }}
         with:
           github-token: ${{ github.TOKEN }}
           script: |
-            const pull_number = ${ process.env.PULL_NUMBER };
-            const updated_title = `[BUILD FAIL] ${ process.env.UPDATED_TITLE }`;
+            const pull_number = ${process.env.PULL_NUMBER}
+            const updated_title = `[BUILD FAIL] ${process.env.UPDATED_TITLE}`
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
