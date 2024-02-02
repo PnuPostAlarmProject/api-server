@@ -4,8 +4,6 @@ on:
   pull_request:
     branches:
       - main
-  push:
-    branches: ['main', 'test/citest']
 
 defaults:
   run:
@@ -42,7 +40,7 @@ jobs:
         if: ${{ failure() }}
         run: |
           echo "Compressing all report files..."
-          TIMESTAMP=$(date +%Y%m%d_$H%M%S)
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
           mkdir report_files
           REPORT_DIRS=$(find . -type d -path '*/build/reports/tests/test')
           for dir in $REPORT_DIRS; do
@@ -51,7 +49,7 @@ jobs:
           done
           tar czvf report_files_$TIMESTAMP.tar.gz report_files
           
-          if [ -e "report_files/$TIMESTAMP.tar.gz"]; then
+          if [ -e "report_files/$TIMESTAMP.tar.gz" ]; then
             echo "Compressing Success!!"
           fi
       
