@@ -8,9 +8,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ppap
-    username: root
-    password: qwer1234
+    url: ${DATABASE_URI_PROD}
+    username: admin
+    password: ${DATABASE_PASSWORD}
 
   jpa:
     hibernate:
@@ -29,8 +29,8 @@ spring:
 
 
 
-access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
-refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde
+access-jwt-secret-key: ${ACCESS_TOKEN}
+refresh-jwt-secret-key: ${REFRESH_TOKEN}
 
 oauth:
   kakao:

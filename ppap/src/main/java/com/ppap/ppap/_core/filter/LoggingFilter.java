@@ -36,7 +36,7 @@ public class LoggingFilter implements OrderedFilter {
 		chain.doFilter(requestWrapper, responseWrapper);
 
 		if (isSuccessRequest(httpResponse)) {
-			log.info("\n{} - {} {} {} \nREQUEST Body : {}",
+			log.info("\n{} - {} {} {} \nREQUEST Body : {}\n",
 				httpRequest.getMethod(),
 				httpRequest.getRequestURI(),
 				httpRequest.getHeader("X-FORWARDED-FOR") == null ?
@@ -44,7 +44,7 @@ public class LoggingFilter implements OrderedFilter {
 				httpResponse.getStatus(),
 				getRequestBody(requestWrapper));
 		} else {
-			log.info("\n{} - {} {} {} \nREQUEST Body : {}\nRESPONSE Body : {}",
+			log.info("\n{} - {} {} {} \nREQUEST Body : {}\nRESPONSE Body : {}\n",
 				httpRequest.getMethod(),
 				httpRequest.getRequestURI(),
 				httpRequest.getHeader("X-FORWARDED-FOR") == null ?
