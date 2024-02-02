@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         if (!jwt.startsWith("Bearer ")) {
-            log.error("잘못된 토큰");
+            // log.error("잘못된 토큰");
             throw new JWTDecodeException("토큰 형식이 잘못되었습니다.");
         }
 
@@ -54,14 +54,13 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                             userDetails.getAuthorities()
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.debug("디버그 : 인증 객체 만들어짐");
         } catch (SignatureVerificationException sve) {
-            log.error("토큰 검증 실패");
+            // log.error("토큰 검증 실패");
             throw new JWTVerificationException("토큰 검증이 실패했습니다.");
-        } catch (TokenExpiredException tee) {
-            log.error("토큰 만료 됨");
+        } catch (TokenExpiredException ignore) {
+            // log.error("토큰 만료 됨");
         } catch (JWTDecodeException jde) {
-            log.error("잘못된 토큰");
+            // log.error("잘못된 토큰");
             throw new JWTDecodeException("토큰 형식이 잘못되었습니다.");
         }
 
