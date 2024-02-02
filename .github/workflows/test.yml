@@ -40,16 +40,15 @@ jobs:
         if: ${{ failure() }}
         run: |
           echo "Compressing all report files..."
-          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
           mkdir report_files
           REPORT_DIRS=$(find . -type d -path '*/build/reports/tests/test')
           for dir in $REPORT_DIRS; do
             module_path=$(echo $dir | awk -F'/build/' '{print $1}' | cut -c 3-)
             cp -r $dir report_files/$module_path/$(basename $(dirname $dir))
           done
-          tar czvf report_files_$TIMESTAMP.tar.gz report_files
+          tar czvf report_files.tar.gz report_files
           
-          if [ -e "report_files_$TIMESTAMP.tar.gz" ]; then
+          if [ -e "report_files.tar.gz" ]; then
             echo "Compressing Success!!"
           fi
       
@@ -58,4 +57,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: report_files
-          path: report_files_*.tar.gz
+          path: report_files.tar.gz
