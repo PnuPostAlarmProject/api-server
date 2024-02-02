@@ -42,25 +42,21 @@ jobs:
       - name: Close PR, if Test Fails
         if: failure()
         uses: actions/github-script@v6
-        env:
-          PULL_NUMBER: ${{github.event.pull_request.number}}
-          UPDATED_TITLE: ${{github.event.pull_request.title}}
         with:
           github-token: ${{ github.TOKEN }}
           script: |
-            const { PULL_NUMBER, UPDATED_TITLE } = process.env
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: ${PULL_NUMBER},
+              pull_number: ${{ github.event.pull_request.number}},
               body: '테스트에 실패했습니다.',
               event: 'REQUEST_CHANGES'
             })
             await github.rest.pulls.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: ${PULL_NUMBER},
-              title: ${UPDATED_TITLE},
+              pull_number: ${{ github.event.pull_request.number}},
+              title: "[BUILD FAIL] ${{ github.event.pull_request.title }}",
               state: 'failure'
             })
 
