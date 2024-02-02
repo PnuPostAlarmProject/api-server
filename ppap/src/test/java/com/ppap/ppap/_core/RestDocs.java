@@ -43,7 +43,7 @@ import java.nio.charset.StandardCharsets;
 public class RestDocs {
 
     @MockBean
-    private FirebaseMessaging firebaseMessaging;
+    protected FirebaseMessaging firebaseMessaging;
     protected MockMvc mvc;
     protected RestDocumentationResultHandler document;
 
