@@ -43,7 +43,7 @@ jobs:
         if: failure()
         uses: actions/github-script@v6
         with:
-          github-token: ${{ github.TOKEN }}
+          github-token: ${{ github.token }}
           script: |
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
