@@ -2,9 +2,8 @@ name: Deploy Workflow
 
 on:
   push:
-    branches:
+    branches: 
       - main
-
 
 env:
   AWS_REGION: ap-northeast-2
@@ -20,13 +19,18 @@ jobs:
     runs-on: ubuntu-latest
   
     steps:
+      - name: get Github Action Public IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+  
+
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credential@v4
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRETS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
@@ -40,6 +44,38 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
 
         run: |
-          docker build -t $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f DockerFileProd
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker build -t $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f DockerFileProd .
+          docker build -t $REGISTRY/nginx:$IMAGE_TAG ./nginx
+          docker push $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/nginx:$IMAGE_TAG
       
+      - name: add Github Actions IP to Security group
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETS_KEY }}
+          AWS_DEFAULT_REGION: ap-northeast-2
+        run: |
+          aws ec2 authorize-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          
+      - name: deploy ec2 server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER_NAME }}
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            cd ~/api-server/ppap
+            sudo git pull
+            aws ecr get-login-password --region ap-northeast-2 | sudo docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+            sudo docker compose -f docker-compose.prod.yml pull
+            sudo docker compose -f docker-compose.prod.yml down nginx web
+            sudo docker compose -f docker-compose.prod.yml up -d
+            sudo docker image prune -f
+
+      - name: remove github Actions IP from security group
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETS_KEY }}
+          AWS_DEFAULT_REGION: ap-northeast-2
+        run: |
+          aws ec2 revoke-security-group-ingress --group-name ${{ secrets.AWS_SG_NAME }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32

@@ -43,4 +43,4 @@ openapi3.yaml
 ppap_fcmkey.json
 .env
 
-/conf/mysql/
+/mysql/
