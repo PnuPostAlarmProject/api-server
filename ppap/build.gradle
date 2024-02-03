@@ -9,6 +9,7 @@ plugins {
 
 group = 'com.ppap'
 version = '0.0.1-SNAPSHOT'
+ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
 
 java {
     sourceCompatibility = '17'
@@ -82,7 +83,7 @@ openapi3 {
     outputDirectory = 'build/resources/main/static/docs'
 }
 
-tasks.withType(GenerateSwaggerUI) {
+tasks.withType(GenerateSwaggerUI).configureEach {
     dependsOn 'openapi3'
 
     // local 확인
@@ -94,7 +95,9 @@ tasks.withType(GenerateSwaggerUI) {
 }
 
 bootJar {
-    dependsOn 'openapi3'
+    if (!project.hasProperty('env') || project.property('env') != 'prod') {
+        dependsOn 'openapi3'
+    }
     archiveBaseName = 'ppap'
     archiveFileName = 'ppap.jar'
     archiveVersion = "0.0.1"
