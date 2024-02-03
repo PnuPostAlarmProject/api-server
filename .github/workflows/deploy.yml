@@ -19,8 +19,6 @@ jobs:
     runs-on: ubuntu-latest
   
     steps:
-
-
       - name: get Github Action Public IP
         id: ip
         uses: haythem/public-ip@v1.3
@@ -67,7 +65,12 @@ jobs:
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
             cd ~/api-server
-            echo "CD OK" > ~/test.txt
+            sudo git pull
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+            sudo docker compose -f docker-compose.prod.yml pull
+            sudo docker compose -f docker-compose.prod.yml down nginx web
+            sudo docker compose -f docker-compose.prod.yml up -d
+            sudo docker image prune -f
 
       - name: remove github Actions IP from security group
         env:

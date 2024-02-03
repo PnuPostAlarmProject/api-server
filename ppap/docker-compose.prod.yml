@@ -11,7 +11,7 @@ services:
       - spring-prod-network
 
   nginx:
-    image: nginx:latest
+    image: ${ECR_NGINX_IMAGE_URL}
     container_name: server_nginx
     ports:
       - "80:80"
@@ -27,9 +27,7 @@ services:
       - spring-prod-network
 
   ppap:
-    build:
-      context: .
-      dockerfile: DockerfileProd
+    image: ${ECR_PPAP_IMAGE_URL}
     ports:
       - "8080:8080"
     container_name: web_prod
@@ -47,8 +45,6 @@ services:
     networks:
       - spring-prod-network
 
-
-
 networks:
-  spring-stage-network:
+  spring-prod-network:
 
