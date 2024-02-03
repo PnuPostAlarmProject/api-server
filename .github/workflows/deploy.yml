@@ -40,5 +40,8 @@ jobs:
 
         run: |
           docker build -t $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f DockerFileProd .
+          docker build -t $REGISTRY/nginx:$IMAGE_TAG ./nginx
           docker push $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      
+          docker push $REGISTRY/nginx:$IMAGE_TAG
+          
+          
