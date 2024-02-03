@@ -64,7 +64,7 @@ jobs:
           username: ${{ secrets.AWS_USER_NAME }}
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
-            cd ~/api-server
+            cd ~/api-server/ppap
             sudo git pull
             aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             sudo docker compose -f docker-compose.prod.yml pull
