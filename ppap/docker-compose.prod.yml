@@ -6,8 +6,7 @@ services:
     hostname: redis
     ports:
       - "6379:6379"
-    networks:
-      - spring-prod-network
+
 
   nginx:
     image: ${ECR_NGINX_IMAGE_URL}
@@ -22,8 +21,6 @@ services:
     depends_on:
       - ppap
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    networks:
-      - spring-prod-network
 
   ppap:
     image: ${ECR_PPAP_IMAGE_URL}
@@ -41,9 +38,4 @@ services:
     depends_on:
       - redis
       - database
-    networks:
-      - spring-prod-network
-
-networks:
-  spring-prod-network:
 
