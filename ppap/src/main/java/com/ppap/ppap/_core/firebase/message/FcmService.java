@@ -144,7 +144,6 @@ public class FcmService {
                     .setNotification(AndroidNotification.builder()
                         .setTitle(subscribe.getTitle())
                         .setBody(crawlingData.title())
-                        .setClickAction(".MainActivity")
                         .build())
                     .build())
                 .putData("link", crawlingData.link())

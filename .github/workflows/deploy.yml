@@ -1,87 +1,45 @@
-name: PR and Push Workflow
+name: Deploy Workflow
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
+
+
+env:
+  AWS_REGION: ap-northeast-2
+  IMAGE_TAG: latest
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
 
 defaults:
   run:
     working-directory: ./ppap
 
 jobs:
-  gradle-test:
+  deploy:
     runs-on: ubuntu-latest
-
+  
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credential@v4
         with:
-          java-version: '17'  # 필요한 JDK버전 설정
-          distribution: 'adopt' # 어떤 JDK 배포판을 사용할건지 설정해줘야합니다. 기본적으로 권장되는 adopt사용했습니다.
-          # AdoptOpenJDK (adopt): AdoptOpenJDK는 Adoptium 프로젝트의 일부로, 오픈 소스로 유지 및 지원되는 JDK 배포판입니다. AdoptOpenJDK는 다양한 버전과 라이선스 옵션을 제공합니다.
-          cache: 'gradle'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRETS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
 
 
-        #Gradle 실행 스크립트에 실행 권한 부여
-      - name: Give execute permission to Gradle Wrapper
-        run: chmod +x ./gradlew
+      - name: docker build
+        env: 
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
 
-
-      # Gradle 테스트 실행
-      - name: Build and Test with Gradle
         run: |
-          ./gradlew clean test --scan
-
-      # 빌드 실패 시 PR failure로 상태 변경
-      - name: Close PR, if Test Fails
-        if: failure()
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ github.TOKEN }}
-          script: |
-            const pull_number = ${ github.event.pull_request.number }
-            const updated_title = `[BUILD FAIL] ${ github.event.pull_request.title }`
-            await github.rest.pulls.createReview({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: pull_number,
-              body: '테스트에 실패했습니다.',
-              event: 'REQUEST_CHANGES'
-            })
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: pull_number,
-              title: updated_title,
-              state: 'failure'
-            })
-
+          docker build -t $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f DockerFileProd
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
       
-  # deploy:
-
-
-      # Deploy
-      # AWS ECR에 이미지 업로드
-
-      
-      # # Gradle 테스트 결과 코드 확인
-      # - name: Check Test Results
-      #   run: |
-          
-      #     if [[ $? -eq 0 ]]; then
-      #       echo "Tests passed successfully"
-      #     else
-      #       echo "Tests failed. PR will be stopped."
-      #       # PR를 중지합니다.
-      #       curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-      #         -d '{"state": "failure", "context": "Continuous Integration/Test"}' \
-      #         "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}"
-      #       exit 1
-      #     fi

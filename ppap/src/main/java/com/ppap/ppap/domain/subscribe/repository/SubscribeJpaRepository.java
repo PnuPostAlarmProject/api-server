@@ -36,8 +36,8 @@ public interface SubscribeJpaRepository extends JpaRepository<Subscribe, Long> {
     Optional<Subscribe> findByIdFetchJoinNotice(@Param("subscribeId") Long subscribeId);
 
     @Query(value = "select s from Subscribe s "
-        + "where s.notice.id in (:noticeIds)")
-    Set<Subscribe> findByNoticeIdIn(@Param("noticeIds")Collection<Long> noticeIds);
+        + "where s.notice.id in (:noticeIds) and s.isActive=true")
+    Set<Subscribe> findByNoticeIdInAndIsActive(@Param("noticeIds")Collection<Long> noticeIds);
 
     @Query(value = "select new com.ppap.ppap.domain.subscribe.dto.query.FindByUnivAndRoleQueryDto"
         + "(s.id, s.title, s.notice.link) "

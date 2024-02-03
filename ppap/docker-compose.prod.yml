@@ -3,7 +3,7 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: redis_stage
+    container_name: redis_prod
     hostname: redis
     ports:
       - "6379:6379"
@@ -32,7 +32,7 @@ services:
       dockerfile: DockerfileProd
     ports:
       - "8080:8080"
-    container_name: web_stage
+    container_name: web_prod
     env_file:
       - ./.env
     volumes:

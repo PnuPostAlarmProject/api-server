@@ -66,9 +66,6 @@ public class UserControllerTest extends RestDocs {
     @MockBean
     private RefreshTokenRepository refreshTokenRepository;
 
-    @MockBean
-    private FirebaseMessaging firebaseMessaging;
-
     private final String KAKAO_URL = "https://kapi.kakao.com/v2/user/me?property_keys=[\"kakao_account.email\"]";
 
     @Nested
