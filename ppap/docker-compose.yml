@@ -4,7 +4,7 @@ services:
     image: mysql
     container_name: ppap_db
     env_file:
-      - ./conf/mysql/.env
+      - mysql/.env
 #    environment:
 #      - MYSQLD_INNODB_AUTOINC_LOCK_MODE=0 #insert가 실패 or 무시되어도 id가 증가하지 않음.
     ports:
@@ -30,7 +30,7 @@ services:
       - "80:80"
     volumes:
       - ./:/app/
-      - ./conf/nginx:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/nginx.conf
     environment:
       - TZ=Asia/Seoul
     depends_on:
