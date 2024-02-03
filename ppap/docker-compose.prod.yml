@@ -36,5 +36,3 @@ services:
     restart: on-failure:2
     depends_on:
       - redis
-      - database
-
