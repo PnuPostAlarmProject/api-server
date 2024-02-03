@@ -2,8 +2,8 @@ name: Deploy Workflow
 
 on:
   push:
-    branches: ['main', 'test/testCD']
-
+    branches: 
+      - main
 
 env:
   AWS_REGION: ap-northeast-2

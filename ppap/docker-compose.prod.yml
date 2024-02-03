@@ -7,7 +7,6 @@ services:
     ports:
       - "6379:6379"
 
-
   nginx:
     image: ${ECR_NGINX_IMAGE_URL}
     container_name: server_nginx
