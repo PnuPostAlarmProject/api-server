@@ -18,7 +18,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/subscribe")
+@RequestMapping("api/v0/subscribe")
 public class SubscribeController {
 
     private final SubscribeWriteService subscribeWriteService;

@@ -31,7 +31,7 @@ public class ScrapControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/scrap/create/{content_id}", contentId)
+                    post("/api/v0/scrap/create/{content_id}", contentId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -69,7 +69,7 @@ public class ScrapControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/scrap/create/{content_id}", contentId)
+                    post("/api/v0/scrap/create/{content_id}", contentId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -92,7 +92,7 @@ public class ScrapControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/scrap/create/{content_id}", contentId)
+                    post("/api/v0/scrap/create/{content_id}", contentId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -119,7 +119,7 @@ public class ScrapControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/scrap/delete/content/{content_id}", contentId)
+                    post("/api/v0/scrap/delete/content/{content_id}", contentId)
                             .header(JwtProvider.HEADER, accessToken)
             );
 
@@ -155,7 +155,7 @@ public class ScrapControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/scrap/delete/content/{content_id}", contentId)
+                    post("/api/v0/scrap/delete/content/{content_id}", contentId)
                             .header(JwtProvider.HEADER, accessToken)
             );
 
@@ -180,7 +180,7 @@ public class ScrapControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/scrap")
+                    get("/api/v0/scrap")
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -229,7 +229,7 @@ public class ScrapControllerTest extends RestDocs {
             int page = 1;
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/scrap?page={page}", page)
+                    get("/api/v0/scrap?page={page}", page)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -252,7 +252,7 @@ public class ScrapControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/scrap/{subscribe_id}", subscribeId)
+                    get("/api/v0/scrap/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -283,7 +283,7 @@ public class ScrapControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/scrap" )
+                    get("/api/v0/scrap" )
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -306,7 +306,7 @@ public class ScrapControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/scrap/{subscribe_id}", subscribeId)
+                    get("/api/v0/scrap/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();

@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/scrap")
+@RequestMapping("api/v0/scrap")
 public class ScrapController {
     private final ScrapReadService scrapReadService;
     private final ScrapWriteService scrapWriteService;

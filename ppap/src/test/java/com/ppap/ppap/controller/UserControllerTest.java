@@ -93,7 +93,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/kakao/login")
+                    post("/api/v0/auth/kakao/login")
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header("Kakao", token)
@@ -146,7 +146,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/kakao/login")
+                    post("/api/v0/auth/kakao/login")
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON)
 
@@ -180,7 +180,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/kakao/login")
+                    post("/api/v0/auth/kakao/login")
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header("Kakao", token)
@@ -221,7 +221,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/kakao/login")
+                    post("/api/v0/auth/kakao/login")
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header("Kakao", token)
@@ -261,7 +261,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/reissue")
+                    post("/api/v0/auth/reissue")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
             );
@@ -305,7 +305,7 @@ public class UserControllerTest extends RestDocs {
             // mock
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/reissue")
+                    post("/api/v0/auth/reissue")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
             );
@@ -332,7 +332,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/reissue")
+                    post("/api/v0/auth/reissue")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
             );
@@ -362,7 +362,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/reissue")
+                    post("/api/v0/auth/reissue")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
             );
@@ -398,7 +398,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/logout")
+                    post("/api/v0/auth/logout")
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(JwtProvider.HEADER, accessToken)
             );
@@ -439,7 +439,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/logout")
+                    post("/api/v0/auth/logout")
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(JwtProvider.HEADER, accessToken)
             );
@@ -467,7 +467,7 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/withdrawal")
+                    post("/api/v0/auth/withdrawal")
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -500,12 +500,12 @@ public class UserControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/auth/withdrawal")
+                    post("/api/v0/auth/withdrawal")
                             .header(JwtProvider.HEADER, accessToken)
             );
 
             resultActions = mvc.perform(
-                    post("/auth/withdrawal")
+                    post("/api/v0/auth/withdrawal")
                             .header(JwtProvider.HEADER, accessToken)
             );
 
