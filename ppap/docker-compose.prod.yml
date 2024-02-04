@@ -6,6 +6,7 @@ services:
     hostname: redis
     ports:
       - "6379:6379"
+  
   ppap:
     image: ${ECR_PPAP_IMAGE_URL}
     ports:
@@ -23,14 +24,14 @@ services:
       - redis
 
   nginx:
-    image: ${ECR_NGINX_IMAGE_URL}
+    image: nginx:latest
     container_name: server_nginx
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./:/app/
-      - ./conf/nginx:/etc/nginx/conf.d:ro
+      - ./nginx:/etc/nginx/conf.d:ro
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     environment:

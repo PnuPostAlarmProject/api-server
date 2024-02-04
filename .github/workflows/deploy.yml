@@ -45,9 +45,7 @@ jobs:
 
         run: |
           docker build -t $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f DockerFileProd .
-          docker build -t $REGISTRY/nginx:$IMAGE_TAG ./nginx
           docker push $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/nginx:$IMAGE_TAG
       
       - name: add Github Actions IP to Security group
         env:
@@ -68,7 +66,7 @@ jobs:
             sudo git pull
             aws ecr get-login-password --region ap-northeast-2 | sudo docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             sudo docker compose -f docker-compose.prod.yml pull
-            sudo docker compose -f docker-compose.prod.yml down nginx web
+            sudo docker compose -f docker-compose.prod.yml down web
             sudo docker compose -f docker-compose.prod.yml up -d
             sudo docker image prune -f
 
