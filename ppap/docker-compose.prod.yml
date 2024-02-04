@@ -6,7 +6,7 @@ services:
     hostname: redis
     ports:
       - "6379:6379"
-  
+
   ppap:
     image: ${ECR_PPAP_IMAGE_URL}
     ports:
