@@ -29,7 +29,7 @@ public class ContentControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/content")
+                    get("/api/v0/content")
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -91,7 +91,7 @@ public class ContentControllerTest extends RestDocs {
             int page = 1;
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/content?page={page}", page)
+                    get("/api/v0/content?page={page}", page)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -128,7 +128,7 @@ public class ContentControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/content/{subscribe_id}", subscribeId)
+                    get("/api/v0/content/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -170,7 +170,7 @@ public class ContentControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/content")
+                    get("/api/v0/content")
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -194,7 +194,7 @@ public class ContentControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/content/{subscribe_id}", subscribeId)
+                    get("/api/v0/content/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();

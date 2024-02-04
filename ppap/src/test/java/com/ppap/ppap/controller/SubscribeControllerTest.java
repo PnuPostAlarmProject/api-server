@@ -63,7 +63,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe")
+                    post("/api/v0/subscribe")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
                             .header(JwtProvider.HEADER, accessToken));
@@ -112,7 +112,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe")
+                    post("/api/v0/subscribe")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
                             .header(JwtProvider.HEADER, accessToken));
@@ -144,7 +144,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe")
+                    post("/api/v0/subscribe")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
                             .header(JwtProvider.HEADER, accessToken));
@@ -176,7 +176,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe")
+                    post("/api/v0/subscribe")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
                             .header(JwtProvider.HEADER, accessToken));
@@ -206,7 +206,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/subscribe")
+                    get("/api/v0/subscribe")
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -249,7 +249,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/subscribe/{subscribe_id}", subscribeId)
+                    get("/api/v0/subscribe/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -288,7 +288,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/subscribe/{subscribe_id}", subscribeId)
+                    get("/api/v0/subscribe/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -313,7 +313,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    get("/subscribe/{subscribe_id}", subscribeId)
+                    get("/api/v0/subscribe/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -346,7 +346,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/{subscribe_id}", subscribeId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
                             .header(JwtProvider.HEADER, accessToken)
@@ -399,7 +399,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/{subscribe_id}", subscribeId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
                             .header(JwtProvider.HEADER, accessToken)
@@ -430,7 +430,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/{subscribe_id}", subscribeId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
                             .header(JwtProvider.HEADER, accessToken)
@@ -461,7 +461,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/{subscribe_id}", subscribeId)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
                             .header(JwtProvider.HEADER, accessToken)
@@ -496,7 +496,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/active/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/active/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
 
@@ -539,7 +539,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/active/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/active/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
 
@@ -565,7 +565,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/active/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/active/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -594,7 +594,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/delete/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/delete/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
 
@@ -634,7 +634,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/delete/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/delete/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
 
@@ -656,7 +656,7 @@ public class SubscribeControllerTest extends RestDocs {
 
             // when
             ResultActions resultActions = mvc.perform(
-                    post("/subscribe/delete/{subscribe_id}", subscribeId)
+                    post("/api/v0/subscribe/delete/{subscribe_id}", subscribeId)
                             .header(JwtProvider.HEADER, accessToken)
             );
 
