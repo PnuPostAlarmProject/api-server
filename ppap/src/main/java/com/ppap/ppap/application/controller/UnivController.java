@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/univ")
+@RequestMapping("api/v0/univ")
 public class UnivController {
 
 	private final UnivReadService univReadService;

@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/content")
+@RequestMapping("/api/v0/content")
 public class ContentController {
     private final GetSubscribeContentUseCase getSubscribeContentUseCase;
 
