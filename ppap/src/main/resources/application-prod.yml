@@ -10,7 +10,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DATABASE_URI_PROD}
     username: admin
-    password: ${DATABASE_PASSWORD}
+    password: ${DATABASE_PASSWORD_PROD}
 
   jpa:
     hibernate:
