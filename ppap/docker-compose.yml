@@ -10,7 +10,7 @@ services:
     ports:
       - "3306:3306"
     volumes:  #로컬 디비를 이용하기 위한 Volume 설정
-      - ./conf/mysql/db:/var/lib/mysql
+      - ./mysql/db:/var/lib/mysql
     networks:
       - spring-stage-network
 
