@@ -22,7 +22,7 @@ public class SchedulerConfig {
 	private final Job csvReaderJob;
 	private final SchedulerService schedulerService;
 
-	@Scheduled(cron = "0 0/10 9-22 * * *", zone="Asia/Seoul")
+	@Scheduled(cron = "0 0/30 9-22 * * *", zone="Asia/Seoul")
 	public void run() {
 		schedulerService.run();
 	}
