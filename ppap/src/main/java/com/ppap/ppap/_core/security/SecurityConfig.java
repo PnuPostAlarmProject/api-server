@@ -95,13 +95,13 @@ public class SecurityConfig {
         // 인증, 권한 필터 설정
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers(new AntPathRequestMatcher("/auth/kakao/**"),
-                                new AntPathRequestMatcher("/auth/reissue")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/auth/**"),
-                                new AntPathRequestMatcher("/subscribe/**"),
-                                new AntPathRequestMatcher("/scrap/**"),
-                                new AntPathRequestMatcher("/content/**"),
-                                new AntPathRequestMatcher("/univ/**")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v0/auth/kakao/**"),
+                                new AntPathRequestMatcher("/api/v0/auth/reissue")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/v0/auth/**"),
+                                new AntPathRequestMatcher("/api/v0/subscribe/**"),
+                                new AntPathRequestMatcher("/api/v0/scrap/**"),
+                                new AntPathRequestMatcher("/api/v0/content/**"),
+                                new AntPathRequestMatcher("/api/v0/univ/**")).authenticated()
                         .anyRequest().permitAll()
         );
 
