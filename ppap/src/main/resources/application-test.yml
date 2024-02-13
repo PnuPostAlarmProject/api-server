@@ -19,7 +19,9 @@ spring:
         format_sql: true
       default_batch_fetch_size: 100
     open-in-view: false
-
+  batch:
+    job:
+      enabled: false
 
 access-jwt-secret-key: esdfDGEqwqrwDCvnulipQ
 refresh-jwt-secret-key: esdfDGEqwqrwDCvnulipQhsde
