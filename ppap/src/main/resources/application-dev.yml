@@ -42,10 +42,11 @@ spring:
     admin: ${ADMIN_EMAIL}
 
   batch:
-#    job:
-#      enabled: false
     jdbc:
       initialize-schema: always
+    job:
+      name: csvReaderJob
+
 
 
 #logging:

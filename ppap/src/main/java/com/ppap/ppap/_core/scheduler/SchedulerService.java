@@ -55,16 +55,7 @@ public class SchedulerService {
     private String toEmail;
 
     public void run() {
-        MDC.put("logFileName", "schedule");
-        log.info("cron Start");
-        long start = System.currentTimeMillis();
-        try {
-            processData();
-        } finally {
-            log.info("실행시간 : {} ms", System.currentTimeMillis() - start);
-            log.info("cron end");
-            MDC.clear();
-        }
+        processData();
     }
 
     private void processData() {

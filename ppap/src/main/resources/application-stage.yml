@@ -43,8 +43,8 @@ spring:
     admin: ${ADMIN_EMAIL}
 
   batch:
-    #    job:
-    #      enabled: false
+    job:
+      name: csvReaderJob
     jdbc:
       initialize-schema: always
 

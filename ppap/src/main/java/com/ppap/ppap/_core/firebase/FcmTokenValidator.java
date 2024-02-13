@@ -1,6 +1,5 @@
 package com.ppap.ppap._core.firebase;
 
-import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -16,10 +15,7 @@ public class FcmTokenValidator {
     private final FirebaseMessaging firebaseMessaging;
 
     public void validateToken(String fcmToken) {
-        Message message = Message.builder()
-                .setToken(fcmToken)
-                .putData("testKey", "testBody")
-                .build();
+        Message message = getFcmTestMessage(fcmToken);
         try{
             firebaseMessaging.send(message, true); // true를 설정하여 dry run을 활성화합니다.
         } catch (FirebaseMessagingException e) {
@@ -29,4 +25,15 @@ public class FcmTokenValidator {
         }
     }
 
+    public void validateTokenThrowException(String fcmToken) throws FirebaseMessagingException{
+        Message message = getFcmTestMessage(fcmToken);
+        firebaseMessaging.send(message, true);
+    }
+
+    private Message getFcmTestMessage(String fcmToken) {
+        return Message.builder()
+            .setToken(fcmToken)
+            .putData("testKey", "testBody")
+            .build();
+    }
 }

@@ -29,7 +29,21 @@ public class EmailService {
 	@Value("${spring.mail.username}")
 	private String fromEmail;
 
-	public void sendEmailForSchdulerErrorLog(Map<Notice, String> errorNotices, String toEmail) throws MessagingException {
+	@Value("${spring.mail.admin}")
+	private String adminEmail;
+
+	public void sendEmailToAdmin(final String text) throws MessagingException {
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+		helper.setFrom(String.format("PPAP <%s>", fromEmail));
+		helper.setText(text);
+		helper.setSubject("FCM 토큰 처리 중 문제가 발생했습니다.");
+		CompletableFuture.runAsync(() -> mailSender.send(message), Executors.newSingleThreadExecutor());
+	}
+
+	public void sendEmailForSchdulerErrorLog(Map<Notice, String> errorNotices, final String toEmail) throws MessagingException {
 
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -42,6 +56,8 @@ public class EmailService {
 		helper.setText(text);
 		CompletableFuture.runAsync(() -> mailSender.send(message), Executors.newSingleThreadExecutor());
 	}
+
+
 
 	private String getHtmlMessage(Map<Notice, String> errorNotices) {
 		StringBuilder sb = new StringBuilder();
