@@ -39,7 +39,7 @@ public class SchedulerConfig {
 		this.schedulerService = schedulerService;
 	}
 
-	@Scheduled(cron = "0 0/1 9-22 * * *", zone="Asia/Seoul")
+	@Scheduled(cron = "0 0/30 9-22 * * *", zone="Asia/Seoul")
 	@SchedulerLog
 	public void run() {
 		log.info("Notice Scheduler Start");
