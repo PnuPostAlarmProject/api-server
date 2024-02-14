@@ -1,7 +1,6 @@
 package com.ppap.ppap._core.config;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.slf4j.MDC;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -15,7 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import com.ppap.ppap._core.scheduler.SchedulerLog;
 import com.ppap.ppap._core.scheduler.SchedulerService;
 
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
@@ -40,7 +39,7 @@ public class SchedulerConfig {
 	}
 
 	@Scheduled(cron = "0 0/30 9-22 * * *", zone="Asia/Seoul")
-	@SchedulerLog
+	@SchedulerLog(job="Notice")
 	public void run() {
 		log.info("Notice Scheduler Start");
 		long start = System.currentTimeMillis();
@@ -53,34 +52,16 @@ public class SchedulerConfig {
 	}
 
 	@Scheduled(cron = "0 0 23 * * *", zone = "Asia/Seoul")
-	@SchedulerLog
-	public void excelJobRun() {
-		log.info("Csv Reader Scheduler Start");
-		long start = System.currentTimeMillis();
-		try {
-			jobLauncher.run(csvReaderJob, new JobParametersBuilder()
-				.addLong("uniqueness", System.nanoTime()).toJobParameters());
-		} catch (Exception e) {
-			log.error(ExceptionUtils.getStackTrace(e));
-		} finally{
-			log.info("실행시간 : {} ms", System.currentTimeMillis() - start);
-			log.info("Csv Reader Scheduler end");
-		}
+	@SchedulerLog(job="Csv Reader")
+	public void excelJobRun() throws Exception {
+		jobLauncher.run(csvReaderJob, new JobParametersBuilder()
+			.addLong("uniqueness", System.nanoTime()).toJobParameters());
 	}
 
 	@Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
-	@SchedulerLog
-	public void deviceJobRun() {
-		log.info("Fcm Manager Scheduler Start");
-		long start = System.currentTimeMillis();
-		try {
-			jobLauncher.run(manageFcmJob, new JobParametersBuilder()
-				.addLong("uniqueness", System.nanoTime()).toJobParameters());
-		} catch (Exception e) {
-			log.error(ExceptionUtils.getStackTrace(e));
-		} finally{
-			log.info("실행시간 : {} ms", System.currentTimeMillis() - start);
-			log.info("csv Reader Scheduler end");
-		}
+	@SchedulerLog(job="Fcm Manager")
+	public void deviceJobRun() throws Exception {
+		jobLauncher.run(manageFcmJob, new JobParametersBuilder()
+			.addLong("uniqueness", System.nanoTime()).toJobParameters());
 	}
 }

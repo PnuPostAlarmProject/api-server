@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 import javax.sql.DataSource;
 
-import org.hibernate.SessionFactory;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;

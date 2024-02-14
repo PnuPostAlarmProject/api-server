@@ -1,5 +1,8 @@
 package com.ppap.ppap._core.firebase;
 
+import java.util.List;
+
+import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -25,9 +28,12 @@ public class FcmTokenValidator {
         }
     }
 
-    public void validateTokenThrowException(String fcmToken) throws FirebaseMessagingException{
-        Message message = getFcmTestMessage(fcmToken);
-        firebaseMessaging.send(message, true);
+    public BatchResponse validateTokenThrowException(List<String> fcmTokenList) throws FirebaseMessagingException{
+        List<Message> messageList = fcmTokenList.stream()
+                .map(this::getFcmTestMessage)
+                .toList();
+
+        return firebaseMessaging.sendEach(messageList);
     }
 
     private Message getFcmTestMessage(String fcmToken) {
