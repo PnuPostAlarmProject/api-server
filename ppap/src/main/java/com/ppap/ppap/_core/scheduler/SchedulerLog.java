@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME) // 런타임에도 어노테이션 정보 유지
 public @interface SchedulerLog {
 	String job();
+
 }

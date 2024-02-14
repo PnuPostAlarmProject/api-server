@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import com.ppap.ppap._core.scheduler.SchedulerLog;
 import com.ppap.ppap._core.scheduler.SchedulerService;
 
+
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
@@ -40,7 +41,14 @@ public class SchedulerConfig {
 	@Scheduled(cron = "0 0/30 9-22 * * *", zone="Asia/Seoul")
 	@SchedulerLog(job="Notice")
 	public void run() {
-		schedulerService.run();
+		log.info("Notice Scheduler Start");
+		long start = System.currentTimeMillis();
+		try {
+			schedulerService.run();
+		} finally{
+			log.info("실행시간 : {} ms", System.currentTimeMillis() - start);
+			log.info("Notice Scheduler end");
+		}
 	}
 
 	@Scheduled(cron = "0 0 23 * * *", zone = "Asia/Seoul")
@@ -48,7 +56,6 @@ public class SchedulerConfig {
 	public void excelJobRun() throws Exception {
 		jobLauncher.run(csvReaderJob, new JobParametersBuilder()
 			.addLong("uniqueness", System.nanoTime()).toJobParameters());
-
 	}
 
 	@Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
