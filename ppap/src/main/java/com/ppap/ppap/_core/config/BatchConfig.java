@@ -128,7 +128,7 @@ public class BatchConfig {
 
 	@Bean
 	@StepScope
-	public ItemWriter<NoticeDto> writer() {
+	public NoticeWriter writer() {
 		return new NoticeWriter(
 			userJpaRepository,
 			noticeJpaRepository,
@@ -151,7 +151,7 @@ public class BatchConfig {
 	
 	@Bean
 	@StepScope
-	public ItemWriter<Device> deviceWriter() {
+	public DeviceWriter deviceWriter() {
 		return new DeviceWriter(
 			deviceJpaRepository,
 			fcmTokenValidator,
