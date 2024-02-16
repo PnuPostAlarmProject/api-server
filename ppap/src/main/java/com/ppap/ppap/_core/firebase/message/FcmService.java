@@ -8,6 +8,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.SendResponse;
 import com.ppap.ppap._core.crawler.CrawlingData;
 import com.ppap.ppap._core.utils.MDCUtils;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
@@ -65,11 +66,6 @@ public class FcmService {
                             return null;
                         }
                 }),executor))
-            .map(future -> future.exceptionally(
-                new MDCUtils.MDCAwareFunction<>( ex -> {
-                    log.error(ex.getMessage());
-                    return null;
-            })))
             .toList();
 
         // 두 개로 나눈 이유는 하나의 파이프라인에서 처리할 시 동기적으로 처리하게 되는 문제가 발생한다.
@@ -78,6 +74,13 @@ public class FcmService {
             .filter(Objects::nonNull)
             .toList();
 
+        responseList.stream()
+            .flatMap(batchResponse -> batchResponse.getResponses().stream())
+            .forEach(response -> {
+                if (!response.isSuccessful()) {
+                    log.error(response.getException().getMessagingErrorCode().toString());
+                }
+            });
     }
 
     // public String sendNotification() {
