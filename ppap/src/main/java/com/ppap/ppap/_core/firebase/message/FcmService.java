@@ -83,25 +83,6 @@ public class FcmService {
             });
     }
 
-    // public String sendNotification() {
-    //     Notification notification = Notification.builder()
-    //             .setTitle("테스트용 타이틀")
-    //             .setBody("테스트용 내용")
-    //             .build();
-    //
-    //     Message message = Message.builder()
-    //             .setNotification(notification)
-    //             .setToken("czqDaETOQQCGd59IwTU4Nr:APA91bH0jhPPMEEneSDkHSCuqSbByWv5Ts8dUeD--Ueq1cdnLls_CRD7ut1qo6TFZNw1kagPwLMj3IrHFlH7MIWLGgq3KehFolRat1_kwAEIDecUmaTSDBA7gFAKwDNRPtlRT6uT5E1-")
-    //             .build();
-    //
-    //     ApiFuture<String> future = firebaseMessaging.sendAsync(message);
-    //     future.addListener(() -> {
-    //         if(future.isDone()) log.info("전송 성공");
-    //         else log.error("전송 실패");
-    //     }, Executors.newSingleThreadExecutor());
-    //     return "ok";
-    // }
-
     private List<List<Message>> getChunkMessages(Map<Notice, List<CrawlingData>> filterNoticeCrawlingGroup,
                                                 Set<Subscribe> subscribeSet,
                                                 Map<Long, List<Device>> userDeviceGroup) {
