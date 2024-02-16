@@ -41,14 +41,7 @@ public class SchedulerConfig {
 	@Scheduled(cron = "0 0/30 9-22 * * *", zone="Asia/Seoul")
 	@SchedulerLog(job="Notice")
 	public void run() {
-		log.info("Notice Scheduler Start");
-		long start = System.currentTimeMillis();
-		try {
-			schedulerService.run();
-		} finally{
-			log.info("실행시간 : {} ms", System.currentTimeMillis() - start);
-			log.info("Notice Scheduler end");
-		}
+		schedulerService.run();
 	}
 
 	@Scheduled(cron = "0 0 23 * * *", zone = "Asia/Seoul")
