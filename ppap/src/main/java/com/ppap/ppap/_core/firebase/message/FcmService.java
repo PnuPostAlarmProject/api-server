@@ -8,6 +8,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.SendResponse;
 import com.ppap.ppap._core.crawler.CrawlingData;
 import com.ppap.ppap._core.utils.MDCUtils;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
@@ -65,11 +66,6 @@ public class FcmService {
                             return null;
                         }
                 }),executor))
-            .map(future -> future.exceptionally(
-                new MDCUtils.MDCAwareFunction<>( ex -> {
-                    log.error(ex.getMessage());
-                    return null;
-            })))
             .toList();
 
         // 두 개로 나눈 이유는 하나의 파이프라인에서 처리할 시 동기적으로 처리하게 되는 문제가 발생한다.
@@ -78,26 +74,14 @@ public class FcmService {
             .filter(Objects::nonNull)
             .toList();
 
+        responseList.stream()
+            .flatMap(batchResponse -> batchResponse.getResponses().stream())
+            .forEach(response -> {
+                if (!response.isSuccessful()) {
+                    log.error(response.getException().getMessagingErrorCode().toString());
+                }
+            });
     }
-
-    // public String sendNotification() {
-    //     Notification notification = Notification.builder()
-    //             .setTitle("테스트용 타이틀")
-    //             .setBody("테스트용 내용")
-    //             .build();
-    //
-    //     Message message = Message.builder()
-    //             .setNotification(notification)
-    //             .setToken("czqDaETOQQCGd59IwTU4Nr:APA91bH0jhPPMEEneSDkHSCuqSbByWv5Ts8dUeD--Ueq1cdnLls_CRD7ut1qo6TFZNw1kagPwLMj3IrHFlH7MIWLGgq3KehFolRat1_kwAEIDecUmaTSDBA7gFAKwDNRPtlRT6uT5E1-")
-    //             .build();
-    //
-    //     ApiFuture<String> future = firebaseMessaging.sendAsync(message);
-    //     future.addListener(() -> {
-    //         if(future.isDone()) log.info("전송 성공");
-    //         else log.error("전송 실패");
-    //     }, Executors.newSingleThreadExecutor());
-    //     return "ok";
-    // }
 
     private List<List<Message>> getChunkMessages(Map<Notice, List<CrawlingData>> filterNoticeCrawlingGroup,
                                                 Set<Subscribe> subscribeSet,
