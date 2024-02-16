@@ -107,7 +107,6 @@ public class BatchConfig {
 
 
 	@Bean
-	@StepScope
 	public FlatFileItemReader<NoticeDto> reader() {
 		return new FlatFileItemReaderBuilder<NoticeDto>()
 			.name("csvReader")
@@ -127,7 +126,6 @@ public class BatchConfig {
 	}
 
 	@Bean
-	@StepScope
 	public NoticeWriter writer() {
 		return new NoticeWriter(
 			userJpaRepository,
@@ -138,19 +136,21 @@ public class BatchConfig {
 	}
 
 	@Bean
-	@StepScope
 	public JdbcCursorItemReader<Device> deviceReader() {
 		return new JdbcCursorItemReaderBuilder<Device>()
 			.name("jdbcCursorDeviceReader")
 			.fetchSize(CHUNK_SIZE)
 			.dataSource(dataSource)
-			.rowMapper(new DeviceRowMapper())
+			.rowMapper((rs, rowNum) ->
+				Device.builder()
+					.id(rs.getLong("device_id"))
+					.fcmToken(rs.getString("fcm_token"))
+					.build())
 			.sql("SELECT device_id, fcm_token FROM device_tb")
 			.build();
 	}
 	
 	@Bean
-	@StepScope
 	public DeviceWriter deviceWriter() {
 		return new DeviceWriter(
 			deviceJpaRepository,
