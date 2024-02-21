@@ -6,6 +6,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap._core.security.JwtProvider;
+import com.ppap.ppap.domain.redis.service.BlackListTokenService;
 import com.ppap.ppap.domain.user.entity.User;
 import com.ppap.ppap.domain.user.repository.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +45,9 @@ public class RestDocs {
 
     @MockBean
     protected FirebaseMessaging firebaseMessaging;
+    @MockBean
+    protected BlackListTokenService blackListTokenService;
+
     protected MockMvc mvc;
     protected RestDocumentationResultHandler document;
 
