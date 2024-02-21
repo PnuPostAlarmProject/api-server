@@ -21,6 +21,7 @@ public enum BaseExceptionStatus {
     REFRESH_TOKEN_INVALID("유효하지 않은 토큰입니다.", 400),
     REFRESH_TOKEN_EXPIRED("만료된 토큰입니다.", 400),
     REFRESH_TOKEN_NOT_FOUND("존재하지 않는 토큰입니다.", 404),
+    BLACKLIST_TOKEN_FOUNDED("블랙리스트에 등록된 토큰입니다.", 403),
 
     // RSS link
     RSS_LINK_INVALID("유효하지 않은 RSS 링크입니다.", 400),

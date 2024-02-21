@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
+    private final BlackListTokenService blackListTokenService;
 
     public void save(String refreshToken, String accessToken, User user) {
         RefreshToken token = RefreshToken.of(refreshToken, accessToken, user);
@@ -26,6 +27,7 @@ public class RefreshTokenService {
         RefreshToken token = refreshTokenRepository.findByAccessToken(accessToken).orElseThrow(
                 () -> new Exception404(BaseExceptionStatus.REFRESH_TOKEN_NOT_FOUND));
         refreshTokenRepository.deleteById(token.getRefreshToken());
+        blackListTokenService.save(accessToken);
     }
 
     public boolean existsById(String refreshToken) {

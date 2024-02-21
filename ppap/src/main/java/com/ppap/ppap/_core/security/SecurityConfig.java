@@ -4,6 +4,8 @@ package com.ppap.ppap._core.security;
 import com.ppap.ppap._core.exception.Exception401;
 import com.ppap.ppap._core.exception.Exception403;
 import com.ppap.ppap._core.utils.FilterResponseUtils;
+import com.ppap.ppap.domain.redis.service.BlackListTokenService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +30,7 @@ public class SecurityConfig {
 
     private final JwtExceptionFilter jwtExceptionFilter;
     private final FilterResponseUtils filterResponseUtils;
+    private final BlackListTokenService blackListTokenService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {return PasswordEncoderFactories.createDelegatingPasswordEncoder();}
@@ -43,7 +46,7 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
 //            builder.addFilter(new CustomUsernamePasswordAuthenticationFilter(authenticationManager));
-            builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, blackListTokenService));
             builder.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
             super.configure(builder);
         }

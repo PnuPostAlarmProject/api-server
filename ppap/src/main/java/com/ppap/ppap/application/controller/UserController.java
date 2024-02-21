@@ -55,9 +55,11 @@ public class UserController {
     }
 
     @PostMapping("/withdrawal")
-    public ResponseEntity<?> withdrawal(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<?> withdrawal(
+        HttpServletRequest request,
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
         // 회원삭제 service 로직
-        userWriteService.delete(userDetails.getUser());
+        userWriteService.delete(userDetails.getUser(), request.getHeader(JwtProvider.HEADER));
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
