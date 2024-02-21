@@ -58,11 +58,12 @@ public class UserWriteService {
         }
     }
 
-    public void delete(User user) {
+    public void delete(User user, String accessToken) {
         userJpaRepository.findById(user.getId()).ifPresentOrElse(
                 userJpaRepository::delete,
                 () -> {throw new Exception404(BaseExceptionStatus.USER_NOT_FOUND);}
         );
+        refreshTokenService.deleteByAccessToken(accessToken);
     }
 
 

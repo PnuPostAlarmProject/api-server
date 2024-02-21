@@ -5,6 +5,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.ppap.ppap._core.exception.BaseExceptionStatus;
+import com.ppap.ppap._core.exception.Exception403;
+import com.ppap.ppap.domain.redis.service.BlackListTokenService;
 import com.ppap.ppap.domain.user.entity.constant.Role;
 import com.ppap.ppap.domain.user.entity.User;
 import jakarta.servlet.FilterChain;
@@ -23,8 +26,11 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private final BlackListTokenService blackListTokenService;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, BlackListTokenService blackListTokenService) {
         super(authenticationManager);
+        this.blackListTokenService = blackListTokenService;
     }
 
     @Override
@@ -39,6 +45,10 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         if (!jwt.startsWith("Bearer ")) {
             // log.error("잘못된 토큰");
             throw new JWTDecodeException("토큰 형식이 잘못되었습니다.");
+        }
+
+        if (blackListTokenService.existByAccessToken(jwt)) {
+            throw new Exception403(BaseExceptionStatus.BLACKLIST_TOKEN_FOUNDED);
         }
 
         try{

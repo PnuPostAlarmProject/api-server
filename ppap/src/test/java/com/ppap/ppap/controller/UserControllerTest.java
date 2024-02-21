@@ -16,7 +16,9 @@ import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.security.JwtProvider;
 import com.ppap.ppap._core.utils.ApiUtils;
+import com.ppap.ppap.domain.redis.entity.BlackListToken;
 import com.ppap.ppap.domain.redis.entity.RefreshToken;
+import com.ppap.ppap.domain.redis.repository.BlackListTokenRepository;
 import com.ppap.ppap.domain.redis.repository.RefreshTokenRepository;
 import com.ppap.ppap.domain.user.dto.FcmTokenDto;
 import com.ppap.ppap.domain.user.entity.User;
@@ -65,6 +67,8 @@ public class UserControllerTest extends RestDocs {
 
     @MockBean
     private RefreshTokenRepository refreshTokenRepository;
+    @MockBean
+    private BlackListTokenRepository blackListTokenRepository;
 
     private final String KAKAO_URL = "https://kapi.kakao.com/v2/user/me?property_keys=[\"kakao_account.email\"]";
 
@@ -302,7 +306,7 @@ public class UserControllerTest extends RestDocs {
             // given
             ReissueDto.ReissueRequestDto testDto = new ReissueDto.ReissueRequestDto(null);
             String requestBody = om.writeValueAsString(testDto);
-            // mock
+
             // when
             ResultActions resultActions = mvc.perform(
                     post("/api/v0/auth/reissue")
@@ -327,16 +331,12 @@ public class UserControllerTest extends RestDocs {
             ReissueDto.ReissueRequestDto testDto = new ReissueDto.ReissueRequestDto(refreshToken);
             String requestBody = om.writeValueAsString(testDto);
 
-            // mock
-
-
             // when
             ResultActions resultActions = mvc.perform(
                     post("/api/v0/auth/reissue")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
             );
-            System.out.println(resultActions.andReturn().getResponse().getContentAsString());
 
             // then
             resultActions.andExpectAll(
@@ -366,7 +366,6 @@ public class UserControllerTest extends RestDocs {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody)
             );
-            System.out.println(resultActions.andReturn().getResponse().getContentAsString());
 
             // then
             resultActions.andExpectAll(
@@ -391,10 +390,12 @@ public class UserControllerTest extends RestDocs {
             String accessToken = JwtProvider.create(user);
             String refreshToken = JwtProvider.createRefreshToken(user);
             RefreshToken refreshTokenEntity = RefreshToken.of(refreshToken, accessToken, user);
+            BlackListToken blackListTokenEntity = BlackListToken.builder().accessToken(accessToken).build();
 
             // mock
             given(refreshTokenRepository.findByAccessToken(accessToken)).willReturn(Optional.of(refreshTokenEntity));
-            willDoNothing().given(refreshTokenRepository).deleteById(accessToken);
+            willDoNothing().given(refreshTokenRepository).deleteById(refreshToken);
+            given(blackListTokenRepository.save(blackListTokenEntity)).willReturn(blackListTokenEntity);
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -403,7 +404,6 @@ public class UserControllerTest extends RestDocs {
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-            System.out.println(responseBody);
 
             // then
             resultActions.andExpectAll(
@@ -444,7 +444,6 @@ public class UserControllerTest extends RestDocs {
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-            System.out.println(responseBody);
 
             // then
             resultActions.andExpectAll(
@@ -463,7 +462,18 @@ public class UserControllerTest extends RestDocs {
         @Test
         void success() throws Exception {
             // given
-            String accessToken = getAccessToken("rjsdnxogh12@kakao.com");
+            String email = "rjsdnxogh12@kakao.com";
+            User user = getUser(email);
+            String accessToken = JwtProvider.create(user);
+            String refreshToken = JwtProvider.createRefreshToken(user);
+            RefreshToken refreshTokenEntity = RefreshToken.of(refreshToken, accessToken, user);
+            BlackListToken blackListTokenEntity = BlackListToken.builder().accessToken(accessToken).build();
+
+            // mock
+            given(refreshTokenRepository.findByAccessToken(accessToken)).willReturn(Optional.of(refreshTokenEntity));
+            willDoNothing().given(refreshTokenRepository).deleteById(accessToken);
+            given(blackListTokenRepository.save(blackListTokenEntity)).willReturn(blackListTokenEntity);
+
 
             // when
             ResultActions resultActions = mvc.perform(
@@ -496,7 +506,16 @@ public class UserControllerTest extends RestDocs {
         @Test
         void fail_user_not_found() throws Exception {
             // given
-            String accessToken = getAccessToken("rjsdnxogh12@kakao.com");
+            User user = getUser("rjsdnxogh12@kakao.com");
+            String accessToken = JwtProvider.create(user);
+            String refreshToken = JwtProvider.createRefreshToken(user);
+            RefreshToken refreshTokenEntity = RefreshToken.of(refreshToken, accessToken, user);
+            BlackListToken blackListTokenEntity = BlackListToken.builder().accessToken(accessToken).build();
+
+            // mock
+            given(refreshTokenRepository.findByAccessToken(accessToken)).willReturn(Optional.of(refreshTokenEntity));
+            willDoNothing().given(refreshTokenRepository).deleteById(accessToken);
+            given(blackListTokenRepository.save(blackListTokenEntity)).willReturn(blackListTokenEntity);
 
             // when
             ResultActions resultActions = mvc.perform(
