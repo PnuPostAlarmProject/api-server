@@ -4,6 +4,7 @@ import com.ppap.ppap._core.DummyEntity;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception404;
 import com.ppap.ppap._core.security.JwtProvider;
+import com.ppap.ppap.domain.redis.service.BlackListTokenService;
 import com.ppap.ppap.domain.redis.service.RefreshTokenService;
 import com.ppap.ppap.domain.user.dto.FcmTokenDto;
 import com.ppap.ppap.domain.user.entity.User;
@@ -113,13 +114,15 @@ public class UserWriteServiceTest {
             // given
             String email = "rjsdnxogh@naver.com";
             User user = dummyEntity.getTestUser(email, 1L);
+            String accessToken = "testAccessToken";
 
             // mock
             given(userJpaRepository.findById(user.getId())).willReturn(Optional.of(user));
             willDoNothing().given(userJpaRepository).delete(user);
+            willDoNothing().given(refreshTokenService).deleteByAccessToken(accessToken);
 
             // when
-            userWriteService.delete(user);
+            userWriteService.delete(user, accessToken);
 
             // then
             verify(userJpaRepository).delete(user);
@@ -131,12 +134,14 @@ public class UserWriteServiceTest {
             // given
             String email = "rjsdnxogh@naver.com";
             User user = dummyEntity.getTestUser(email, 1L);
+            String accessToken = "testAccessToken";
 
             // mock
             given(userJpaRepository.findById(user.getId())).willReturn(Optional.empty());
 
             // when
-            Throwable throwable = assertThrows(Exception404.class, () -> userWriteService.delete(user));
+            Throwable throwable = assertThrows(Exception404.class,
+                () -> userWriteService.delete(user, accessToken));
 
             // then
             assertEquals(BaseExceptionStatus.USER_NOT_FOUND.getMessage(), throwable.getMessage());
