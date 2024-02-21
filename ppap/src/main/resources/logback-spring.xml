@@ -129,12 +129,19 @@
         </springProfile>
     </logger>
 
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="ASYNC_SCHEDULE"/>
-        <appender-ref ref="ASYNC_ERROR_FILE"/>
-    </root>
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE-WARN"/>
+            <appender-ref ref="ASYNC_SCHEDULE"/>
+            <appender-ref ref="ASYNC_ERROR_FILE"/>
+        </root>
+    </springProfile>
 
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
 
 
     <!--배포환경의 로그 설정-->

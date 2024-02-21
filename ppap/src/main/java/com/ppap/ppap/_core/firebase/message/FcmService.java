@@ -124,7 +124,6 @@ public class FcmService {
             .map(device -> Message.builder()
                 .setToken(device.getFcmToken())
                 .setAndroidConfig(AndroidConfig.builder()
-                    .setTtl(86400)
                     .setNotification(AndroidNotification.builder()
                         .setTitle(subscribe.getTitle())
                         .setBody(crawlingData.title())
