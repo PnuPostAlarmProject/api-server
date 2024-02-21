@@ -131,7 +131,6 @@ public class NoticeWriter implements ItemWriter<NoticeDto> {
 	private boolean syncNoticeData(Notice notice, NoticeDto noticeDto, Map<String, Univ> univIdMap) {
 		String collegeDepartment = String.format("%s_%s", noticeDto.college(), noticeDto.department());
 		if (!notice.getUniv().equals(univIdMap.get(collegeDepartment))){
-			System.out.println(collegeDepartment);
 			notice.changeUniv(univIdMap.get(collegeDepartment));
 			return true;
 		}

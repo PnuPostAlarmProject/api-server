@@ -62,7 +62,6 @@ public class UserReadService {
             Role role = Role.valueOf(decodedJWT.getClaim("role").asString());
             return User.builder().id(id).email(email).role(role).build();
         } catch (SignatureVerificationException | JWTDecodeException e) {
-            log.error(e.getMessage());
             throw new Exception400(BaseExceptionStatus.REFRESH_TOKEN_INVALID);
         } catch (TokenExpiredException tee) {
             throw new Exception400(BaseExceptionStatus.REFRESH_TOKEN_EXPIRED);

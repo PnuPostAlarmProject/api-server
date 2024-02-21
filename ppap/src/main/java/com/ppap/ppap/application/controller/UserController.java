@@ -63,9 +63,9 @@ public class UserController {
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
-    @GetMapping("/test")
-    public String test(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        System.out.println(userDetails.getUser().getId());
-        return "ok";
-    }
+    // @GetMapping("/test")
+    // public String test(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    //     System.out.println(userDetails.getUser().getId());
+    //     return "ok";
+    // }
 }
