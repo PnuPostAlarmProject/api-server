@@ -37,7 +37,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String jwt = request.getHeader(JwtProvider.HEADER);
 
-        if (jwt == null) {
+        // 안드로이드 상태관리에 문제가 존재해, 블랙리스트 토큰이 존재할 경우 Authenticate을 거치지 않고 비 로그인으로 처리
+        if (jwt == null || blackListTokenService.existByAccessToken(jwt)) {
             chain.doFilter(request, response);
             return;
         }
@@ -45,10 +46,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         if (!jwt.startsWith("Bearer ")) {
             // log.error("잘못된 토큰");
             throw new JWTDecodeException("토큰 형식이 잘못되었습니다.");
-        }
-
-        if (blackListTokenService.existByAccessToken(jwt)) {
-            throw new Exception403(BaseExceptionStatus.BLACKLIST_TOKEN_FOUNDED);
         }
 
         try{
