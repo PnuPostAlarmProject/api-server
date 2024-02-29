@@ -137,7 +137,9 @@ public class SchedulerService {
         try{
             switch (notice.getNoticeType()) {
                 case RSS -> crawlingDataList = rssReader.getRssData(notice.getLink(), notice.getLastNoticeTime(), isInit);
-                case JSOUP -> crawlingDataList = jsoupReader.getMechanicNoticeData(notice.getLink(), notice.getLastNoticeTime(), isInit);
+                case ME -> crawlingDataList = jsoupReader.getMechanicNoticeData(notice.getLink(), notice.getLastNoticeTime(), isInit);
+                case HAKJISI -> crawlingDataList = jsoupReader.getHakjisiNoticeData(notice.getLink(), notice.getLastNoticeTime(), isInit);
+                case UNIV -> crawlingDataList = jsoupReader.getUnivNoticeData(notice.getLink(), notice.getLastNoticeTime(), isInit);
             }
 
             return crawlingDataList;

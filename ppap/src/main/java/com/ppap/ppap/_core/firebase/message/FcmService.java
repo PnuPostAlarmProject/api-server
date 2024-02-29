@@ -69,18 +69,18 @@ public class FcmService {
             .toList();
 
         // 두 개로 나눈 이유는 하나의 파이프라인에서 처리할 시 동기적으로 처리하게 되는 문제가 발생한다.
-        List<BatchResponse> responseList = futureList.stream()
-            .map(CompletableFuture::join)
-            .filter(Objects::nonNull)
-            .toList();
-
-        responseList.stream()
-            .flatMap(batchResponse -> batchResponse.getResponses().stream())
-            .forEach(response -> {
-                if (!response.isSuccessful()) {
-                    log.error(response.getException().getMessagingErrorCode().toString());
-                }
-            });
+        // List<BatchResponse> responseList = futureList.stream()
+        //     .map(CompletableFuture::join)
+        //     .filter(Objects::nonNull)
+        //     .toList();
+        //
+        // responseList.stream()
+        //     .flatMap(batchResponse -> batchResponse.getResponses().stream())
+        //     .forEach(response -> {
+        //         if (!response.isSuccessful()) {
+        //             log.error(response.getException().getMessagingErrorCode().toString());
+        //         }
+        //     });
     }
 
     private List<List<Message>> getChunkMessages(Map<Notice, List<CrawlingData>> filterNoticeCrawlingGroup,
