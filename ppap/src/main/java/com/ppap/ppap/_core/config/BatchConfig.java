@@ -116,7 +116,7 @@ public class BatchConfig {
 			.fieldSetMapper(fieldSet -> NoticeDto.builder()
 				.college(fieldSet.readString("college"))
 				.department(fieldSet.readString("department"))
-				.noticeType(getNoticeType(fieldSet.readString("noticeType")))
+				.noticeType(NoticeType.valueOf(fieldSet.readString("noticeType")))
 				.link(fieldSet.readString("link"))
 				.title(fieldSet.readString("title"))
 				.lastNoticeTime(getLastNoticeTime(fieldSet.readString("noticeType")))
@@ -159,12 +159,6 @@ public class BatchConfig {
 		);
 	}
 
-
-	private NoticeType getNoticeType(String isRss) {
-		if (isRss.equals("Y"))
-			return NoticeType.RSS;
-		return NoticeType.JSOUP;
-	}
 
 	private LocalDateTime getLastNoticeTime(String isRss) {
 		if (isRss.equals("Y"))

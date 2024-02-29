@@ -4,5 +4,5 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum NoticeType {
-	RSS, JSOUP;
+	RSS, ME, HAKJISI, UNIV;
 }
