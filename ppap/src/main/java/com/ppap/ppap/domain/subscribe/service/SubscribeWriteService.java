@@ -28,10 +28,14 @@ public class SubscribeWriteService {
     private final NoticeReadService noticeReadService;
     private final RssReader rssReader;
 
+    private final static String EXCEPT_URL = "https://www.pusan.ac.kr/kor/CMS/Board/PopupBoard.do?mgr_seq=3&mode=list";
+
     public void create(SubscribeCreateRequestDto requestDto, User user) {
 
-        // http -> https 변환 & 쿼리 스트링 제거
-        String makeHttpsAndRemoveQueryString = rssReader.makeHttpsAndRemoveQueryString(requestDto.rssLink());
+        // http -> https 변환 & 쿼리 스트링 제거 (이때, 대학 공지사항 링크는 제외)
+        String makeHttpsAndRemoveQueryString =
+            requestDto.rssLink().equals(EXCEPT_URL) ?
+                rssReader.makeHttpsAndRemoveQueryString(requestDto.rssLink()) : requestDto.rssLink();
 
         // 링크로 주어진 값이 Notice에 없다면 rss링크가 유효한지 확인하고 save()
         Notice notice = noticeReadService.findByLink(makeHttpsAndRemoveQueryString).orElseGet(
