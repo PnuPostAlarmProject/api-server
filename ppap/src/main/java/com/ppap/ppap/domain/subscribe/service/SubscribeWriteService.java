@@ -35,7 +35,7 @@ public class SubscribeWriteService {
         // http -> https 변환 & 쿼리 스트링 제거 (이때, 대학 공지사항 링크는 제외)
         String makeHttpsAndRemoveQueryString =
             requestDto.rssLink().equals(EXCEPT_URL) ?
-                rssReader.makeHttpsAndRemoveQueryString(requestDto.rssLink()) : requestDto.rssLink();
+                requestDto.rssLink() : rssReader.makeHttpsAndRemoveQueryString(requestDto.rssLink());
 
         // 링크로 주어진 값이 Notice에 없다면 rss링크가 유효한지 확인하고 save()
         Notice notice = noticeReadService.findByLink(makeHttpsAndRemoveQueryString).orElseGet(
