@@ -1,5 +1,6 @@
 package com.ppap.ppap.domain.subscribe.entity;
 
+import com.ppap.ppap._core.utils.converter.NullToMaxIntegerConverter;
 import com.ppap.ppap.domain.base.entity.AuditingEntity;
 import com.ppap.ppap.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -11,7 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = {"user", "notice"})
+@ToString(exclude = {"user", "notice"}, callSuper = true)
 @Entity
 @Getter
 @Table(name = "subscribe_tb", uniqueConstraints = {
@@ -44,14 +45,19 @@ public class Subscribe extends AuditingEntity {
     @Column(nullable = false)
     private Boolean isActive;
 
+    // default값은 정수 최대값 -> 우선순위 제일 낮음
+    @Convert(converter = NullToMaxIntegerConverter.class)
+    private Integer priority = Integer.MAX_VALUE;
+
     @Builder
-    public Subscribe(Long id, String title, User user, Notice notice, String noticeLink, Boolean isActive) {
+    public Subscribe(Long id, String title, User user, Notice notice, String noticeLink, Boolean isActive, Integer priority) {
         this.id = id;
         this.title = title;
         this.user = user;
         this.notice = notice;
         this.noticeLink = noticeLink;
         this.isActive = isActive;
+        this.priority = priority;
     }
 
     public static Subscribe of(User user, Notice notice, String title, String noticeLink, Boolean isActive) {
@@ -75,6 +81,10 @@ public class Subscribe extends AuditingEntity {
 
     public void changeActive(){
         this.isActive = !this.isActive;
+    }
+
+    public void changePriority(Integer priority) {
+        this.priority = priority;
     }
 
     @Override
