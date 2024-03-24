@@ -1,5 +1,10 @@
 package com.ppap.ppap.domain.subscribe.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception400;
 import com.ppap.ppap._core.exception.Exception403;
@@ -89,6 +94,24 @@ public class SubscribeWriteService {
         validSubscribeWriter(subscribe, user);
 
         subscribeJpaRepository.delete(subscribe);
+    }
+
+    public void changePriority(List<Long> subscribeIds, User user) {
+        Map<Long, Subscribe> subscribeMap = subscribeJpaRepository.findAllById(subscribeIds)
+            .stream()
+            .collect(Collectors.toMap(
+                Subscribe::getId,
+                subscribe -> subscribe
+            ));
+
+        if (subscribeIds.size() != subscribeMap.keySet().size())
+            throw new Exception404(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND);
+
+        subscribeMap.values().forEach(subscribe -> validSubscribeWriter(subscribe, user));
+
+        IntStream.range(0, subscribeIds.size())
+            .forEach(idx -> subscribeMap.get(subscribeIds.get(idx)).changePriority(idx));
+
     }
 
     /**

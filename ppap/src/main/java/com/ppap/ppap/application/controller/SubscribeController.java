@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v0/subscribe")
@@ -60,6 +59,15 @@ public class SubscribeController {
 
         SubscribeUpdateResponseDto resultDto = subscribeWriteService.activeUpdate(subscribeId, userDetails.getUser());
         return ResponseEntity.ok(ApiUtils.success(resultDto));
+    }
+
+    @PostMapping("/change/priority")
+    public ResponseEntity<?> changePriority(@Valid @RequestBody SubscribeChangePriorityDto subscribeChangePriorityDto,
+                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        subscribeWriteService.changePriority(subscribeChangePriorityDto.subscribeIds(), userDetails.getUser());
+
+        return ResponseEntity.ok(ApiUtils.success(null));
     }
 
     @PostMapping("/delete/{subscribe_id}")
