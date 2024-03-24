@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -30,13 +31,17 @@ public class SubscribeReadService {
         List<Subscribe> subscribeList = subscribeJpaRepository.findByUserId(user.getId());
         if (subscribeList.isEmpty()) throw new Exception404(BaseExceptionStatus.SUBSCRIBE_EMPTY);
 
-        return subscribeList;
+        return subscribeList.stream()
+            .sorted(Comparator.comparing(Subscribe::getPriority)
+                .thenComparing(Subscribe::getId))
+            .toList();
     }
 
     public List<SubscribeGetListResponseDto> getSubscribeList(User user) {
         List<Subscribe> subscribeList = subscribeJpaRepository.findByUserId(user.getId());
-
         return subscribeList.stream()
+                .sorted(Comparator.comparing(Subscribe::getPriority)
+                    .thenComparing(Subscribe::getId))
                 .map(SubscribeGetListResponseDto::of)
                 .toList();
     }

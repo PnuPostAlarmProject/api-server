@@ -25,7 +25,6 @@ public class GetScrapSubscirbeUseCase {
     public ScrapWithSubscribeDto execute(Optional<Long> subscribeId, User user, Pageable pageable) {
         // 등록중인 subscribe
         List<Subscribe> subscribeList = subscribeReadService.getSubscribeEntityList(user);
-        subscribeList.sort(Comparator.comparing(Subscribe::getId));
 
         // 현재 클릭한 subscribeId
         Long curSubscribeId = subscribeId.orElse(subscribeList.get(0).getId());
