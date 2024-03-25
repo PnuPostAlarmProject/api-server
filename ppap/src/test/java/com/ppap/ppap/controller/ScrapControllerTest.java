@@ -188,17 +188,17 @@ public class ScrapControllerTest extends RestDocs {
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.curSubscribeId").value(1L),
-                    jsonPath("$.response.scraps[0].contentId").value(1L),
-                    jsonPath("$.response.scraps[1].contentId").value(2L),
-                    jsonPath("$.response.scraps[2].contentId").value(3L),
-                    jsonPath("$.response.scraps[3].contentId").value(6L),
-                    jsonPath("$.response.scraps[4].contentId").value(7L),
-                    jsonPath("$.response.scraps[5].contentId").value(8L),
-                    jsonPath("$.response.scraps[6].contentId").value(9L),
-                    jsonPath("$.response.scraps[7].contentId").value(11L),
-                    jsonPath("$.response.scraps[8].contentId").value(12L),
-                    jsonPath("$.response.scraps[9].contentId").value(15L),
+                    jsonPath("$.response.curSubscribeId").value(2L),
+                    jsonPath("$.response.scraps[0].contentId").value(19L),
+                    jsonPath("$.response.scraps[1].contentId").value(21L),
+                    jsonPath("$.response.scraps[2].contentId").value(22L),
+                    jsonPath("$.response.scraps[3].contentId").value(23L),
+                    jsonPath("$.response.scraps[4].contentId").value(24L),
+                    jsonPath("$.response.scraps[5].contentId").value(27L),
+                    jsonPath("$.response.scraps[6].contentId").value(28L),
+                    jsonPath("$.response.scraps[7].contentId").value(29L),
+                    jsonPath("$.response.scraps[8].contentId").value(30L),
+                    jsonPath("$.response.scraps[9].contentId").value(31L),
                     jsonPath("$.error").doesNotExist()
             );
 
@@ -237,8 +237,9 @@ public class ScrapControllerTest extends RestDocs {
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.curSubscribeId").value(1L),
-                    jsonPath("$.response.scraps[0].contentId").value(17L),
+                    jsonPath("$.response.curSubscribeId").value(2L),
+                    jsonPath("$.response.scraps[0].contentId").value(32L),
+                    jsonPath("$.response.scraps[1].contentId").value(33L),
                     jsonPath("$.error").doesNotExist()
             );
         }
