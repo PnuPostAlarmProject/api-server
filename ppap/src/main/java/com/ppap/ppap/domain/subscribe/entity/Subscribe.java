@@ -57,7 +57,7 @@ public class Subscribe extends AuditingEntity {
         this.notice = notice;
         this.noticeLink = noticeLink;
         this.isActive = isActive;
-        this.priority = priority;
+        this.priority = Objects.isNull(priority) ? Integer.MAX_VALUE : priority;
     }
 
     public static Subscribe of(User user, Notice notice, String title, String noticeLink, Boolean isActive) {
