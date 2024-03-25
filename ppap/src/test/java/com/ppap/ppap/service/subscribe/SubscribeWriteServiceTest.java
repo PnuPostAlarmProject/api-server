@@ -30,6 +30,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -419,4 +420,33 @@ public class SubscribeWriteServiceTest {
         }
     }
 
+    @DisplayName("구독 우선순위 변경 테스트")
+    @Nested
+    class ChangePriorityTest {
+
+        @DisplayName("성공")
+        @Test
+        void success() {
+            // given
+            User user = dummyEntity.getTestUser("rjsdnxogh@navr.com", 1L);
+            List<Notice> testNoticeList = dummyEntity.getTestNoticeList();
+            List<Subscribe> testSubscribeList = dummyEntity.getTestSubscribeListWithPriority(user, testNoticeList);
+            List<Long> testSubscribeIds = testSubscribeList.stream()
+                .map(Subscribe::getId)
+                .toList();
+
+            // mock
+            given(subscribeJpaRepository.findAllById(testSubscribeIds)).willReturn(testSubscribeList);
+
+            // when
+            subscribeWriteService.changePriority(testSubscribeIds, user);
+
+            // then
+            IntStream.range(0, testSubscribeList.size())
+                .forEach(i -> {
+                    assertEquals(i, testSubscribeList.get(i).getPriority());
+                });
+
+        }
+    }
 }

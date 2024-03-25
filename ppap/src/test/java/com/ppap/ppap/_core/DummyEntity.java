@@ -75,6 +75,23 @@ public class DummyEntity {
         return testSubscribeList;
     }
 
+    public List<Subscribe> getTestSubscribeListWithPriority(User user, List<Notice> noticeList){
+        List<Subscribe> testSubscribeList = new ArrayList<>();
+        for(int i=0; i<noticeList.size(); i++) {
+            testSubscribeList.add(
+                Subscribe.builder()
+                    .id(i+1L)
+                    .title("테스트 " + (i+1))
+                    .user(user)
+                    .notice(noticeList.get(i))
+                    .noticeLink(null)
+                    .isActive(true)
+                    .priority(Integer.MAX_VALUE-i)
+                    .build());
+        }
+        return testSubscribeList;
+    }
+
     public List<Content> getTestContentList(Notice notice) {
         return List.of(
                 new Content(1L, notice, "컴퓨터 및 프로그래밍 입문(001분반, 조환규 교수님) 수업을 신청한 수강생은 꼭 읽어주세요.", "http://his.pusan.ac.kr/bbs/cse/2615/931071/artclView.do", LocalDateTime.parse("2022-02-28T18:30:17.097"), null, null),
