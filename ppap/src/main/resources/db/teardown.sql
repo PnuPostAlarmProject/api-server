@@ -99,6 +99,8 @@ VALUES (32, 2, '2023-04-04 14:00:26.197', '임준영', '2023', '[유영환 교�
 INSERT INTO content_tb (`content_id`, `notice_id`, `pub_date`, `author`, `category`, `title`, `link`)
 VALUES (33, 2, '2023-04-04 11:49:45.967', '최현재', '2023', '[채흥석 교수] 2023년 졸업과제 주제 및 상담 일정 (마감)', 'http://his.pusan.ac.kr/bbs/cse/12549/1171831/artclView.do');
 
+
+
 INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
 VALUES (1, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
@@ -141,4 +143,8 @@ INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_m
 VALUES (20, 1, 30, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
 VALUES (21, 1, 31, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
+VALUES (22, 1, 32, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
+VALUES (23, 1, 33, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
