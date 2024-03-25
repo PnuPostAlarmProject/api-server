@@ -559,7 +559,6 @@ public class SubscribeControllerTest extends RestDocs {
             );
 
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-            System.out.println(responseBody);
 
             // then
             resultActions.andExpectAll(
@@ -704,7 +703,7 @@ public class SubscribeControllerTest extends RestDocs {
                     .toList()
             );
             String requestBody = om.writeValueAsString(subscribeChangePriorityDto);
-
+            System.out.println(requestBody);
             // when
             ResultActions resultActions = mvc.perform(
                 post("/api/v0/subscribe/change/priority")
@@ -726,6 +725,21 @@ public class SubscribeControllerTest extends RestDocs {
                     assertEquals(beforeSubscribeList.get(i), afterSubscribeList.get(i));
                     assertEquals(i, afterSubscribeList.get(i).getPriority());
                 });
+
+            resultActions.andDo(document(
+                snippet,
+                getDocumentRequest(),
+                getDocumentResponse(),
+                resource(ResourceSnippetParameters.builder()
+                    .description("구독 우선순위 변경 API")
+                    .requestHeaders(
+                        headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("access 토큰")
+                    )
+                    .requestFields(
+                        fieldWithPath("subscribeIds").type(JsonFieldType.ARRAY).description("자연수로 이루어진 구독 ID 목록")
+                    )
+                    .build())
+            ));
         }
     }
 }
