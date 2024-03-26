@@ -7,13 +7,19 @@ import com.ppap.ppap._core.RestDocs;
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.utils.UrlFactory;
 import com.ppap.ppap._core.security.JwtProvider;
+import com.ppap.ppap.domain.subscribe.dto.SubscribeChangePriorityDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeCreateRequestDto;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeUpdateRequestDto;
+import com.ppap.ppap.domain.subscribe.entity.Subscribe;
+import com.ppap.ppap.domain.subscribe.service.SubscribeReadService;
+import com.ppap.ppap.domain.user.entity.User;
+
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -21,9 +27,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -32,9 +42,15 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import jakarta.persistence.EntityManager;
+
 @DisplayName("구독 통합 테스트")
 public class SubscribeControllerTest extends RestDocs {
 
+    @Autowired
+    private SubscribeReadService subscribeReadService;
+    @Autowired
+    private EntityManager em;
 
     @MockBean
     private SAXBuilder saxBuilder;
@@ -210,14 +226,13 @@ public class SubscribeControllerTest extends RestDocs {
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-            System.out.println(responseBody);
 
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response[0].subscribeId").value(1),
-                    jsonPath("$.response[1].subscribeId").value(2),
-                    jsonPath("$.response[2].subscribeId").value(3),
+                    jsonPath("$.response[0].subscribeId").value(2),
+                    jsonPath("$.response[1].subscribeId").value(3),
+                    jsonPath("$.response[2].subscribeId").value(1),
                     jsonPath("$.error").doesNotExist()
             );
             resultActions.andDo(document(
@@ -544,7 +559,6 @@ public class SubscribeControllerTest extends RestDocs {
             );
 
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-            System.out.println(responseBody);
 
             // then
             resultActions.andExpectAll(
@@ -667,6 +681,65 @@ public class SubscribeControllerTest extends RestDocs {
                     jsonPath("$.error.message").value(BaseExceptionStatus.SUBSCRIBE_FORBIDDEN.getMessage()),
                     jsonPath("$.error.status").value(BaseExceptionStatus.SUBSCRIBE_FORBIDDEN.getStatus())
             );
+        }
+    }
+
+    @DisplayName("구독 우선순위 변경 테스트")
+    @Nested
+    class ChangePriorityTest {
+        @DisplayName("성공")
+        @Test
+        void success() throws Exception {
+            // given
+            String accessToken = getAccessToken("rjsdnxogh@naver.com");
+            User user = getUser("rjsdnxogh@naver.com");
+            List<Subscribe> beforeSubscribeList = subscribeReadService.getSubscribeEntityList(user)
+                .stream()
+                .sorted(Comparator.comparing(Subscribe::getId))
+                .toList();
+            SubscribeChangePriorityDto subscribeChangePriorityDto = new SubscribeChangePriorityDto(
+                beforeSubscribeList.stream()
+                    .map(Subscribe::getId)
+                    .toList()
+            );
+            String requestBody = om.writeValueAsString(subscribeChangePriorityDto);
+            System.out.println(requestBody);
+            // when
+            ResultActions resultActions = mvc.perform(
+                post("/api/v0/subscribe/change/priority")
+                    .content(requestBody)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(JwtProvider.HEADER, accessToken)
+            );
+            // then
+            resultActions.andExpectAll(
+                jsonPath("$.success").value("true"),
+                jsonPath("$.response").doesNotExist(),
+                jsonPath("$.error").doesNotExist()
+            );
+
+            em.clear();
+            List<Subscribe> afterSubscribeList = subscribeReadService.getSubscribeEntityList(user);
+            IntStream.range(0, afterSubscribeList.size())
+                .forEach( i -> {
+                    assertEquals(beforeSubscribeList.get(i), afterSubscribeList.get(i));
+                    assertEquals(i, afterSubscribeList.get(i).getPriority());
+                });
+
+            resultActions.andDo(document(
+                snippet,
+                getDocumentRequest(),
+                getDocumentResponse(),
+                resource(ResourceSnippetParameters.builder()
+                    .description("구독 우선순위 변경 API")
+                    .requestHeaders(
+                        headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("access 토큰")
+                    )
+                    .requestFields(
+                        fieldWithPath("subscribeIds").type(JsonFieldType.ARRAY).description("자연수로 이루어진 구독 ID 목록")
+                    )
+                    .build())
+            ));
         }
     }
 }

@@ -24,12 +24,12 @@ VALUES (3, 'https://chemeng.pusan.ac.kr/bbs/chemeng/2870/rssList.do', CURRENT_TI
 INSERT INTO notice_tb (`notice_id`, `link`, `last_time`, `created_at`, `last_modified_at`, `notice_type`)
 VALUES (4, 'https://french.pusan.ac.kr/bbs/french/4295/rssList.do', CURRENT_TIMESTAMP, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966', 'RSS');
 
-INSERT INTO subscribe_tb (`subscribe_id`, `title`, `user_id`, `notice_id`, `notice_link`, `is_active`, `created_at`, `last_modified_at`)
-VALUES (1, '테스트1', 1, 1, NULL, TRUE, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
-INSERT INTO subscribe_tb (`subscribe_id`, `title`, `user_id`, `notice_id`, `notice_link`, `is_active`, `created_at`, `last_modified_at`)
-VALUES (2, '테스트2', 1, 2, 'https://cse.pusan.ac.kr/cse/14655/subview.do', TRUE, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
-INSERT INTO subscribe_tb (`subscribe_id`, `title`, `user_id`, `notice_id`, `notice_link`, `is_active`, `created_at`, `last_modified_at`)
-VALUES (3, '테스트3', 1, 3, NULL, TRUE, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966');
+INSERT INTO subscribe_tb (`subscribe_id`, `title`, `user_id`, `notice_id`, `notice_link`, `is_active`, `created_at`, `last_modified_at`, `priority`)
+VALUES (1, '테스트1', 1, 1, NULL, TRUE, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966', NULL);
+INSERT INTO subscribe_tb (`subscribe_id`, `title`, `user_id`, `notice_id`, `notice_link`, `is_active`, `created_at`, `last_modified_at`, `priority`)
+VALUES (2, '테스트2', 1, 2, 'https://cse.pusan.ac.kr/cse/14655/subview.do', TRUE, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966', 0);
+INSERT INTO subscribe_tb (`subscribe_id`, `title`, `user_id`, `notice_id`, `notice_link`, `is_active`, `created_at`, `last_modified_at`, `priority`)
+VALUES (3, '테스트3', 1, 3, NULL, TRUE, '2023-08-08 23:54:29.966', '2023-08-08 23:54:29.966', 1);
 
 
 INSERT INTO content_tb (`content_id`, `notice_id`, `pub_date`, `author`, `category`, `title`, `link`)
@@ -99,6 +99,8 @@ VALUES (32, 2, '2023-04-04 14:00:26.197', '임준영', '2023', '[유영환 교�
 INSERT INTO content_tb (`content_id`, `notice_id`, `pub_date`, `author`, `category`, `title`, `link`)
 VALUES (33, 2, '2023-04-04 11:49:45.967', '최현재', '2023', '[채흥석 교수] 2023년 졸업과제 주제 및 상담 일정 (마감)', 'http://his.pusan.ac.kr/bbs/cse/12549/1171831/artclView.do');
 
+
+
 INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
 VALUES (1, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
@@ -141,4 +143,8 @@ INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_m
 VALUES (20, 1, 30, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
 VALUES (21, 1, 31, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
+VALUES (22, 1, 32, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO scrap_tb (`scrap_id`, `user_id`, `content_id`, `created_at`, `last_modified_at`)
+VALUES (23, 1, 33, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 

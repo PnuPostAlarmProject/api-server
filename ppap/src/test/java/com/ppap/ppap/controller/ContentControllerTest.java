@@ -33,32 +33,31 @@ public class ContentControllerTest extends RestDocs {
                             .header(JwtProvider.HEADER, accessToken)
             );
             String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-//            System.out.println(responseBody);
 
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.curSubscribeId").value(1L),
-                    jsonPath("$.response.contents[0].contentId").value(1L),
-                    jsonPath("$.response.contents[0].isScraped").value("true"),
-                    jsonPath("$.response.contents[1].contentId").value(2L),
+                    jsonPath("$.response.curSubscribeId").value(2L),
+                    jsonPath("$.response.contents[0].contentId").value(18L),
+                    jsonPath("$.response.contents[0].isScraped").value("false"),
+                    jsonPath("$.response.contents[1].contentId").value(19L),
                     jsonPath("$.response.contents[1].isScraped").value("true"),
-                    jsonPath("$.response.contents[2].contentId").value(3L),
-                    jsonPath("$.response.contents[2].isScraped").value("true"),
-                    jsonPath("$.response.contents[3].contentId").value(4L),
-                    jsonPath("$.response.contents[3].isScraped").value("false"),
-                    jsonPath("$.response.contents[4].contentId").value(5L),
-                    jsonPath("$.response.contents[4].isScraped").value("false"),
-                    jsonPath("$.response.contents[5].contentId").value(6L),
+                    jsonPath("$.response.contents[2].contentId").value(20L),
+                    jsonPath("$.response.contents[2].isScraped").value("false"),
+                    jsonPath("$.response.contents[3].contentId").value(21L),
+                    jsonPath("$.response.contents[3].isScraped").value("true"),
+                    jsonPath("$.response.contents[4].contentId").value(22L),
+                    jsonPath("$.response.contents[4].isScraped").value("true"),
+                    jsonPath("$.response.contents[5].contentId").value(23L),
                     jsonPath("$.response.contents[5].isScraped").value("true"),
-                    jsonPath("$.response.contents[6].contentId").value(7L),
+                    jsonPath("$.response.contents[6].contentId").value(24L),
                     jsonPath("$.response.contents[6].isScraped").value("true"),
-                    jsonPath("$.response.contents[7].contentId").value(8L),
-                    jsonPath("$.response.contents[7].isScraped").value("true"),
-                    jsonPath("$.response.contents[8].contentId").value(9L),
-                    jsonPath("$.response.contents[8].isScraped").value("true"),
-                    jsonPath("$.response.contents[9].contentId").value(10L),
-                    jsonPath("$.response.contents[9].isScraped").value("false"),
+                    jsonPath("$.response.contents[7].contentId").value(25L),
+                    jsonPath("$.response.contents[7].isScraped").value("false"),
+                    jsonPath("$.response.contents[8].contentId").value(26L),
+                    jsonPath("$.response.contents[8].isScraped").value("false"),
+                    jsonPath("$.response.contents[9].contentId").value(27L),
+                    jsonPath("$.response.contents[9].isScraped").value("true"),
                     jsonPath("$.error").doesNotExist()
             );
 
@@ -100,21 +99,19 @@ public class ContentControllerTest extends RestDocs {
             // then
             resultActions.andExpectAll(
                     jsonPath("$.success").value("true"),
-                    jsonPath("$.response.curSubscribeId").value(1L),
-                    jsonPath("$.response.contents[0].contentId").value(11L),
+                    jsonPath("$.response.curSubscribeId").value(2L),
+                    jsonPath("$.response.contents[0].contentId").value(28L),
                     jsonPath("$.response.contents[0].isScraped").value("true"),
-                    jsonPath("$.response.contents[1].contentId").value(12L),
+                    jsonPath("$.response.contents[1].contentId").value(29L),
                     jsonPath("$.response.contents[1].isScraped").value("true"),
-                    jsonPath("$.response.contents[2].contentId").value(13L),
-                    jsonPath("$.response.contents[2].isScraped").value("false"),
-                    jsonPath("$.response.contents[3].contentId").value(14L),
-                    jsonPath("$.response.contents[3].isScraped").value("false"),
-                    jsonPath("$.response.contents[4].contentId").value(15L),
+                    jsonPath("$.response.contents[2].contentId").value(30L),
+                    jsonPath("$.response.contents[2].isScraped").value("true"),
+                    jsonPath("$.response.contents[3].contentId").value(31L),
+                    jsonPath("$.response.contents[3].isScraped").value("true"),
+                    jsonPath("$.response.contents[4].contentId").value(32L),
                     jsonPath("$.response.contents[4].isScraped").value("true"),
-                    jsonPath("$.response.contents[5].contentId").value(16L),
-                    jsonPath("$.response.contents[5].isScraped").value("false"),
-                    jsonPath("$.response.contents[6].contentId").value(17L),
-                    jsonPath("$.response.contents[6].isScraped").value("true"),
+                    jsonPath("$.response.contents[5].contentId").value(33L),
+                    jsonPath("$.response.contents[5].isScraped").value("true"),
                     jsonPath("$.error").doesNotExist()
             );
         }
