@@ -1,5 +1,6 @@
 package com.ppap.ppap.domain.scrap.service;
 
+import com.ppap.ppap.domain.base.utils.CursorRequest;
 import com.ppap.ppap.domain.scrap.dto.ScrapFindByContentIdDto;
 import com.ppap.ppap.domain.scrap.entity.Scrap;
 import com.ppap.ppap.domain.scrap.repository.ScrapJpaRepository;
@@ -25,5 +26,23 @@ public class ScrapReadService {
 
     public List<Scrap> findByUserIdAndNoticeIdFetchJoinContent(Long userId, Long noticeId, Pageable pageable) {
         return scrapJpaRepository.findByUserIdAndNoticeIdFetchJoinContent(userId, noticeId, pageable).toList();
+    }
+
+    public List<Scrap> findByUserIdAndNoticeIdFetchJoinContentCursor(
+        Long userId,
+        Long noticeId,
+        CursorRequest cursorRequest,
+        Pageable pageable) {
+
+        if (!cursorRequest.hasCursor())
+            return scrapJpaRepository.findByUserIdAndNoticeIdFetchJoinContentCursorFirstPage(userId, noticeId, pageable)
+                .toList();
+
+        return scrapJpaRepository.findByUserIdAndNoticeIdFetchJoinContentCursor(
+                userId,
+                noticeId,
+                cursorRequest.cursor(),
+                pageable)
+            .toList();
     }
 }
