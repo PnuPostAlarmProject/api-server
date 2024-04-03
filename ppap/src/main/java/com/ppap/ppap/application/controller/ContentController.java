@@ -14,8 +14,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -38,9 +40,11 @@ public class ContentController {
     @GetMapping(value = {"/v1/content", "/v1/content/{subscribe_id}"})
     public ResponseEntity<?> getContentDataV1(
         @PathVariable(required = false, name="subscribe_id") Optional<Long>  subscribeId,
-        CursorRequest cursorRequest,
+        @RequestParam(value="cursor", required = false) LocalDateTime cursor,
+        @RequestParam(value="pageSize", required = false, defaultValue = "10") int pageSize,
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
+        CursorRequest cursorRequest = new CursorRequest(cursor, pageSize);
         return ResponseEntity.ok(ApiUtils.success(
             getSubscribeContentUseCase.executeV1(subscribeId, userDetails.getUser(), cursorRequest))
         );

@@ -82,7 +82,8 @@ public class GetSubscribeContentUseCase {
 
         return new PageCursor<>(
             SubscribeWithContentScrapDto.of(curSubscribe.getId(), contentList, scrapContentIdSet),
-            cursorRequest.next(nextCursor));
+            cursorRequest.next(nextCursor),
+            contentList.size());
     }
 
     // 현재 선택한 구독을 찾는 메소드
