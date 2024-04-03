@@ -3,6 +3,7 @@ package com.ppap.ppap.application.controller;
 import com.ppap.ppap._core.security.CustomUserDetails;
 import com.ppap.ppap._core.utils.ApiUtils;
 import com.ppap.ppap.application.usecase.GetSubscribeContentUseCase;
+import com.ppap.ppap.domain.base.utils.CursorRequest;
 import com.ppap.ppap.domain.subscribe.dto.SubscribeWithContentScrapDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -19,18 +20,29 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v0/content")
+@RequestMapping("/api")
 public class ContentController {
     private final GetSubscribeContentUseCase getSubscribeContentUseCase;
 
-    @GetMapping(value = {"", "/{subscribe_id}"})
+    @GetMapping(value = {"/v0/content", "/v0/content/{subscribe_id}"})
     public ResponseEntity<?> getContentData(
-            @PathVariable(required = false, name="subscribe_id") Optional<Long> subscribeId,
-            @PageableDefault(size=10, page=0, sort = "pubDate", direction = Sort.Direction.DESC) Pageable pageable,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        @PathVariable(required = false, name="subscribe_id") Optional<Long> subscribeId,
+        @PageableDefault(size=10, page=0, sort = "pubDate", direction = Sort.Direction.DESC) Pageable pageable,
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
         SubscribeWithContentScrapDto resultDto =
-                getSubscribeContentUseCase.execute(subscribeId, userDetails.getUser(), pageable);
+            getSubscribeContentUseCase.execute(subscribeId, userDetails.getUser(), pageable);
 
         return ResponseEntity.ok(ApiUtils.success(resultDto));
+    }
+
+    @GetMapping(value = {"/v1/content", "/v1/content/{subscribe_id}"})
+    public ResponseEntity<?> getContentDataV1(
+        @PathVariable(required = false, name="subscribe_id") Optional<Long>  subscribeId,
+        CursorRequest cursorRequest,
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ResponseEntity.ok(ApiUtils.success(
+            getSubscribeContentUseCase.executeV1(subscribeId, userDetails.getUser(), cursorRequest))
+        );
     }
 }
