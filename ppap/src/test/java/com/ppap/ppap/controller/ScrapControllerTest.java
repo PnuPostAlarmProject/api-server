@@ -17,6 +17,9 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class ScrapControllerTest extends RestDocs {
 
     @DisplayName("스크랩 저장하기 통합 테스트")
@@ -318,6 +321,115 @@ public class ScrapControllerTest extends RestDocs {
                     jsonPath("$.response").doesNotExist(),
                     jsonPath("$.error.message").value(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getMessage()),
                     jsonPath("$.error.status").value(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getStatus())
+            );
+        }
+    }
+
+    @DisplayName("스크랩 조회 테스트 - 커서기반")
+    @Nested
+    class GetScrapControllTestV1 {
+        @DisplayName("성공 1페이지")
+        @Test
+        void successPage1() throws Exception {
+            // given
+            String accessToken = getAccessToken("rjsdnxogh@naver.com");
+
+            // when
+            ResultActions resultActions = mvc.perform(
+                get("/api/v1/scrap")
+                    .header(JwtProvider.HEADER, accessToken)
+            );
+
+            // then
+            resultActions.andExpectAll(
+                jsonPath("$.success").value("true"),
+                jsonPath("$.response.data.curSubscribeId").value(2),
+                jsonPath("$.response.data.scraps[0].contentId").value(19),
+                jsonPath("$.response.data.scraps[1].contentId").value(21),
+                jsonPath("$.response.data.scraps[2].contentId").value(22),
+                jsonPath("$.response.data.scraps[3].contentId").value(23),
+                jsonPath("$.response.data.scraps[4].contentId").value(24),
+                jsonPath("$.response.data.scraps[5].contentId").value(27),
+                jsonPath("$.response.data.scraps[6].contentId").value(28),
+                jsonPath("$.response.data.scraps[7].contentId").value(29),
+                jsonPath("$.response.data.scraps[8].contentId").value(30),
+                jsonPath("$.response.data.scraps[9].contentId").value(31),
+                jsonPath("$.response.nextCursor.cursor").value("2023-04-04T14:48:59.593"),
+                jsonPath("$.response.nextCursor.pageSize").value(10),
+                jsonPath("$.response.hasNext").value("true"),
+                jsonPath("$.error").doesNotExist()
+            );
+
+            resultActions.andDo(
+                document(
+                    snippet,
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    resource(ResourceSnippetParameters.builder()
+                        .description("스크랩 뷰 조회 API v1 - 커서 기반 페이지네이션")
+                        .requestHeaders(
+                            headerWithName(JwtProvider.HEADER).type(SimpleType.STRING).description("access 토큰")
+                        )
+                        .queryParameters(
+                            parameterWithName("pageSize")
+                                .type(SimpleType.NUMBER)
+                                .optional()
+                                .defaultValue(10)
+                                .description("한 페이지에 보여줄 양, 1이상 50이하만 입력 가능"),
+                            parameterWithName("cursor")
+                                .type(SimpleType.STRING)
+                                .optional()
+                                .description("마지막 조회 위치의 TimeStamp yyyy-MM-ddTHH:mm:ss.SSS형태")
+                            )
+                        .build())
+                )
+            );
+        }
+
+        @DisplayName("성공 2페이지")
+        @Test
+        void successPage2() throws Exception {
+            // given
+            String accessToken = getAccessToken("rjsdnxogh@naver.com");
+            String cursor = "2023-04-04T14:48:59.593";
+
+            // when
+            ResultActions resultActions = mvc.perform(
+                get("/api/v1/scrap?cursor={cursor}", cursor)
+                    .header(JwtProvider.HEADER, accessToken)
+            );
+
+            // then
+            resultActions.andExpectAll(
+                jsonPath("$.success").value("true"),
+                jsonPath("$.response.data.curSubscribeId").value(2),
+                jsonPath("$.response.data.scraps[0].contentId").value(32),
+                jsonPath("$.response.data.scraps[1].contentId").value(33),
+                jsonPath("$.response.nextCursor.cursor").value("2023-04-04T11:49:45.967"),
+                jsonPath("$.response.nextCursor.pageSize").value(10),
+                jsonPath("$.response.hasNext").value("false"),
+                jsonPath("$.error").doesNotExist()
+            );
+        }
+
+        @DisplayName("없는 페이지")
+        @Test
+        void pageNotFound() throws Exception {
+            // given
+            String accessToken = getAccessToken("rjsdnxogh@naver.com");
+            String cursor = "2023-04-04T11:49:45.967";
+            // when
+            ResultActions resultActions = mvc.perform(
+                get("/api/v1/scrap?cursor={cursor}", cursor)
+                    .header(JwtProvider.HEADER, accessToken)
+            );
+
+            // then
+            resultActions.andExpectAll(
+                jsonPath("$.success").value("false"),
+                jsonPath("$.response").doesNotExist(),
+                jsonPath("$.error.message").value(BaseExceptionStatus.SCRAP_IS_EMPTY.getMessage()),
+                jsonPath("$.error.status").value(BaseExceptionStatus.SCRAP_IS_EMPTY.getStatus())
             );
         }
     }
