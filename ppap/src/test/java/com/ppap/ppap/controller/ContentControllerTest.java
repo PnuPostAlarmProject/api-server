@@ -303,7 +303,6 @@ public class ContentControllerTest extends RestDocs {
                 get("/api/v1/content?cursor={cursor}", "2023-04-04T11:49:45.967")
                     .header(JwtProvider.HEADER, accessToken)
             );
-            System.out.println(resultActions.andReturn().getResponse().getContentAsString());
 
             // then
             resultActions.andExpectAll(
