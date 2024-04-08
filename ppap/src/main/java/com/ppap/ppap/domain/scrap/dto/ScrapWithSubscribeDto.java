@@ -15,22 +15,6 @@ public record ScrapWithSubscribeDto(
     public ScrapWithSubscribeDto {
     }
 
-    public record SubscribeDto(
-            Long subscribeId,
-            String title
-    ) {
-        @Builder
-        public SubscribeDto {
-        }
-
-        public static SubscribeDto of(Subscribe subscribe) {
-            return SubscribeDto.builder()
-                    .subscribeId(subscribe.getId())
-                    .title(subscribe.getTitle())
-                    .build();
-        }
-    }
-
     public record ScrapDto(
             Long contentId,
             String contentTitle,
