@@ -103,8 +103,7 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/*/auth/**"),
                                 new AntPathRequestMatcher("/api/*/subscribe/**"),
                                 new AntPathRequestMatcher("/api/*/scrap/**"),
-                                new AntPathRequestMatcher("/api/*/content/**"),
-                                new AntPathRequestMatcher("/api/*/univ/**")).authenticated()
+                                new AntPathRequestMatcher("/api/*/content/**")).authenticated()
                         .anyRequest().permitAll()
         );
 
