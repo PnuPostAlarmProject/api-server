@@ -42,8 +42,7 @@ public class NoticeWriter implements ItemWriter<NoticeDto> {
 	}
 
 	@Override
-	public void write(Chunk<? extends NoticeDto> chunk) throws Exception {
-		List<Notice> noticeList = new ArrayList<>();
+	public void write(Chunk<? extends NoticeDto> chunk) {
 		List<String> univConcatData = chunk.getItems()
 			.stream()
 			.map(noticeDto -> String.format("%s_%s", noticeDto.college(), noticeDto.department()))

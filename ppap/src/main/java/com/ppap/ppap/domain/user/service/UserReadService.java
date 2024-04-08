@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserReadService {
 
-    private final UserJpaRepository userJpaRepository;
     private final RefreshTokenService refreshTokenService;
 
     public ReissueDto.ReissueResponseDto reissue(ReissueDto.ReissueRequestDto requestDto) {
