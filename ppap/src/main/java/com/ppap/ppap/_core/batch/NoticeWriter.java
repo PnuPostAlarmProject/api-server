@@ -43,6 +43,7 @@ public class NoticeWriter implements ItemWriter<NoticeDto> {
 
 	@Override
 	public void write(Chunk<? extends NoticeDto> chunk) {
+		// 대학_학과로 문자열을 생성
 		List<String> univConcatData = chunk.getItems()
 			.stream()
 			.map(noticeDto -> String.format("%s_%s", noticeDto.college(), noticeDto.department()))
@@ -56,6 +57,7 @@ public class NoticeWriter implements ItemWriter<NoticeDto> {
 					univ->univ
 			));
 
+		// 현재 DB상에 입력하고자 하는 공지사항 링크가 있는지 확인
 		Map<String, Notice> existNoticeMap = noticeJpaRepository.findByLinkIn(chunk.getItems().stream()
 			.map(NoticeDto::link)
 			.toList())
@@ -63,6 +65,7 @@ public class NoticeWriter implements ItemWriter<NoticeDto> {
 			.collect(toMap(Notice::getLink
 				, notice -> notice));
 
+		// 현재 DB상에 있다면 엑셀의 내용과 동기화 진행, 없다면 새로운 공지사항 추가
 		chunk.forEach(
 			noticeDto -> {
 				if (existNoticeMap.containsKey(noticeDto.link())) {
