@@ -62,31 +62,31 @@ public class GetSubscribeContentUseCaseTest {
             List<Subscribe> testSubscribeList = dummyEntity.getTestSubscribeList(testUser, testNoticeList);
             List<Content> testContentList = dummyEntity.getTestContentList(testNoticeList.get(0));
             List<Scrap> testScrapList = testContentList.stream()
-                    .map(content -> Scrap.of(testUser, content))
-                    .limit(5)
-                    .toList();
+                .map(content -> Scrap.of(testUser, content))
+                .limit(5)
+                .toList();
             ArgumentCaptor<Long> curSubscribeId = ArgumentCaptor.forClass(Long.class);
 
             // mock
             given(subscribeReadService.getSubscribeEntityList(testUser)).willReturn(testSubscribeList);
             given(contentReadService.findByNoticeId(testSubscribeList.get(0).getNotice().getId(), pageable))
-                    .willReturn(testContentList.stream().limit(10).toList());
+                .willReturn(testContentList.stream().limit(10).toList());
             given(scrapReadService.findByContentIds(testUser.getId(),
-                    testContentList.stream().limit(10).map(Content::getId).toList()))
-                    .willReturn(testScrapList.stream().map(ScrapFindByContentIdDto::of).toList());
+                testContentList.stream().limit(10).map(Content::getId).toList()))
+                .willReturn(testScrapList.stream().map(ScrapFindByContentIdDto::of).toList());
 
             // when
             SubscribeWithContentScrapDto response = getSubscribeContentUseCase.execute(Optional.empty(),
-                    testUser, pageable);
+                testUser, pageable);
 
             // then
             verify(contentReadService, times(1)).findByNoticeId(curSubscribeId.capture(), any());
             assertEquals(curSubscribeId.getValue(), 1L);
             assertEquals(10, response.contents().size());
-            for (int i=0; i<5; i++) {
+            for (int i = 0; i < 5; i++) {
                 assertEquals(true, response.contents().get(i).isScraped());
             }
-            for (int i=5; i<10; i++) {
+            for (int i = 5; i < 10; i++) {
                 assertEquals(false, response.contents().get(i).isScraped());
             }
         }
@@ -106,20 +106,20 @@ public class GetSubscribeContentUseCaseTest {
             // mock
             given(subscribeReadService.getSubscribeEntityList(testUser)).willReturn(testSubscribeList);
             given(contentReadService.findByNoticeId(testSubscribeList.get(0).getNotice().getId(), pageable))
-                    .willReturn(testContentList.stream().skip(10).limit(10).toList());
+                .willReturn(testContentList.stream().skip(10).limit(10).toList());
             given(scrapReadService.findByContentIds(testUser.getId(),
-                    testContentList.stream().skip(10).limit(10).map(Content::getId).toList()))
-                    .willReturn(List.of());
+                testContentList.stream().skip(10).limit(10).map(Content::getId).toList()))
+                .willReturn(List.of());
 
             // when
             SubscribeWithContentScrapDto response = getSubscribeContentUseCase.execute(Optional.empty(),
-                    testUser, pageable);
+                testUser, pageable);
 
             // then
             verify(contentReadService, times(1)).findByNoticeId(curSubscribeId.capture(), any());
             assertEquals(curSubscribeId.getValue(), 1L);
             assertEquals(2, response.contents().size());
-            for (int i=0; i<response.contents().size(); i++) {
+            for (int i = 0; i < response.contents().size(); i++) {
                 assertEquals(false, response.contents().get(i).isScraped());
             }
         }
@@ -139,20 +139,20 @@ public class GetSubscribeContentUseCaseTest {
             // mock
             given(subscribeReadService.getSubscribeEntityList(testUser)).willReturn(testSubscribeList);
             given(contentReadService.findByNoticeId(testSubscribeList.get(1).getNotice().getId(), pageable))
-                    .willReturn(testContentList.stream().limit(10).toList());
+                .willReturn(testContentList.stream().limit(10).toList());
             given(scrapReadService.findByContentIds(testUser.getId(),
-                    testContentList.stream().limit(10).map(Content::getId).toList()))
-                    .willReturn(List.of());
+                testContentList.stream().limit(10).map(Content::getId).toList()))
+                .willReturn(List.of());
 
             // when
             SubscribeWithContentScrapDto response = getSubscribeContentUseCase.execute(Optional.of(2L),
-                    testUser, pageable);
+                testUser, pageable);
 
             // then
             verify(contentReadService, times(1)).findByNoticeId(curSubscribeId.capture(), any());
             assertEquals(curSubscribeId.getValue(), 2L);
             assertEquals(10, response.contents().size());
-            for (int i=0; i<response.contents().size(); i++) {
+            for (int i = 0; i < response.contents().size(); i++) {
                 assertEquals(false, response.contents().get(i).isScraped());
             }
         }
@@ -174,10 +174,10 @@ public class GetSubscribeContentUseCaseTest {
 
             // when
             Throwable exception = assertThrows(Exception404.class,
-                    () -> getSubscribeContentUseCase.execute(Optional.of(100L), testUser, pageable));
+                () -> getSubscribeContentUseCase.execute(Optional.of(100L), testUser, pageable));
 
             // then
-            assertEquals(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getMessage(), exception.getMessage() );
+            assertEquals(BaseExceptionStatus.SUBSCRIBE_NOT_FOUND.getMessage(), exception.getMessage());
         }
     }
 }

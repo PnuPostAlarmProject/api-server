@@ -2,6 +2,7 @@ package com.ppap.ppap.domain.subscribe.service;
 
 import com.ppap.ppap._core.exception.BaseExceptionStatus;
 import com.ppap.ppap._core.exception.Exception404;
+import com.ppap.ppap.domain.base.utils.CursorRequest;
 import com.ppap.ppap.domain.subscribe.entity.Content;
 import com.ppap.ppap.domain.subscribe.entity.Notice;
 import com.ppap.ppap.domain.subscribe.repository.ContentJpaRepository;
@@ -25,6 +26,14 @@ public class ContentReadService {
     }
     public List<Content> findByNoticeId(Long noticeId, Pageable pageable) {
         return contentJpaRepository.findByNoticeId(noticeId, pageable).toList();
+    }
+
+    public List<Content> findByNoticeIdUsingCursor(Long noticeId, CursorRequest cursor, Pageable pageable) {
+        if (!cursor.hasCursor()) {
+            return contentJpaRepository.findByNoticeIdUsingCursorFirstPage(noticeId, pageable).toList();
+        }
+
+        return contentJpaRepository.findByNoticeIdUsingCursor(noticeId, cursor.cursor(), pageable).toList();
     }
 
     public Content findById(Long contentId) {

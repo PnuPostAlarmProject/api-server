@@ -6,6 +6,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum BaseExceptionStatus {
 
+    // Common
+    PAGE_SIZE_NOT_POSITIVE("페이지의 크기는 양수이어야 합니다.", 400),
+    PAGE_SIZE_IS_UNDER_50("페이지의 크기는 50개 이하이어야 합니다.", 400),
+
     // User -> 나중에 custom status code가 있으면 좋을 듯 하다.
     USER_NOT_FOUND("회원이 존재하지 않습니다", 404),
     USER_ALREADY_EXIST("이미 존재하는 회원입니다.", 400),
