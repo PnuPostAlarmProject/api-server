@@ -76,7 +76,7 @@ public class SchedulerService {
         Map<Long, List<Device>> userDeviceGroup = getFcmTokenGroup(subscribeSet);
 
         // 가져온 FCM 토큰들을 통해 알림 전송
-        fcmService.sendNotification(filterNoticeCrawlingGroup, subscribeSet, userDeviceGroup);
+        // fcmService.sendNotification(filterNoticeCrawlingGroup, subscribeSet, userDeviceGroup);
 
         // 각 공지사항 중, 가장 최근 데이터의 발행시각을 가져온 뒤 디비에 업데이트
         updateMaxPubDateNotice(filterNoticeCrawlingGroup);
@@ -132,7 +132,8 @@ public class SchedulerService {
      * @return 알림을 줘야하는(갱신된) 공지사항 데이터
      */
     private List<CrawlingData> getCrawlingData(Notice notice, Map<Notice, String> errorNotice, Set<Long> noticeIdSetInContent) {
-        boolean isInit = !noticeIdSetInContent.contains(notice.getId());
+        // boolean isInit = !noticeIdSetInContent.contains(notice.getId());
+        boolean isInit = true;
         List<CrawlingData> crawlingDataList = new ArrayList<>();
         try{
             switch (notice.getNoticeType()) {
