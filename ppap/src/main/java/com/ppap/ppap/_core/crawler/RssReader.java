@@ -58,7 +58,8 @@ public class RssReader {
     public List<CrawlingData> getRssData(String rssLink, LocalDateTime maxPubDate, boolean isInit){
         List<CrawlingData> rssDataList = new ArrayList<>();
         try {
-            InputStream inputStream = urlFactory.getInputStream(isInit ? rssLink +"?row=30" : rssLink, CONNECTION_TIMEOUT, READ_TIMEOUT);
+            // InputStream inputStream = urlFactory.getInputStream(isInit ? rssLink +"?row=30" : rssLink, CONNECTION_TIMEOUT, READ_TIMEOUT);
+            InputStream inputStream = urlFactory.getInputStream(isInit ? rssLink +"?row=50" : rssLink, CONNECTION_TIMEOUT, READ_TIMEOUT);
             SAXBuilder saxBuilder = saxBuilderProvider.getObject();
             Document document = saxBuilder.build(inputStream);
             Element root = document.getRootElement();
