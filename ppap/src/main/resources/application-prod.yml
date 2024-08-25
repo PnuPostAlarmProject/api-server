@@ -9,7 +9,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DATABASE_URI_PROD}
-    username: admin
+    username: ${DATABASE_USER_PRDO}
     password: ${DATABASE_PASSWORD_PROD}
 
   jpa:
