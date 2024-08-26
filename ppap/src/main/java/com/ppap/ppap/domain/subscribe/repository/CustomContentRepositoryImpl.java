@@ -24,7 +24,7 @@ public class CustomContentRepositoryImpl implements CustomContentRepository{
     @Override
     public void saveAllBatch(List<Content> contentList) {
         final int batchSize = 1000;
-        String insertQuery = String.format("INSERT INTO %s (notice_id, title, link, pub_date, author, category) " +
+        String insertQuery = String.format("INSERT IGNORE INTO %s (notice_id, title, link, pub_date, author, category) " +
                 "VALUES (?, ?, ?, ?, ?, ?)", TABLE);
 
         for (int j=0; j<contentList.size(); j += batchSize) {
