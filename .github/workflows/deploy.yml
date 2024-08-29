@@ -8,6 +8,7 @@ on:
 env:
   IMAGE_TAG: latest
   NCR_REPOSITORY: ${{ secrets.NCR_REPOSITORY }}
+  NCP_CLI_VERSION: CLI_1.1.20_20240620
 
 defaults:
   run:
@@ -33,7 +34,7 @@ jobs:
           unzip CLI_1.1.20_20240620.zip
           mkdir ~/.ncloud
           echo -e "[DEFAULT]\nncloud_access_key_id=${{secrets.NCP_ACCESS_TOKEN}}\nncloud_secret_access_key=${{secrets.NCP_SECRETS_TOKEN}}\nncloud_api_url=https://ncloud.apigw.ntruss.com" >> ~/.ncloud/configure
-          chmod 755 ~/cli_linux/ncloud
+          chmod 755 ~/$NCP_CLI_VERSION/cli_linux/ncloud
 
       - name: docker build
         run: |
@@ -43,8 +44,8 @@ jobs:
 
       - name: add Github Actions IP to ACG
         run: |
-          cd ~/cli_linux
-          ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}', portRange='22'"
+          cd ~/$NCP_CLI_VERSION/cli_linux
+          ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}  ', portRange='22'"
           
       - name: deploy NCP server
         uses: appleboy/ssh-action@v1.0.3
@@ -63,5 +64,5 @@ jobs:
 
       - name: remove github Actions IP from ACG
         run: |
-          cd ~/cli_linux
+          cd ~/$NCP_CLI_VERSION/cli_linux
           ./ncloud vserver removeAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}', portRange='22'"
