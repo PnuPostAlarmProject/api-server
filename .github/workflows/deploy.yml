@@ -38,7 +38,7 @@ jobs:
 
       - name: docker build
         run: |
-          echo "${{ secrets.NCP_SECRETS_TOKEN }}" | docker login ${{ }} --username ${{ secrets.NCP_ACCESS_TOKEN }} --password-stdin
+          echo "${{ secrets.NCP_SECRETS_TOKEN }}" | docker login $NCR_REPOSITORY --username ${{ secrets.NCP_ACCESS_TOKEN }} --password-stdin
           docker build -t $NCR_REPOSITORY:$IMAGE_TAG -f DockerFileProd .
           docker push $NCR_REPOSITORY:$IMAGE_TAG
 
