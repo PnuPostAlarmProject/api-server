@@ -45,7 +45,7 @@ jobs:
       - name: add Github Actions IP to ACG
         run: |
           cd ~/$NCP_CLI_VERSION/cli_linux
-          ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}  ', portRange='22'"
+          ./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_ACG_NO }} --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/24  ', portRange='22'"
           
       - name: deploy NCP server
         uses: appleboy/ssh-action@v1.0.3
